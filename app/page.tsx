@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 // 1. DAFTAR KATEGORI
 const categories = ["Semua", "Telkomsel", "Indosat", "XL & Axis", "Tri", "Smartfren"];
 
-// 2. DAFTAR PRODUK (Sudah Update Harga & Kuota AKRAB Terbaru)
+// 2. DAFTAR PRODUK LENGKAP UTUH
 const products = [
   { id: 1, category: "Telkomsel", name: "Data Flash 50 GB", desc: "Masa Aktif 30 Hari", price: "Rp 109.618", icon: "🔴" },
   { id: 2, category: "Telkomsel", name: "Data Flash 49 GB", desc: "Masa Aktif 30 Hari", price: "Rp 113.595", icon: "🔴" },
@@ -240,7 +240,7 @@ const products = [
   { id: 231, category: "XL & Axis", name: "VIP Plus 30 GB", desc: "Masa Aktif 30 Hari", price: "Rp 144.000", icon: "🔵" },
   { id: 232, category: "XL & Axis", name: "VIP Plus 50 GB", desc: "Masa Aktif 30 Hari", price: "Rp 195.000", icon: "🔵" },
   { id: 233, category: "XL & Axis", name: "VIP Plus 70 GB", desc: "Masa Aktif 30 Hari", price: "Rp 256.000", icon: "🔵" },
-
+  
   // INI ADALAH PAKET AKRAB YANG SUDAH DIPERBARUI
   { id: 234, category: "XL & Axis", name: "AKRAB Mini", desc: "Pembagian Kuota Cek Area", price: "Rp 65.000", icon: "🔵" },
   { id: 235, category: "XL & Axis", name: "AKRAB Big", desc: "38 - 57 GB (Tergantung Area)", price: "Rp 70.000", icon: "🔵" },
@@ -250,23 +250,17 @@ const products = [
   { id: 239, category: "XL & Axis", name: "AKRAB Mega Big", desc: "88 - 107 GB (Tergantung Area)", price: "Rp 107.000", icon: "🔵" }
 ];
 
-
-  const whatsappNumber = "6285967096912";
-  export default function LandingPage() {
+export default function LandingPage() {
   const whatsappNumber = "6285967096912";
   
-  // State untuk menyimpan pilihan pengguna
   const [activeCategory, setActiveCategory] = useState("Semua");
   const [activeType, setActiveType] = useState("Semua Tipe");
-  
-  // State khusus untuk menyimpan pilihan varian dalam kartu produk (seperti AKRAB)
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
 
-  // FUNGSI CERDAS: Membaca nama produk dan memisahkannya ke sub-kategori
   const getPackageType = (name: string) => {
     const n = name.toLowerCase();
     
-    // Khusus AKRAB kini disatukan menjadi satu sub-kategori "AKRAB" saja
+    // RAHASIA AGAR MENYATU: Sekarang semua dikelompokkan ke satu nama "AKRAB"
     if (n.includes('akrab')) return 'AKRAB';
     
     if (n.includes('flex')) return 'Combo Flex';
@@ -296,52 +290,45 @@ const products = [
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
 
-  // Saring berdasarkan Provider
   const providerProducts = activeCategory === "Semua" 
     ? products 
     : products.filter(item => item.category === activeCategory);
 
-  // Cari tahu Jenis Paket apa saja yang ada
   const availableTypes = ["Semua Tipe", ...Array.from(new Set(providerProducts.map(p => getPackageType(p.name))))];
 
-  // Saring berdasarkan Jenis Paket
   let rawFinalProducts = activeType === "Semua Tipe"
     ? providerProducts
     : providerProducts.filter(p => getPackageType(p.name) === activeType);
 
-  // LOGIKA PENGGABUNGAN KARTU (GROUPING) KHUSUS AKRAB
-  const finalProducts = [];
-  const akrabGroup = [];
+  const finalProducts: any[] = [];
+  const akrabGroup: any[] = [];
 
   rawFinalProducts.forEach(product => {
     if (product.name.toLowerCase().includes('akrab')) {
       akrabGroup.push(product);
     } else {
-      finalProducts.push(product); // Masukkan produk biasa
+      finalProducts.push(product); 
     }
   });
 
-  // Jika ada produk AKRAB, buat satu kartu master
   if (akrabGroup.length > 0) {
     finalProducts.unshift({
       id: "master-akrab",
       category: "XL & Axis",
       name: "Paket Keluarga AKRAB",
-      desc: "Pembagian Kuota Lokal Berbeda Tiap Area",
+      desc: "Pilih Ukuran Kuota Sesuai Kebutuhan Anda",
       price: "Mulai Rp 65.000",
       icon: "👪",
-      isGroup: true, // Penanda bahwa ini kartu grup
+      isGroup: true, 
       variants: akrabGroup
     });
   }
 
-  // Reset sub-kategori saat ganti provider
   const handleCategoryClick = (category: string) => {
     setActiveCategory(category);
     setActiveType("Semua Tipe");
   };
 
-  // Fungsi mengubah varian dalam kartu grup
   const handleVariantChange = (groupId: string, variantName: string) => {
     setSelectedVariants(prev => ({...prev, [groupId]: variantName}));
   };
@@ -407,7 +394,6 @@ const products = [
         )}
       </section>
 
-      {/* BANNER CEK KUOTA KHUSUS XL & AXIS */}
       {activeCategory === "XL & Axis" && (
         <div className="max-w-5xl mx-auto px-6 mb-10">
           <div className="bg-blue-50 border border-blue-200 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
@@ -431,10 +417,9 @@ const products = [
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {finalProducts.map((item) => {
             
-            // TAMPILAN KARTU GRUP (KHUSUS AKRAB)
             if (item.isGroup) {
               const selectedVarName = selectedVariants[item.id] || item.variants[0].name;
-              const selectedVar = item.variants.find(v => v.name === selectedVarName);
+              const selectedVar = item.variants.find((v: any) => v.name === selectedVarName);
 
               return (
                 <div key={item.id} className="bg-emerald-50 p-6 rounded-3xl border-2 border-emerald-200 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
@@ -447,7 +432,6 @@ const products = [
                     <h3 className="text-lg font-bold mb-1 leading-snug text-slate-900">{item.name}</h3>
                     <p className="text-emerald-700 text-sm mb-4 font-medium">{item.desc}</p>
                     
-                    {/* DROPDOWN PILIHAN VARIAN */}
                     <div className="mb-4">
                       <label className="block text-xs text-slate-500 mb-1 font-semibold">Pilih Varian AKRAB:</label>
                       <select 
@@ -455,14 +439,13 @@ const products = [
                         value={selectedVarName}
                         onChange={(e) => handleVariantChange(item.id, e.target.value)}
                       >
-                        {item.variants.map(v => (
+                        {item.variants.map((v: any) => (
                           <option key={v.id} value={v.name}>{v.name}</option>
                         ))}
                       </select>
                     </div>
                   </div>
 
-                  {/* INFO VARIAN TERPILIH */}
                   <div className="bg-white p-3 rounded-xl border border-emerald-100 mb-4">
                      <p className="text-xs text-slate-500 mb-1">Detail Varian Terpilih:</p>
                      <p className="text-sm font-semibold text-slate-800 mb-1">{selectedVar.desc}</p>
@@ -476,14 +459,13 @@ const products = [
                       rel="noopener noreferrer"
                       className="w-full py-3 bg-emerald-600 text-white text-center font-bold rounded-xl hover:bg-emerald-700 transition block"
                     >
-                      Pesan {selectedVar.name.replace('AKRAB ', '')}
+                      Pesan Sekarang
                     </a>
                   </div>
                 </div>
               );
             }
 
-            // TAMPILAN KARTU NORMAL (PRODUK LAINNYA)
             return (
               <div key={item.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-200 transition group flex flex-col justify-between">
                 <div>
