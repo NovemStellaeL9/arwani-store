@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 // 1. DAFTAR KATEGORI
 const categories = ["Semua", "Telkomsel", "Indosat", "XL & Axis", "Tri", "Smartfren"];
 
-// 2. DAFTAR 286 PRODUK DARI CSV ANDA
+// 2. DAFTAR PRODUK (Sudah Update Harga & Kuota AKRAB Terbaru)
 const products = [
   { id: 1, category: "Telkomsel", name: "Data Flash 50 GB", desc: "Masa Aktif 30 Hari", price: "Rp 109.618", icon: "🔴" },
   { id: 2, category: "Telkomsel", name: "Data Flash 49 GB", desc: "Masa Aktif 30 Hari", price: "Rp 113.595", icon: "🔴" },
@@ -240,58 +240,14 @@ const products = [
   { id: 231, category: "XL & Axis", name: "VIP Plus 30 GB", desc: "Masa Aktif 30 Hari", price: "Rp 144.000", icon: "🔵" },
   { id: 232, category: "XL & Axis", name: "VIP Plus 50 GB", desc: "Masa Aktif 30 Hari", price: "Rp 195.000", icon: "🔵" },
   { id: 233, category: "XL & Axis", name: "VIP Plus 70 GB", desc: "Masa Aktif 30 Hari", price: "Rp 256.000", icon: "🔵" },
-  { id: 234, category: "XL & Axis", name: "AKRAB Mini Area 1 (28 - 30 GB)", desc: "Masa Aktif -", price: "Rp 39.000", icon: "🔵" },
-  { id: 235, category: "XL & Axis", name: "AKRAB Mini Area 2 (30 - 32 GB)", desc: "Masa Aktif -", price: "Rp 39.000", icon: "🔵" },
-  { id: 236, category: "XL & Axis", name: "AKRAB Mini Area 3 (32 - 34 GB)", desc: "Masa Aktif -", price: "Rp 39.000", icon: "🔵" },
-  { id: 237, category: "XL & Axis", name: "AKRAB Mini Area 4 (36 - 38 GB)", desc: "Masa Aktif -", price: "Rp 39.000", icon: "🔵" },
-  { id: 238, category: "XL & Axis", name: "AKRAB Basic Area 1 (43 - 45 GB)", desc: "Masa Aktif -", price: "Rp 54.000", icon: "🔵" },
-  { id: 239, category: "XL & Axis", name: "AKRAB Basic Area 2 (45 - 47 GB)", desc: "Masa Aktif -", price: "Rp 54.000", icon: "🔵" },
-  { id: 240, category: "XL & Axis", name: "AKRAB Basic Area 3 (48 - 50 GB)", desc: "Masa Aktif -", price: "Rp 54.000", icon: "🔵" },
-  { id: 241, category: "XL & Axis", name: "AKRAB Basic Area 4 (54 - 56 GB)", desc: "Masa Aktif -", price: "Rp 54.000", icon: "🔵" },
-  { id: 242, category: "XL & Axis", name: "AKRAB Lite Area 1 (63 - 65 GB)", desc: "Masa Aktif -", price: "Rp 72.000", icon: "🔵" },
-  { id: 243, category: "XL & Axis", name: "AKRAB Lite Area 2 (65 - 67 GB)", desc: "Masa Aktif -", price: "Rp 72.000", icon: "🔵" },
-  { id: 244, category: "XL & Axis", name: "AKRAB Lite Area 3 (70 - 72 GB)", desc: "Masa Aktif -", price: "Rp 72.000", icon: "🔵" },
-  { id: 245, category: "XL & Axis", name: "AKRAB Lite Area 4 (78 - 80 GB)", desc: "Masa Aktif -", price: "Rp 72.000", icon: "🔵" },
-  { id: 246, category: "XL & Axis", name: "AKRAB Medium Area 1 (88 - 90 GB)", desc: "Masa Aktif -", price: "Rp 100.000", icon: "🔵" },
-  { id: 247, category: "XL & Axis", name: "AKRAB Medium Area 2 (90 - 92 GB)", desc: "Masa Aktif -", price: "Rp 100.000", icon: "🔵" },
-  { id: 248, category: "XL & Axis", name: "AKRAB Medium Area 3 (95 - 97 GB)", desc: "Masa Aktif -", price: "Rp 100.000", icon: "🔵" },
-  { id: 249, category: "XL & Axis", name: "AKRAB Medium Area 4 (105 - 107 GB)", desc: "Masa Aktif -", price: "Rp 100.000", icon: "🔵" },
-  { id: 250, category: "XL & Axis", name: "AKRAB High Area 1 (128 - 130 GB)", desc: "Masa Aktif -", price: "Rp 144.000", icon: "🔵" },
-  { id: 251, category: "XL & Axis", name: "AKRAB High Area 2 (130 - 132 GB)", desc: "Masa Aktif -", price: "Rp 144.000", icon: "🔵" },
-  { id: 252, category: "XL & Axis", name: "AKRAB High Area 3 (138 - 140 GB)", desc: "Masa Aktif -", price: "Rp 144.000", icon: "🔵" },
-  { id: 253, category: "XL & Axis", name: "AKRAB High Area 4 (150 - 152 GB)", desc: "Masa Aktif -", price: "Rp 144.000", icon: "🔵" },
-  { id: 254, category: "XL & Axis", name: "AKRAB Super Area 1 (188 - 190 GB)", desc: "Masa Aktif -", price: "Rp 216.000", icon: "🔵" },
-  { id: 255, category: "XL & Axis", name: "AKRAB Super Area 2 (190 - 192 GB)", desc: "Masa Aktif -", price: "Rp 216.000", icon: "🔵" },
-  { id: 256, category: "XL & Axis", name: "AKRAB Super Area 3 (200 - 202 GB)", desc: "Masa Aktif -", price: "Rp 216.000", icon: "🔵" },
-  { id: 257, category: "XL & Axis", name: "AKRAB Super Area 4 (220 - 222 GB)", desc: "Masa Aktif -", price: "Rp 216.000", icon: "🔵" },
-  { id: 258, category: "XL & Axis", name: "AKRAB Jumbo Area 1 (258 - 260 GB)", desc: "Masa Aktif -", price: "Rp 306.000", icon: "🔵" },
-  { id: 259, category: "XL & Axis", name: "AKRAB Jumbo Area 2 (260 - 262 GB)", desc: "Masa Aktif -", price: "Rp 306.000", icon: "🔵" },
-  { id: 260, category: "XL & Axis", name: "AKRAB Jumbo Area 3 (270 - 272 GB)", desc: "Masa Aktif -", price: "Rp 306.000", icon: "🔵" },
-  { id: 261, category: "XL & Axis", name: "AKRAB Jumbo Area 4 (300 - 302 GB)", desc: "Masa Aktif -", price: "Rp 306.000", icon: "🔵" },
-  { id: 262, category: "XL & Axis", name: "AKRAB Ekstra Area 1 (358 - 360 GB)", desc: "Masa Aktif -", price: "Rp 432.000", icon: "🔵" },
-  { id: 263, category: "XL & Axis", name: "AKRAB Ekstra Area 2 (360 - 362 GB)", desc: "Masa Aktif -", price: "Rp 432.000", icon: "🔵" },
-  { id: 264, category: "XL & Axis", name: "AKRAB Ekstra Area 3 (380 - 382 GB)", desc: "Masa Aktif -", price: "Rp 432.000", icon: "🔵" },
-  { id: 265, category: "XL & Axis", name: "AKRAB Ekstra Area 4 (420 - 422 GB)", desc: "Masa Aktif -", price: "Rp 432.000", icon: "🔵" },
-  { id: 266, category: "XL & Axis", name: "AKRAB Master Area 1 (488 - 490 GB)", desc: "Masa Aktif -", price: "Rp 612.000", icon: "🔵" },
-  { id: 267, category: "XL & Axis", name: "AKRAB Master Area 2 (490 - 492 GB)", desc: "Masa Aktif -", price: "Rp 612.000", icon: "🔵" },
-  { id: 268, category: "XL & Axis", name: "AKRAB Master Area 3 (520 - 522 GB)", desc: "Masa Aktif -", price: "Rp 612.000", icon: "🔵" },
-  { id: 269, category: "XL & Axis", name: "AKRAB Master Area 4 (580 - 582 GB)", desc: "Masa Aktif -", price: "Rp 612.000", icon: "🔵" },
-  { id: 270, category: "XL & Axis", name: "AKRAB Pro Area 1 (688 - 690 GB)", desc: "Masa Aktif -", price: "Rp 882.000", icon: "🔵" },
-  { id: 271, category: "XL & Axis", name: "AKRAB Pro Area 2 (690 - 692 GB)", desc: "Masa Aktif -", price: "Rp 882.000", icon: "🔵" },
-  { id: 272, category: "XL & Axis", name: "AKRAB Pro Area 3 (730 - 732 GB)", desc: "Masa Aktif -", price: "Rp 882.000", icon: "🔵" },
-  { id: 273, category: "XL & Axis", name: "AKRAB Pro Area 4 (810 - 812 GB)", desc: "Masa Aktif -", price: "Rp 882.000", icon: "🔵" },
-  { id: 274, category: "XL & Axis", name: "AKRAB Max Area 1 (988 - 990 GB)", desc: "Masa Aktif -", price: "Rp 1.278.000", icon: "🔵" },
-  { id: 275, category: "XL & Axis", name: "AKRAB Max Area 2 (990 - 992 GB)", desc: "Masa Aktif -", price: "Rp 1.278.000", icon: "🔵" },
-  { id: 276, category: "XL & Axis", name: "AKRAB Max Area 3 (1050 - 1052 GB)", desc: "Masa Aktif -", price: "Rp 1.278.000", icon: "🔵" },
-  { id: 277, category: "XL & Axis", name: "AKRAB Max Area 4 (1170 - 1172 GB)", desc: "Masa Aktif -", price: "Rp 1.278.000", icon: "🔵" },
-  { id: 278, category: "XL & Axis", name: "AKRAB Ultima Area 1 (28 - 30 GB)", desc: "Masa Aktif -", price: "Rp 107.000", icon: "🔵" },
-  { id: 279, category: "XL & Axis", name: "AKRAB Ultima Area 2 (30 - 32 GB)", desc: "Masa Aktif -", price: "Rp 107.000", icon: "🔵" },
-  { id: 280, category: "XL & Axis", name: "AKRAB Ultima Area 3 (32 - 34 GB)", desc: "Masa Aktif -", price: "Rp 107.000", icon: "🔵" },
-  { id: 281, category: "XL & Axis", name: "AKRAB Ultima Area 4 (36 - 38 GB)", desc: "Masa Aktif -", price: "Rp 107.000", icon: "🔵" },
-  { id: 282, category: "XL & Axis", name: "AKRAB Megabig Area 1 (88 - 90 GB)", desc: "Masa Aktif -", price: "Rp 107.000", icon: "🔵" },
-  { id: 283, category: "XL & Axis", name: "AKRAB Megabig Area 2 (90 - 92 GB)", desc: "Masa Aktif -", price: "Rp 107.000", icon: "🔵" },
-  { id: 284, category: "XL & Axis", name: "AKRAB Megabig Area 3 (95 - 97 GB)", desc: "Masa Aktif -", price: "Rp 107.000", icon: "🔵" },
-  { id: 285, category: "XL & Axis", name: "AKRAB Megabig Area 4 (105 - 107 GB)", desc: "Masa Aktif -", price: "Rp 107.000", icon: "🔵" }
+
+  // INI ADALAH PAKET AKRAB YANG SUDAH DIPERBARUI
+  { id: 234, category: "XL & Axis", name: "AKRAB Mini", desc: "Pembagian Kuota Cek Area", price: "Rp 65.000", icon: "🔵" },
+  { id: 235, category: "XL & Axis", name: "AKRAB Big", desc: "38 - 57 GB (Tergantung Area)", price: "Rp 70.000", icon: "🔵" },
+  { id: 236, category: "XL & Axis", name: "AKRAB Jumbo V2", desc: "50 - 69 GB (Tergantung Area)", price: "Rp 79.000", icon: "🔵" },
+  { id: 237, category: "XL & Axis", name: "AKRAB Jumbo New", desc: "63 - 82 GB (Tergantung Area)", price: "Rp 88.000", icon: "🔵" },
+  { id: 238, category: "XL & Axis", name: "AKRAB Jumbo M", desc: "69 - 88 GB (Tergantung Area)", price: "Rp 93.000", icon: "🔵" },
+  { id: 239, category: "XL & Axis", name: "AKRAB Mega Big", desc: "88 - 107 GB (Tergantung Area)", price: "Rp 107.000", icon: "🔵" }
 ];
 
 export default function LandingPage() {
@@ -304,14 +260,25 @@ export default function LandingPage() {
   // FUNGSI CERDAS: Membaca nama produk dan memisahkannya ke sub-kategori
   const getPackageType = (name: string) => {
     const n = name.toLowerCase();
-    if (n.includes('akrab')) return 'AKRAB';
+    
+    // === KHUSUS XL & AXIS ===
+    if (n.includes('akrab')) {
+      const parts = name.split(' ');
+      // Mengambil nama ukuran (Mini, Big, Jumbo, Mega) secara otomatis
+      if (parts.length > 1) {
+        return `AKRAB ${parts[1].charAt(0).toUpperCase() + parts[1].slice(1).toLowerCase()}`; 
+      }
+      return 'AKRAB';
+    }
     if (n.includes('flex')) return 'Combo Flex';
     if (n.includes('bronet')) return 'Bronet';
-    if (n.includes('aigo')) return 'Aigo';
     if (n.includes('owsem')) return 'Owsem';
-    if (n.includes('xtra')) return 'Xtra Series';
+    if (n.includes('aigo')) return 'Aigo';
+    if (n.includes('xtra') || n.includes('extra')) return 'Xtra Series';
     if (n.includes('hotrod')) return 'HotRod';
     if (n.includes('vip')) return 'VIP Plus';
+
+    // === PROVIDER LAIN (TIDAK DIUBAH SAMA SEKALI) ===
     if (n.includes('freedom')) return 'Freedom';
     if (n.includes('flash')) return 'Data Flash';
     if (n.includes('happy')) return 'Happy';
@@ -321,6 +288,8 @@ export default function LandingPage() {
     if (n.includes('getmore')) return 'Getmore';
     if (n.includes('bima')) return 'Bima';
     if (n.includes('cinta')) return 'Cinta';
+    if (n.includes('bm')) return 'BM';
+
     return 'Reguler / Kuota Utama';
   };
 
@@ -330,20 +299,20 @@ export default function LandingPage() {
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
 
-  // Tahap 1: Saring berdasarkan Provider (Kategori Utama)
+  // Saring berdasarkan Provider
   const providerProducts = activeCategory === "Semua" 
     ? products 
     : products.filter(item => item.category === activeCategory);
 
-  // Cari tahu ada "Jenis Paket" apa saja di provider yang sedang dipilih
+  // Cari tahu Jenis Paket apa saja yang ada
   const availableTypes = ["Semua Tipe", ...Array.from(new Set(providerProducts.map(p => getPackageType(p.name))))];
 
-  // Tahap 2: Saring berdasarkan Jenis Paket (Sub-Kategori)
+  // Saring berdasarkan Jenis Paket
   const finalProducts = activeType === "Semua Tipe"
     ? providerProducts
     : providerProducts.filter(p => getPackageType(p.name) === activeType);
 
-  // Jika tombol provider diklik, kembalikan sub-kategori ke "Semua Tipe"
+  // Reset sub-kategori jika pengguna berpindah tab provider
   const handleCategoryClick = (category: string) => {
     setActiveCategory(category);
     setActiveType("Semua Tipe");
@@ -351,7 +320,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1 className="text-xl font-black tracking-tighter text-emerald-600">ARWANI D'GABRIEL <span className="text-slate-400">STORE</span></h1>
@@ -366,7 +334,6 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
         <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
           Solusi Kebutuhan Digital <br/> <span className="text-emerald-600">Cepat, Murah, Terpercaya.</span>
@@ -376,10 +343,7 @@ export default function LandingPage() {
         </p>
       </section>
 
-      {/* SISTEM FILTER: Utama & Sub-Kategori */}
-      <section className="max-w-6xl mx-auto px-6 mb-10">
-        
-        {/* Tombol Provider Utama */}
+      <section className="max-w-6xl mx-auto px-6 mb-6">
         <div className="flex flex-wrap justify-center gap-3 mb-4">
           {categories.map(category => (
             <button
@@ -396,9 +360,8 @@ export default function LandingPage() {
           ))}
         </div>
 
-        {/* Tombol Sub-Kategori (Jenis Paket) - Hanya Muncul Jika Ada Tipe Spesifik */}
         {availableTypes.length > 2 && (
-          <div className="flex flex-wrap justify-center gap-2 pt-4 border-t border-slate-200/60 max-w-4xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-2 pt-4 border-t border-slate-200/60 max-w-5xl mx-auto">
             {availableTypes.map(type => (
               <button
                 key={type}
@@ -414,10 +377,27 @@ export default function LandingPage() {
             ))}
           </div>
         )}
-
       </section>
 
-      {/* Product Grid */}
+      {activeCategory === "XL & Axis" && (
+        <div className="max-w-5xl mx-auto px-6 mb-10">
+          <div className="bg-blue-50 border border-blue-200 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
+            <div>
+              <h4 className="text-blue-800 font-bold text-lg">Cek Pembagian Kuota Lokal XL Anda 📍</h4>
+              <p className="text-blue-600 text-sm mt-1">Beberapa paket seperti AKRAB dan Xtra Combo memiliki pembagian kuota yang berbeda di setiap area. Pastikan kuota lokal Anda sebelum memesan.</p>
+            </div>
+            <a 
+              href="https://cekareaxl.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-blue-700 transition whitespace-nowrap shadow-md flex-shrink-0"
+            >
+              Cek Area Sekarang
+            </a>
+          </div>
+        </div>
+      )}
+
       <section id="produk" className="max-w-6xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {finalProducts.map((item) => (
@@ -446,7 +426,6 @@ export default function LandingPage() {
           ))}
         </div>
         
-        {/* Tampilan jika produk kosong */}
         {finalProducts.length === 0 && (
           <div className="text-center py-12 bg-white rounded-3xl border border-slate-100">
             <p className="text-slate-400 text-lg">Maaf, tidak ada produk untuk tipe paket ini.</p>
@@ -454,7 +433,6 @@ export default function LandingPage() {
         )}
       </section>
 
-      {/* Footer */}
       <footer className="py-10 text-center text-slate-400 text-sm bg-emerald-900 text-white mt-10">
         <p>© 2026 Arwani D'Gabriel Store. Pelayanan sepenuh hati.</p>
       </footer>
