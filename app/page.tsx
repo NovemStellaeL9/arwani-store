@@ -7,7 +7,7 @@ const categories = ["Semua", "Telkomsel", "Indosat", "XL & Axis", "Tri", "Smartf
 
 // 2. DAFTAR PRODUK LENGKAP UTUH
 const products = [
-  { id: 1, category: "Telkomsel", name: "Data Flash 50 GB", desc: "Masa Aktif 30 Hari", price: "Rp 109.618", icon: "🔴" },
+  { id: 1, category: "Telkomsel", name: "Data Flash 50 GB", desc: "Masa Akbluef 30 Hari", price: "Rp 109.618", icon: "🔴" },
   { id: 2, category: "Telkomsel", name: "Data Flash 49 GB", desc: "Masa Aktif 30 Hari", price: "Rp 113.595", icon: "🔴" },
   { id: 3, category: "Telkomsel", name: "Data Flash 40 GB", desc: "Masa Aktif 30 Hari", price: "Rp 98.613", icon: "🔴" },
   { id: 4, category: "Telkomsel", name: "Data Flash 35 GB", desc: "Masa Aktif 30 Hari", price: "Rp 93.610", icon: "🔴" },
@@ -346,12 +346,12 @@ export default function LandingPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-black tracking-tighter text-emerald-600">ARWANI D'GABRIEL <span className="text-slate-400">STORE</span></h1>
+          <h1 className="text-xl font-black tracking-tighter text-blue-600">ARWANI D'GABRIEL <span className="text-slate-400">STORE</span></h1>
           <a 
             href={getWaLink("Informasi Umum")}
             target="_blank" 
             rel="noopener noreferrer"
-            className="bg-emerald-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-emerald-700 transition"
+            className="bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition"
           >
             Hubungi Admin
           </a>
@@ -360,7 +360,7 @@ export default function LandingPage() {
 
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
         <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-          Solusi Kebutuhan Digital <br/> <span className="text-emerald-600">Cepat, Murah, Terpercaya.</span>
+          Solusi Kebutuhan Digital <br/> <span className="text-blue-600">Cepat, Murah, Terpercaya.</span>
         </h2>
         <p className="text-lg text-slate-600 mb-10">
           Tersedia ratusan pilihan paket data hemat. Transaksi cepat, layanan responsif, dan langsung terhubung via WhatsApp.
@@ -375,8 +375,8 @@ export default function LandingPage() {
               onClick={() => handleCategoryClick(category)}
               className={`px-6 py-2 rounded-full font-bold transition shadow-sm ${
                 activeCategory === category 
-                  ? "bg-emerald-600 text-white" 
-                  : "bg-white text-slate-600 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-700"
+                  ? "bg-blue-600 text-white" 
+                  : "bg-white text-slate-600 border border-slate-200 hover:bg-blue-50 hover:text-blue-700"
               }`}
             >
               {category}
@@ -431,7 +431,7 @@ export default function LandingPage() {
               const selectedVar = item.variants.find((v: any) => v.name === selectedVarName);
 
               return (
-                <div key={item.id} className="bg-emerald-50 p-6 rounded-3xl border-2 border-emerald-200 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
+                <div key={item.id} className="bg-blue-50 p-6 rounded-3xl border-2 border-blue-200 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
                   <div>
                     {/* AREA GAMBAR KARTU GRUP */}
                     <div className="h-14 mb-4 flex items-center justify-start">
@@ -439,16 +439,16 @@ export default function LandingPage() {
                     </div>
                     
                     <div className="flex justify-between items-center mb-1">
-                      <div className="text-xs font-bold text-emerald-600 uppercase tracking-wider">{item.category}</div>
-                      <div className="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">PILIHAN GANDA</div>
+                      <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">{item.category}</div>
+                      <div className="text-[10px] bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full font-bold">PILIHAN GANDA</div>
                     </div>
                     <h3 className="text-lg font-bold mb-1 leading-snug text-slate-900">{item.name}</h3>
-                    <p className="text-emerald-700 text-sm mb-4 font-medium">{item.desc}</p>
+                    <p className="text-blue-700 text-sm mb-4 font-medium">{item.desc}</p>
                     
                     <div className="mb-4">
                       <label className="block text-xs text-slate-500 mb-1 font-semibold">Pilih Varian AKRAB:</label>
                       <select 
-                        className="w-full p-2 border border-emerald-300 rounded-lg text-sm bg-white font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full p-2 border border-blue-300 rounded-lg text-sm bg-white font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         value={selectedVarName}
                         onChange={(e) => handleVariantChange(item.id, e.target.value)}
                       >
@@ -459,10 +459,10 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  <div className="bg-white p-3 rounded-xl border border-emerald-100 mb-4">
+                  <div className="bg-white p-3 rounded-xl border border-blue-100 mb-4">
                      <p className="text-xs text-slate-500 mb-1">Detail Varian Terpilih:</p>
                      <p className="text-sm font-semibold text-slate-800 mb-1">{selectedVar.desc}</p>
-                     <div className="text-xl font-black text-emerald-600">{selectedVar.price}</div>
+                     <div className="text-xl font-black text-blue-600">{selectedVar.price}</div>
                   </div>
 
                   <div>
@@ -470,7 +470,7 @@ export default function LandingPage() {
                       href={getWaLink(selectedVar.name, selectedVar.price)}
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="w-full py-3 bg-emerald-600 text-white text-center font-bold rounded-xl hover:bg-emerald-700 transition block"
+                      className="w-full py-3 bg-blue-600 text-white text-center font-bold rounded-xl hover:bg-blue-700 transition block"
                     >
                       Pesan Sekarang
                     </a>
@@ -480,7 +480,7 @@ export default function LandingPage() {
             }
 
             return (
-              <div key={item.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-200 transition group flex flex-col justify-between">
+              <div key={item.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition group flex flex-col justify-between">
                 <div>
                   {/* AREA GAMBAR KARTU NORMAL */}
                   <div className="h-10 mb-5 flex items-center justify-start">
@@ -495,12 +495,12 @@ export default function LandingPage() {
                   <p className="text-slate-500 text-sm mb-4">{item.desc}</p>
                 </div>
                 <div>
-                  <div className="text-xl font-black text-emerald-600 mb-4">{item.price}</div>
+                  <div className="text-xl font-black text-blue-600 mb-4">{item.price}</div>
                   <a 
                     href={getWaLink(item.name, item.price)}
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="w-full py-3 bg-emerald-50 text-emerald-700 text-center font-bold rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition block"
+                    className="w-full py-3 bg-blue-50 text-blue-700 text-center font-bold rounded-xl group-hover:bg-blue-600 group-hover:text-white transition block"
                   >
                     Pesan Sekarang
                   </a>
@@ -517,7 +517,7 @@ export default function LandingPage() {
         )}
       </section>
 
-      <footer className="py-10 text-center text-slate-400 text-sm bg-emerald-900 text-white mt-10">
+      <footer className="py-10 text-center text-slate-400 text-sm bg-blue-900 text-white mt-10">
         <p>© 2026 Arwani D'Gabriel Store. Pelayanan sepenuh hati.</p>
       </footer>
     </div>
