@@ -250,26 +250,25 @@ const products = [
   { id: 239, category: "XL & Axis", name: "AKRAB Mega Big", desc: "88 - 107 GB (Tergantung Area)", price: "Rp 107.000", icon: "🔵" }
 ];
 
-export default function LandingPage() {
+
+  const whatsappNumber = "6285967096912";
+  export default function LandingPage() {
   const whatsappNumber = "6285967096912";
   
   // State untuk menyimpan pilihan pengguna
   const [activeCategory, setActiveCategory] = useState("Semua");
   const [activeType, setActiveType] = useState("Semua Tipe");
+  
+  // State khusus untuk menyimpan pilihan varian dalam kartu produk (seperti AKRAB)
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
 
   // FUNGSI CERDAS: Membaca nama produk dan memisahkannya ke sub-kategori
   const getPackageType = (name: string) => {
     const n = name.toLowerCase();
     
-    // === KHUSUS XL & AXIS ===
-    if (n.includes('akrab')) {
-      const parts = name.split(' ');
-      // Mengambil nama ukuran (Mini, Big, Jumbo, Mega) secara otomatis
-      if (parts.length > 1) {
-        return `AKRAB ${parts[1].charAt(0).toUpperCase() + parts[1].slice(1).toLowerCase()}`; 
-      }
-      return 'AKRAB';
-    }
+    // Khusus AKRAB kini disatukan menjadi satu sub-kategori "AKRAB" saja
+    if (n.includes('akrab')) return 'AKRAB';
+    
     if (n.includes('flex')) return 'Combo Flex';
     if (n.includes('bronet')) return 'Bronet';
     if (n.includes('owsem')) return 'Owsem';
@@ -277,8 +276,6 @@ export default function LandingPage() {
     if (n.includes('xtra') || n.includes('extra')) return 'Xtra Series';
     if (n.includes('hotrod')) return 'HotRod';
     if (n.includes('vip')) return 'VIP Plus';
-
-    // === PROVIDER LAIN (TIDAK DIUBAH SAMA SEKALI) ===
     if (n.includes('freedom')) return 'Freedom';
     if (n.includes('flash')) return 'Data Flash';
     if (n.includes('happy')) return 'Happy';
@@ -308,14 +305,45 @@ export default function LandingPage() {
   const availableTypes = ["Semua Tipe", ...Array.from(new Set(providerProducts.map(p => getPackageType(p.name))))];
 
   // Saring berdasarkan Jenis Paket
-  const finalProducts = activeType === "Semua Tipe"
+  let rawFinalProducts = activeType === "Semua Tipe"
     ? providerProducts
     : providerProducts.filter(p => getPackageType(p.name) === activeType);
 
-  // Reset sub-kategori jika pengguna berpindah tab provider
+  // LOGIKA PENGGABUNGAN KARTU (GROUPING) KHUSUS AKRAB
+  const finalProducts = [];
+  const akrabGroup = [];
+
+  rawFinalProducts.forEach(product => {
+    if (product.name.toLowerCase().includes('akrab')) {
+      akrabGroup.push(product);
+    } else {
+      finalProducts.push(product); // Masukkan produk biasa
+    }
+  });
+
+  // Jika ada produk AKRAB, buat satu kartu master
+  if (akrabGroup.length > 0) {
+    finalProducts.unshift({
+      id: "master-akrab",
+      category: "XL & Axis",
+      name: "Paket Keluarga AKRAB",
+      desc: "Pembagian Kuota Lokal Berbeda Tiap Area",
+      price: "Mulai Rp 65.000",
+      icon: "👪",
+      isGroup: true, // Penanda bahwa ini kartu grup
+      variants: akrabGroup
+    });
+  }
+
+  // Reset sub-kategori saat ganti provider
   const handleCategoryClick = (category: string) => {
     setActiveCategory(category);
     setActiveType("Semua Tipe");
+  };
+
+  // Fungsi mengubah varian dalam kartu grup
+  const handleVariantChange = (groupId: string, variantName: string) => {
+    setSelectedVariants(prev => ({...prev, [groupId]: variantName}));
   };
 
   return (
@@ -379,6 +407,7 @@ export default function LandingPage() {
         )}
       </section>
 
+      {/* BANNER CEK KUOTA KHUSUS XL & AXIS */}
       {activeCategory === "XL & Axis" && (
         <div className="max-w-5xl mx-auto px-6 mb-10">
           <div className="bg-blue-50 border border-blue-200 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
@@ -400,30 +429,86 @@ export default function LandingPage() {
 
       <section id="produk" className="max-w-6xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {finalProducts.map((item) => (
-            <div key={item.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-200 transition group flex flex-col justify-between">
-              <div>
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <div className="flex justify-between items-center mb-1">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{item.category}</div>
-                  <div className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{getPackageType(item.name)}</div>
+          {finalProducts.map((item) => {
+            
+            // TAMPILAN KARTU GRUP (KHUSUS AKRAB)
+            if (item.isGroup) {
+              const selectedVarName = selectedVariants[item.id] || item.variants[0].name;
+              const selectedVar = item.variants.find(v => v.name === selectedVarName);
+
+              return (
+                <div key={item.id} className="bg-emerald-50 p-6 rounded-3xl border-2 border-emerald-200 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
+                  <div>
+                    <div className="text-4xl mb-4">{item.icon}</div>
+                    <div className="flex justify-between items-center mb-1">
+                      <div className="text-xs font-bold text-emerald-600 uppercase tracking-wider">{item.category}</div>
+                      <div className="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">PILIHAN GANDA</div>
+                    </div>
+                    <h3 className="text-lg font-bold mb-1 leading-snug text-slate-900">{item.name}</h3>
+                    <p className="text-emerald-700 text-sm mb-4 font-medium">{item.desc}</p>
+                    
+                    {/* DROPDOWN PILIHAN VARIAN */}
+                    <div className="mb-4">
+                      <label className="block text-xs text-slate-500 mb-1 font-semibold">Pilih Varian AKRAB:</label>
+                      <select 
+                        className="w-full p-2 border border-emerald-300 rounded-lg text-sm bg-white font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        value={selectedVarName}
+                        onChange={(e) => handleVariantChange(item.id, e.target.value)}
+                      >
+                        {item.variants.map(v => (
+                          <option key={v.id} value={v.name}>{v.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* INFO VARIAN TERPILIH */}
+                  <div className="bg-white p-3 rounded-xl border border-emerald-100 mb-4">
+                     <p className="text-xs text-slate-500 mb-1">Detail Varian Terpilih:</p>
+                     <p className="text-sm font-semibold text-slate-800 mb-1">{selectedVar.desc}</p>
+                     <div className="text-xl font-black text-emerald-600">{selectedVar.price}</div>
+                  </div>
+
+                  <div>
+                    <a 
+                      href={getWaLink(selectedVar.name, selectedVar.price)}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-full py-3 bg-emerald-600 text-white text-center font-bold rounded-xl hover:bg-emerald-700 transition block"
+                    >
+                      Pesan {selectedVar.name.replace('AKRAB ', '')}
+                    </a>
+                  </div>
                 </div>
-                <h3 className="text-lg font-bold mb-1 leading-snug text-slate-800">{item.name}</h3>
-                <p className="text-slate-500 text-sm mb-4">{item.desc}</p>
+              );
+            }
+
+            // TAMPILAN KARTU NORMAL (PRODUK LAINNYA)
+            return (
+              <div key={item.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-200 transition group flex flex-col justify-between">
+                <div>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{item.category}</div>
+                    <div className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{getPackageType(item.name)}</div>
+                  </div>
+                  <h3 className="text-lg font-bold mb-1 leading-snug text-slate-800">{item.name}</h3>
+                  <p className="text-slate-500 text-sm mb-4">{item.desc}</p>
+                </div>
+                <div>
+                  <div className="text-xl font-black text-emerald-600 mb-4">{item.price}</div>
+                  <a 
+                    href={getWaLink(item.name, item.price)}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full py-3 bg-emerald-50 text-emerald-700 text-center font-bold rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition block"
+                  >
+                    Pesan Sekarang
+                  </a>
+                </div>
               </div>
-              <div>
-                <div className="text-xl font-black text-emerald-600 mb-4">{item.price}</div>
-                <a 
-                  href={getWaLink(item.name, item.price)}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-full py-3 bg-emerald-50 text-emerald-700 text-center font-bold rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition block"
-                >
-                  Pesan Sekarang
-                </a>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         
         {finalProducts.length === 0 && (
