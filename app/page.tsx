@@ -257,12 +257,11 @@ export default function LandingPage() {
   const [activeType, setActiveType] = useState("Semua Tipe");
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
 
+  // FUNGSI CERDAS 1: Membaca nama produk ke sub-kategori
   const getPackageType = (name: string) => {
     const n = name.toLowerCase();
     
-    // RAHASIA AGAR MENYATU: Sekarang semua dikelompokkan ke satu nama "AKRAB"
     if (n.includes('akrab')) return 'AKRAB';
-    
     if (n.includes('flex')) return 'Combo Flex';
     if (n.includes('bronet')) return 'Bronet';
     if (n.includes('owsem')) return 'Owsem';
@@ -282,6 +281,16 @@ export default function LandingPage() {
     if (n.includes('bm')) return 'BM';
 
     return 'Reguler / Kuota Utama';
+  };
+
+  // FUNGSI CERDAS 2: Menampilkan Logo Gambar Otomatis
+  const getProviderLogo = (category: string) => {
+    if (category === "Telkomsel") return "/telkomsel.png";
+    if (category === "Indosat") return "/indosat.png";
+    if (category === "XL & Axis") return "/xl.png";
+    if (category === "Tri") return "/tri.png";
+    if (category === "Smartfren") return "/smartfren.png";
+    return ""; // Default jika kosong
   };
 
   const getWaLink = (productName: string, productPrice?: string) => {
@@ -424,7 +433,11 @@ export default function LandingPage() {
               return (
                 <div key={item.id} className="bg-emerald-50 p-6 rounded-3xl border-2 border-emerald-200 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
                   <div>
-                    <div className="text-4xl mb-4">{item.icon}</div>
+                    {/* AREA GAMBAR KARTU GRUP */}
+                    <div className="h-14 mb-4 flex items-center justify-start">
+                      <img src={getProviderLogo(item.category)} alt={item.category} className="max-h-full max-w-[100px] object-contain drop-shadow-sm" />
+                    </div>
+                    
                     <div className="flex justify-between items-center mb-1">
                       <div className="text-xs font-bold text-emerald-600 uppercase tracking-wider">{item.category}</div>
                       <div className="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">PILIHAN GANDA</div>
@@ -469,7 +482,11 @@ export default function LandingPage() {
             return (
               <div key={item.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-200 transition group flex flex-col justify-between">
                 <div>
-                  <div className="text-4xl mb-4">{item.icon}</div>
+                  {/* AREA GAMBAR KARTU NORMAL */}
+                  <div className="h-10 mb-5 flex items-center justify-start">
+                     <img src={getProviderLogo(item.category)} alt={item.category} className="max-h-full max-w-[90px] object-contain drop-shadow-sm" />
+                  </div>
+
                   <div className="flex justify-between items-center mb-1">
                     <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{item.category}</div>
                     <div className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{getPackageType(item.name)}</div>
