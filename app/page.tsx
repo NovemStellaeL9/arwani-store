@@ -296,7 +296,33 @@ const products = [
 
 export default function LandingPage() {
   const whatsappNumber = "6285967096912";
+  
+  // State untuk menyimpan pilihan pengguna
   const [activeCategory, setActiveCategory] = useState("Semua");
+  const [activeType, setActiveType] = useState("Semua Tipe");
+
+  // FUNGSI CERDAS: Membaca nama produk dan memisahkannya ke sub-kategori
+  const getPackageType = (name: string) => {
+    const n = name.toLowerCase();
+    if (n.includes('akrab')) return 'AKRAB';
+    if (n.includes('flex')) return 'Combo Flex';
+    if (n.includes('bronet')) return 'Bronet';
+    if (n.includes('aigo')) return 'Aigo';
+    if (n.includes('owsem')) return 'Owsem';
+    if (n.includes('xtra')) return 'Xtra Series';
+    if (n.includes('hotrod')) return 'HotRod';
+    if (n.includes('vip')) return 'VIP Plus';
+    if (n.includes('freedom')) return 'Freedom';
+    if (n.includes('flash')) return 'Data Flash';
+    if (n.includes('happy')) return 'Happy';
+    if (n.includes('aon')) return 'AON';
+    if (n.includes('unlimited')) return 'Unlimited';
+    if (n.includes('lte')) return 'LTE';
+    if (n.includes('getmore')) return 'Getmore';
+    if (n.includes('bima')) return 'Bima';
+    if (n.includes('cinta')) return 'Cinta';
+    return 'Reguler / Kuota Utama';
+  };
 
   const getWaLink = (productName: string, productPrice?: string) => {
     const priceText = productPrice ? ` dengan harga ${productPrice}` : "";
@@ -304,9 +330,24 @@ export default function LandingPage() {
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
 
-  const filteredProducts = activeCategory === "Semua" 
+  // Tahap 1: Saring berdasarkan Provider (Kategori Utama)
+  const providerProducts = activeCategory === "Semua" 
     ? products 
     : products.filter(item => item.category === activeCategory);
+
+  // Cari tahu ada "Jenis Paket" apa saja di provider yang sedang dipilih
+  const availableTypes = ["Semua Tipe", ...Array.from(new Set(providerProducts.map(p => getPackageType(p.name))))];
+
+  // Tahap 2: Saring berdasarkan Jenis Paket (Sub-Kategori)
+  const finalProducts = activeType === "Semua Tipe"
+    ? providerProducts
+    : providerProducts.filter(p => getPackageType(p.name) === activeType);
+
+  // Jika tombol provider diklik, kembalikan sub-kategori ke "Semua Tipe"
+  const handleCategoryClick = (category: string) => {
+    setActiveCategory(category);
+    setActiveType("Semua Tipe");
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
@@ -331,18 +372,20 @@ export default function LandingPage() {
           Solusi Kebutuhan Digital <br/> <span className="text-emerald-600">Cepat, Murah, Terpercaya.</span>
         </h2>
         <p className="text-lg text-slate-600 mb-10">
-          Tersedia 286 pilihan paket data hemat. Transaksi cepat, layanan responsif, dan langsung terhubung via WhatsApp.
+          Tersedia ratusan pilihan paket data hemat. Transaksi cepat, layanan responsif, dan langsung terhubung via WhatsApp.
         </p>
       </section>
 
-      {/* Kategori Filter */}
-      <section className="max-w-6xl mx-auto px-6 mb-8">
-        <div className="flex flex-wrap justify-center gap-3">
+      {/* SISTEM FILTER: Utama & Sub-Kategori */}
+      <section className="max-w-6xl mx-auto px-6 mb-10">
+        
+        {/* Tombol Provider Utama */}
+        <div className="flex flex-wrap justify-center gap-3 mb-4">
           {categories.map(category => (
             <button
               key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`px-6 py-2 rounded-full font-semibold transition shadow-sm ${
+              onClick={() => handleCategoryClick(category)}
+              className={`px-6 py-2 rounded-full font-bold transition shadow-sm ${
                 activeCategory === category 
                   ? "bg-emerald-600 text-white" 
                   : "bg-white text-slate-600 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-700"
@@ -352,17 +395,40 @@ export default function LandingPage() {
             </button>
           ))}
         </div>
+
+        {/* Tombol Sub-Kategori (Jenis Paket) - Hanya Muncul Jika Ada Tipe Spesifik */}
+        {availableTypes.length > 2 && (
+          <div className="flex flex-wrap justify-center gap-2 pt-4 border-t border-slate-200/60 max-w-4xl mx-auto">
+            {availableTypes.map(type => (
+              <button
+                key={type}
+                onClick={() => setActiveType(type)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition ${
+                  activeType === type
+                    ? "bg-slate-800 text-white shadow-md"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+        )}
+
       </section>
 
       {/* Product Grid */}
       <section id="produk" className="max-w-6xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredProducts.map((item) => (
+          {finalProducts.map((item) => (
             <div key={item.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-200 transition group flex flex-col justify-between">
               <div>
                 <div className="text-4xl mb-4">{item.icon}</div>
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{item.category}</div>
-                <h3 className="text-lg font-bold mb-1 leading-snug">{item.name}</h3>
+                <div className="flex justify-between items-center mb-1">
+                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{item.category}</div>
+                  <div className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{getPackageType(item.name)}</div>
+                </div>
+                <h3 className="text-lg font-bold mb-1 leading-snug text-slate-800">{item.name}</h3>
                 <p className="text-slate-500 text-sm mb-4">{item.desc}</p>
               </div>
               <div>
@@ -381,9 +447,9 @@ export default function LandingPage() {
         </div>
         
         {/* Tampilan jika produk kosong */}
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-10 text-slate-400">
-            Belum ada produk di kategori ini.
+        {finalProducts.length === 0 && (
+          <div className="text-center py-12 bg-white rounded-3xl border border-slate-100">
+            <p className="text-slate-400 text-lg">Maaf, tidak ada produk untuk tipe paket ini.</p>
           </div>
         )}
       </section>
