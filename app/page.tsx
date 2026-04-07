@@ -167,10 +167,10 @@ export default function LandingPage() {
     return 'Reguler / Kuota Utama';
   };
 
-  // FUNGSI CERDAS 2: Menampilkan Logo Gambar Otomatis
+// FUNGSI LOGO: Sekarang by.U punya logo sendiri
   const getProviderLogo = (category: string) => {
     if (category === "Telkomsel") return "/telkomsel.png";
-    if (category === "by.U") return "/telkomsel.png"; // by.U menggunakan logo telkomsel atau /byu.png jika ada
+    if (category === "by.U") return "/byu.png"; // Ini yang kita ubah
     if (category === "Indosat") return "/indosat.png";
     if (category === "XL & Axis") return "/xl.png";
     if (category === "Tri") return "/tri.png";
