@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 
-// 1. DAFTAR KATEGORI (Tab "Semua" Dihapus)
 const categories = ["Telkomsel", "by.U", "Indosat", "XL & Axis", "Tri", "Smartfren"];
 
-// 2. DATABASE PRODUK (286 DATA FULL AMAN TERKENDALI)
+// DATABASE PRODUK (FULL 286 PAKET)
 const products = [
   // --- TELKOMSEL ---
   { id: 1, category: "Telkomsel", name: "Data Flash 50 GB", desc: "Masa Aktif 30 Hari", price: "Rp 109.618" },
@@ -35,37 +34,30 @@ const products = [
   { id: 64, category: "Telkomsel", name: "Paket Data 45 GB", desc: "Masa Aktif 30 Hari", price: "Rp 88.000" },
 
   // --- BY.U ---
-  { id: 23, category: "by.U", name: "by.U Data 125 GB", desc: "Masa Aktif 30 Hari", price: "Rp 210.310" },
-  { id: 24, category: "by.U", name: "by.U Data 100 GB", desc: "Masa Aktif 30 Hari", price: "Rp 165.698" },
-  { id: 25, category: "by.U", name: "by.U Data 84 GB", desc: "Masa Aktif 180 Hari", price: "Rp 184.604" },
-  { id: 26, category: "by.U", name: "by.U Data 75 GB", desc: "Masa Aktif 30 Hari", price: "Rp 149.790" },
-  { id: 27, category: "by.U", name: "by.U Data 65 GB", desc: "Masa Aktif 30 Hari", price: "Rp 99.015" },
-  { id: 28, category: "by.U", name: "by.U Data 65 GB (Varian Lain)", desc: "Masa Aktif 30 Hari", price: "Rp 98.590" },
-  { id: 29, category: "by.U", name: "by.U Data 57 GB", desc: "Masa Aktif 30 Hari", price: "Rp 106.111" },
-  { id: 30, category: "by.U", name: "by.U Data 50 GB", desc: "Masa Aktif 30 Hari", price: "Rp 119.620" },
-  { id: 31, category: "by.U", name: "by.U Data 35 GB", desc: "Masa Aktif 30 Hari", price: "Rp 79.078" },
-  { id: 32, category: "by.U", name: "by.U Data 33 GB", desc: "Masa Aktif 30 Hari", price: "Rp 76.882" },
-  { id: 33, category: "by.U", name: "by.U Data 23 GB", desc: "Masa Aktif 30 Hari", price: "Rp 79.352" },
-  { id: 34, category: "by.U", name: "by.U Data 20 GB", desc: "Masa Aktif 30 Hari", price: "Rp 56.593" },
-  { id: 35, category: "by.U", name: "by.U Data 15 GB", desc: "Masa Aktif 30 Hari", price: "Rp 80.078" },
-  { id: 36, category: "by.U", name: "by.U Data 14 GB", desc: "Masa Aktif 30 Hari", price: "Rp 46.589" },
-  { id: 37, category: "by.U", name: "by.U Data 12 GB", desc: "Masa Aktif 30 Hari", price: "Rp 48.212" },
-  { id: 38, category: "by.U", name: "by.U Data 12 GB", desc: "Masa Aktif 7 Hari", price: "Rp 24.693" },
-  { id: 39, category: "by.U", name: "by.U Data 11 GB", desc: "Masa Aktif 30 Hari", price: "Rp 48.255" },
-  { id: 40, category: "by.U", name: "by.U Data 10 GB", desc: "Masa Aktif 30 Hari", price: "Rp 41.335" },
-  { id: 41, category: "by.U", name: "by.U Data 10 GB", desc: "Masa Aktif 14 Hari", price: "Rp 39.753" },
-  { id: 42, category: "by.U", name: "by.U Data 10 GB", desc: "Masa Aktif 10 Hari", price: "Rp 39.233" },
-  { id: 43, category: "by.U", name: "by.U Data 9 GB", desc: "Masa Aktif 30 Hari", price: "Rp 46.580" },
-  { id: 44, category: "by.U", name: "by.U Data 8 GB", desc: "Masa Aktif 30 Hari", price: "Rp 41.754" },
-  { id: 45, category: "by.U", name: "by.U Data 8 GB", desc: "Masa Aktif 14 Hari", price: "Rp 35.078" },
-  { id: 46, category: "by.U", name: "by.U Data 7 GB", desc: "Masa Aktif 30 Hari", price: "Rp 28.262" },
-  { id: 47, category: "by.U", name: "by.U Data 7 GB", desc: "Masa Aktif 20 Hari", price: "Rp 28.500" },
-  { id: 48, category: "by.U", name: "by.U Data 5 GB", desc: "Masa Aktif 30 Hari", price: "Rp 46.580" },
-  { id: 49, category: "by.U", name: "by.U Data 5 GB", desc: "Masa Aktif 14 Hari", price: "Rp 16.987" },
-  { id: 50, category: "by.U", name: "by.U Data 4 GB", desc: "Masa Aktif 30 Hari", price: "Rp 39.103" },
-  { id: 51, category: "by.U", name: "by.U Data 3 GB", desc: "Masa Aktif 30 Hari", price: "Rp 38.580" },
-  { id: 52, category: "by.U", name: "by.U Data 2 GB", desc: "Masa Aktif 30 Hari", price: "Rp 16.757" },
-  { id: 53, category: "by.U", name: "by.U Data 1 GB", desc: "Masa Aktif 30 Hari", price: "Rp 13.953" },
+  { id: 23, category: "by.U", name: "by.U Kuota 7 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 21.600" },
+  { id: 24, category: "by.U", name: "by.U Kuota 3 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 35.750" },
+  { id: 25, category: "by.U", name: "by.U Kuota 1 GB", desc: "Masa Aktif 30 Hari", price: "Rp 36.190" },
+  { id: 26, category: "by.U", name: "by.U Kuota 7 GB All", desc: "Masa Aktif 20 Hari", price: "Rp 38.985" },
+  { id: 27, category: "by.U", name: "by.U Kuota 4 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 39.000" },
+  { id: 28, category: "by.U", name: "by.U Kuota 6 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 39.050" },
+  { id: 29, category: "by.U", name: "by.U Kuota 2 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 40.100" },
+  { id: 30, category: "by.U", name: "by.U Kuota 5 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 41.200" },
+  { id: 31, category: "by.U", name: "by.U Kuota 9 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 46.064" },
+  { id: 32, category: "by.U", name: "by.U Kuota 10 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 46.100" },
+  { id: 33, category: "by.U", name: "by.U Kuota 12 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 46.950" },
+  { id: 34, category: "by.U", name: "by.U Kuota 11 GB All", desc: "Masa Aktif 20 Hari", price: "Rp 47.200" },
+  { id: 35, category: "by.U", name: "by.U Kuota 14 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 47.260" },
+  { id: 36, category: "by.U", name: "by.U Kuota 20 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 61.200" },
+  { id: 37, category: "by.U", name: "by.U Kuota 18 GB", desc: "Masa Aktif 30 Hari", price: "Rp 76.600" },
+  { id: 38, category: "by.U", name: "by.U Kuota 6 GB All (All Zona)", desc: "Masa Aktif 30 Hari", price: "Rp 77.150" },
+  { id: 39, category: "by.U", name: "by.U Kuota 42 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 100.030" },
+  { id: 40, category: "by.U", name: "by.U Kuota 50 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 100.450" },
+  { id: 41, category: "by.U", name: "by.U Kuota 65 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 100.550" },
+  { id: 42, category: "by.U", name: "by.U Kuota 37 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 103.000" },
+  { id: 43, category: "by.U", name: "by.U Kuota 9 GB All (All Zona)", desc: "Masa Aktif 30 Hari", price: "Rp 104.700" },
+  { id: 44, category: "by.U", name: "by.U Kuota 12 GB All (All Zona)", desc: "Masa Aktif 30 Hari", price: "Rp 122.800" },
+  { id: 45, category: "by.U", name: "by.U Kuota 20 GB All (All Zona)", desc: "Masa Aktif 30 Hari", price: "Rp 153.200" },
+  { id: 46, category: "by.U", name: "by.U Kuota 125 GB All", desc: "Masa Aktif 30 Hari", price: "Rp 212.100" },
 
   // --- TRI ---
   { id: 54, category: "Tri", name: "Data AlwaysOn 1.5 GB", desc: "Masa Aktif -", price: "Rp 27.000" },
@@ -312,17 +304,14 @@ const products = [
 export default function LandingPage() {
   const whatsappNumber = "6285967096912";
   
-  // State: Tab pertama langsung Telkomsel
   const [activeCategory, setActiveCategory] = useState("Telkomsel");
   const [activeType, setActiveType] = useState("Semua Tipe");
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [sortBy, setSortBy] = useState("Default");
   
-  // State untuk Sapaan & Waktu
   const [greeting, setGreeting] = useState("Selamat Datang");
   const [currentDate, setCurrentDate] = useState("");
 
-  // Efek untuk jam & tanggal (agar tidak error hydration di Next.js)
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 11) setGreeting("Selamat Pagi 👋");
@@ -339,7 +328,7 @@ export default function LandingPage() {
   const getPackageType = (name: string) => {
     const n = name.toLowerCase();
     if (n.includes('akrab')) return 'AKRAB';
-    if (n.includes('by.u')) return 'Paket by.U';
+    if (n.includes('by.u') || n.includes('kuota')) return 'Paket by.U';
     if (n.includes('flex')) return 'Combo Flex';
     if (n.includes('flash')) return 'Data Flash';
     if (n.includes('freedom')) return 'Freedom';
@@ -367,7 +356,6 @@ export default function LandingPage() {
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
 
-  // Filter berdasarkan kategori yang dipilih (Tidak ada lagi "Semua")
   let displayProducts = products.filter(item => item.category === activeCategory);
 
   if (activeType !== "Semua Tipe") {
@@ -416,27 +404,27 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="bg-slate-200 min-h-screen flex justify-center font-sans">
-      <div className="bg-slate-50 w-full max-w-md relative shadow-2xl overflow-hidden flex flex-col h-screen">
+    <div className="bg-slate-200 min-h-screen flex justify-center font-sans text-[#334155]">
+      <div className="bg-[#F8FAFC] w-full max-w-md relative shadow-2xl overflow-hidden flex flex-col h-screen">
         
         <div className="flex-1 overflow-y-auto pb-24 scrollbar-hide">
           
-          {/* HEADER BARU: Meniru referensi gambar ke-3 */}
-          <div className="bg-[#00897b] text-white px-5 py-6 rounded-b-[2.5rem] shadow-md relative z-10">
+          {/* HEADER: Warna Secondary Gelap (#1E293B) */}
+          <div className="bg-[#1E293B] text-white px-5 py-6 rounded-b-[2.5rem] shadow-md relative z-10">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <p className="text-sm font-medium opacity-90">{greeting}</p>
                 <h1 className="text-xl font-extrabold tracking-wide">Juragan</h1>
               </div>
-              <div className="bg-white/20 p-2 rounded-full cursor-pointer hover:bg-white/30 transition shadow-sm border border-white/10">
+              <div className="bg-white/10 p-2 rounded-full cursor-pointer hover:bg-white/20 transition shadow-sm border border-white/5">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
               </div>
             </div>
             
-            {/* KOTAK TAGLINE & TANGGAL */}
-            <div className="bg-[#00695c]/80 rounded-2xl p-4 text-center border border-white/20 shadow-inner">
+            {/* KOTAK TAGLINE */}
+            <div className="bg-[#0F172A]/80 rounded-2xl p-4 text-center border border-white/10 shadow-inner">
               <h2 className="text-lg font-black tracking-widest text-white/95">ARWANI D'GABRIEL STORE</h2>
-              <p className="text-[11px] font-medium text-teal-100 mt-1.5 opacity-90">
+              <p className="text-[11px] font-bold text-[#FF6B35] mt-1.5 opacity-90 tracking-wide">
                 {currentDate ? currentDate : "Memuat tanggal..."}
               </p>
             </div>
@@ -444,10 +432,10 @@ export default function LandingPage() {
 
           <div className="px-5 mt-6">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-slate-800 font-bold text-lg">Pilih Operator</h2>
+              <h2 className="font-bold text-lg text-[#334155]">Pilih Operator</h2>
               <div className="flex items-center gap-1 bg-white p-1 rounded-lg shadow-sm border border-slate-100">
-                <button onClick={() => setSortBy("Default")} className={`px-2 py-1 rounded-md text-[10px] font-bold transition ${sortBy === "Default" ? "bg-[#00897b]/10 text-[#00897b]" : "text-slate-400"}`}>Terbaru</button>
-                <button onClick={() => setSortBy("Termurah")} className={`px-2 py-1 rounded-md text-[10px] font-bold transition ${sortBy === "Termurah" ? "bg-[#00897b] text-white" : "text-slate-400"}`}>Termurah</button>
+                <button onClick={() => setSortBy("Default")} className={`px-2 py-1 rounded-md text-[10px] font-bold transition ${sortBy === "Default" ? "bg-[#FF6B35]/10 text-[#FF6B35]" : "text-slate-400"}`}>Terbaru</button>
+                <button onClick={() => setSortBy("Termurah")} className={`px-2 py-1 rounded-md text-[10px] font-bold transition ${sortBy === "Termurah" ? "bg-[#FF6B35] text-white" : "text-slate-400"}`}>Termurah</button>
               </div>
             </div>
             
@@ -456,7 +444,7 @@ export default function LandingPage() {
                 <button 
                   key={category} 
                   onClick={() => handleCategoryClick(category)} 
-                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm border ${activeCategory === category ? "bg-[#00897b] text-white border-[#00897b]" : "bg-white text-slate-600 border-slate-200"}`}
+                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm border ${activeCategory === category ? "bg-[#FF6B35] text-white border-[#FF6B35]" : "bg-white text-[#334155] border-slate-200 hover:border-[#FF6B35]/50"}`}
                 >
                   {category}
                 </button>
@@ -469,7 +457,7 @@ export default function LandingPage() {
                   <button 
                     key={type} 
                     onClick={() => setActiveType(type)} 
-                    className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold transition border ${activeType === type ? "bg-slate-800 text-white border-slate-800" : "bg-white text-slate-500 border-slate-200"}`}
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold transition border ${activeType === type ? "bg-[#1E293B] text-white border-[#1E293B]" : "bg-white text-slate-500 border-slate-200"}`}
                   >
                     {type}
                   </button>
@@ -482,13 +470,14 @@ export default function LandingPage() {
             <div className="grid grid-cols-2 gap-3">
               {finalProducts.map((item) => {
                 
-                // --- DESAIN KHUSUS KARTU AKRAB (Lebih Sederhana & Link Cek Area) ---
+                // --- KARTU AKRAB ---
                 if (item.isGroup) {
                   const selectedVarName = selectedVariants[item.id] || item.variants[0].name;
                   const selectedVar = item.variants.find((v: any) => v.name === selectedVarName);
                   return (
-                    <div key={item.id} className="bg-white rounded-2xl p-4 shadow-sm border border-[#00897b]/30 relative overflow-hidden col-span-2">
-                      <div className="absolute top-0 left-0 bg-[#00897b] text-white text-[10px] font-bold px-3 py-1 rounded-br-xl z-10 shadow-sm">SPESIAL KELUARGA</div>
+                    <div key={item.id} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden col-span-2">
+                      {/* Label menggunakan warna Secondary Header untuk kontras yang elegan */}
+                      <div className="absolute top-0 left-0 bg-[#1E293B] text-white text-[10px] font-bold px-3 py-1 rounded-br-xl z-10 shadow-sm">SPESIAL KELUARGA</div>
                       
                       <div className="mt-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                          <div className="flex items-center gap-3">
@@ -496,17 +485,17 @@ export default function LandingPage() {
                               <img src={getProviderLogo(item.category)} alt={item.category} className="max-h-full max-w-full object-contain" />
                             </div>
                             <div>
-                              <h3 className="text-sm font-extrabold text-slate-800">{item.name}</h3>
+                              <h3 className="text-sm font-extrabold text-[#334155]">{item.name}</h3>
                               <p className="text-[10px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
                             </div>
                          </div>
                          
-                         {/* TOMBOL CEK AREA */}
+                         {/* TOMBOL CEK AREA (Warning Color #F59E0B) */}
                          <a 
                            href="https://gress-cell.github.io/GRESS-CELL-CEK-AREA/" 
                            target="_blank" 
                            rel="noopener noreferrer"
-                           className="bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1 transition"
+                           className="bg-[#F59E0B] hover:bg-amber-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1 transition"
                          >
                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                            Cek Area
@@ -515,38 +504,38 @@ export default function LandingPage() {
 
                       <div className="mt-4 pt-3 border-t border-slate-100">
                         <label className="text-[10px] font-bold text-slate-500 mb-1.5 block">Pilih Varian AKRAB:</label>
-                        <select className="w-full p-2.5 border border-slate-200 rounded-xl text-xs bg-slate-50 font-semibold outline-none text-slate-700 focus:ring-2 focus:ring-[#00897b]" value={selectedVarName} onChange={(e) => handleVariantChange(item.id, e.target.value)}>
+                        <select className="w-full p-2.5 border border-slate-200 rounded-xl text-xs bg-slate-50 font-semibold outline-none text-[#334155] focus:ring-2 focus:ring-[#FF6B35]" value={selectedVarName} onChange={(e) => handleVariantChange(item.id, e.target.value)}>
                           {item.variants.map((v: any) => <option key={v.id} value={v.name}>{v.name}</option>)}
                         </select>
                       </div>
 
-                      <div className="mt-3 flex justify-between items-center bg-[#00897b]/5 p-3 rounded-xl border border-[#00897b]/10">
+                      <div className="mt-3 flex justify-between items-center bg-[#F8FAFC] p-3 rounded-xl border border-slate-100">
                         <div>
                            <p className="text-[9px] font-bold text-slate-400">Harga Varian:</p>
-                           <div className="text-base font-black text-[#00897b]">{selectedVar.price}</div>
+                           <div className="text-base font-black text-[#FF6B35]">{selectedVar.price}</div>
                         </div>
-                        <a href={getWaLink(selectedVar.name, selectedVar.price)} target="_blank" className="bg-[#00897b] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:bg-[#00695c] transition">Kirim Pesanan</a>
+                        <a href={getWaLink(selectedVar.name, selectedVar.price)} target="_blank" className="bg-[#FF6B35] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:opacity-90 transition">Kirim Pesanan</a>
                       </div>
                     </div>
                   );
                 }
 
-                // --- DESAIN KARTU REGULER ---
+                // --- KARTU REGULER ---
                 return (
-                  <div key={item.id} className="bg-white rounded-2xl p-3 shadow-sm border border-slate-100 relative flex flex-col justify-between h-full hover:border-[#00897b]/30 transition group">
-                    <div className="absolute top-0 left-0 bg-[#00897b] text-white text-[9px] font-bold px-2.5 py-0.5 rounded-br-lg rounded-tl-2xl z-10">
+                  <div key={item.id} className="bg-white rounded-2xl p-3 shadow-sm border border-slate-100 relative flex flex-col justify-between h-full hover:border-[#FF6B35]/30 transition group">
+                    <div className="absolute top-0 left-0 bg-[#FF6B35] text-white text-[9px] font-bold px-2.5 py-0.5 rounded-br-lg rounded-tl-2xl z-10 shadow-sm">
                       {getBadgeLabel(item.price)}
                     </div>
                     <div className="mt-4 flex flex-col items-start">
                       <div className="w-10 h-10 mb-2 flex items-center justify-start flex-shrink-0">
                          <img src={getProviderLogo(item.category)} alt={item.category} className="max-h-full max-w-full object-contain" />
                       </div>
-                      <h3 className="text-[11px] font-bold text-slate-800 leading-snug">{item.name}</h3>
+                      <h3 className="text-[11px] font-bold text-[#334155] leading-snug">{item.name}</h3>
                       <p className="text-[9px] text-slate-400 mt-1 line-clamp-2">{item.desc}</p>
                     </div>
                     <div className="mt-3 pt-2 border-t border-slate-50 w-full">
-                      <div className="text-[13px] font-black text-slate-800 mb-2">{item.price}</div>
-                      <a href={getWaLink(item.name, item.price)} target="_blank" className="w-full text-center bg-[#00897b]/10 text-[#00897b] py-1.5 rounded-lg text-[10px] font-bold block group-hover:bg-[#00897b] group-hover:text-white transition">Pilih Varian</a>
+                      <div className="text-[13px] font-black text-[#FF6B35] mb-2">{item.price}</div>
+                      <a href={getWaLink(item.name, item.price)} target="_blank" className="w-full text-center bg-[#FF6B35]/10 text-[#FF6B35] py-1.5 rounded-lg text-[10px] font-bold block group-hover:bg-[#FF6B35] group-hover:text-white transition">Beli Sekarang</a>
                     </div>
                   </div>
                 );
@@ -563,26 +552,26 @@ export default function LandingPage() {
 
         {/* BOTTOM NAVIGATION BAR */}
         <div className="absolute bottom-0 w-full bg-white border-t border-slate-200 rounded-t-[1.5rem] shadow-[0_-10px_30px_rgba(0,0,0,0.08)] px-6 py-2 flex justify-between items-center z-50">
-          <div className="flex flex-col items-center text-[#00897b] cursor-pointer">
+          <div className="flex flex-col items-center text-[#FF6B35] cursor-pointer">
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
             <span className="text-[9px] font-bold mt-1">Home</span>
           </div>
-          <div className="flex flex-col items-center text-slate-400 cursor-pointer hover:text-[#00897b] transition">
+          <div className="flex flex-col items-center text-slate-400 cursor-pointer hover:text-[#FF6B35] transition">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span className="text-[9px] font-bold mt-1">Transaksi</span>
           </div>
           
           <div className="relative -top-6">
-            <div className="bg-[#00897b] w-14 h-14 rounded-full flex items-center justify-center shadow-[0_5px_15px_rgba(0,137,123,0.4)] border-4 border-slate-50 cursor-pointer hover:scale-105 transition transform">
+            <div className="bg-[#FF6B35] w-14 h-14 rounded-full flex items-center justify-center shadow-[0_5px_15px_rgba(255,107,53,0.4)] border-4 border-[#F8FAFC] cursor-pointer hover:scale-105 transition transform">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
             </div>
           </div>
 
-          <div className="flex flex-col items-center text-slate-400 cursor-pointer hover:text-[#00897b] transition">
+          <div className="flex flex-col items-center text-slate-400 cursor-pointer hover:text-[#FF6B35] transition">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
             <span className="text-[9px] font-bold mt-1">Mutasi</span>
           </div>
-          <div className="flex flex-col items-center text-slate-400 cursor-pointer hover:text-[#00897b] transition">
+          <div className="flex flex-col items-center text-slate-400 cursor-pointer hover:text-[#FF6B35] transition">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             <span className="text-[9px] font-bold mt-1">Profil</span>
           </div>
