@@ -2,12 +2,11 @@
 
 import React, { useState } from 'react';
 
-// 1. DAFTAR KATEGORI
 const categories = ["Semua", "Telkomsel", "by.U", "Indosat", "XL & Axis", "Tri", "Smartfren"];
 
-// 2. DATABASE PRODUK (286 DATA FULL LENGKAP SESUAI KIRIMAN ANDA)
+// DATABASE PRODUK LENGKAP - 286 DATA (DIJAMIN TIDAK ADA YANG HILANG)
 const products = [
-  // --- TELKOMSEL ---
+  // --- TELKOMSEL (22 Paket) ---
   { id: 1, category: "Telkomsel", name: "Data Flash 50 GB", desc: "Masa Aktif 30 Hari", price: "Rp 109.618" },
   { id: 2, category: "Telkomsel", name: "Data Flash 49 GB", desc: "Masa Aktif 30 Hari", price: "Rp 113.595" },
   { id: 3, category: "Telkomsel", name: "Data Flash 40 GB", desc: "Masa Aktif 30 Hari", price: "Rp 98.613" },
@@ -31,7 +30,7 @@ const products = [
   { id: 21, category: "Telkomsel", name: "Data Flash 10 GB", desc: "Masa Aktif 30 Hari", price: "Rp 50.488" },
   { id: 22, category: "Telkomsel", name: "Data Flash 7 GB", desc: "Masa Aktif 30 Hari", price: "Rp 39.283" },
 
-  // --- BY.U ---
+  // --- BY.U (31 Paket) ---
   { id: 23, category: "by.U", name: "by.U Data 125 GB", desc: "Masa Aktif 30 Hari", price: "Rp 210.310" },
   { id: 24, category: "by.U", name: "by.U Data 100 GB", desc: "Masa Aktif 30 Hari", price: "Rp 165.698" },
   { id: 25, category: "by.U", name: "by.U Data 84 GB", desc: "Masa Aktif 180 Hari", price: "Rp 184.604" },
@@ -64,7 +63,7 @@ const products = [
   { id: 52, category: "by.U", name: "by.U Data 2 GB", desc: "Masa Aktif 30 Hari", price: "Rp 16.757" },
   { id: 53, category: "by.U", name: "by.U Data 1 GB", desc: "Masa Aktif 30 Hari", price: "Rp 13.953" },
 
-  // --- TRI ---
+  // --- TRI (28 Paket) ---
   { id: 54, category: "Tri", name: "Data AlwaysOn 1.5 GB", desc: "Masa Aktif -", price: "Rp 27.000" },
   { id: 55, category: "Tri", name: "Data AlwaysOn 2 GB", desc: "Masa Aktif -", price: "Rp 21.000" },
   { id: 56, category: "Tri", name: "Data AlwaysOn 2.5 GB", desc: "Masa Aktif -", price: "Rp 27.000" },
@@ -94,7 +93,7 @@ const products = [
   { id: 80, category: "Tri", name: "Data Happy 75 GB", desc: "Masa Aktif 30 Hari", price: "Rp 118.000" },
   { id: 81, category: "Tri", name: "Data Happy 100 GB", desc: "Masa Aktif 30 Hari", price: "Rp 144.000" },
 
-  // --- INDOSAT ---
+  // --- INDOSAT (54 Paket) ---
   { id: 82, category: "Indosat", name: "Freedom Internet 9 GB", desc: "Masa Aktif 28 Hari", price: "Rp 51.000" },
   { id: 83, category: "Indosat", name: "Freedom Internet 10 GB", desc: "Masa Aktif 28 Hari", price: "Rp 44.000" },
   { id: 84, category: "Indosat", name: "Freedom Internet 11 GB", desc: "Masa Aktif 28 Hari", price: "Rp 50.000" },
@@ -150,7 +149,7 @@ const products = [
   { id: 134, category: "Indosat", name: "Freedom Combo 20 GB", desc: "Masa Aktif 30 Hari", price: "Rp 76.000" },
   { id: 135, category: "Indosat", name: "Freedom Combo 30 GB", desc: "Masa Aktif 30 Hari", price: "Rp 91.000" },
 
-  // --- XL & AXIS ---
+  // --- XL & AXIS (107 Paket) ---
   { id: 136, category: "XL & Axis", name: "Data 1 GB", desc: "Masa Aktif 30 Hari", price: "Rp 10.000" },
   { id: 137, category: "XL & Axis", name: "Data 1.5 GB", desc: "Masa Aktif 30 Hari", price: "Rp 18.000" },
   { id: 138, category: "XL & Axis", name: "Data 2 GB", desc: "Masa Aktif 30 Hari", price: "Rp 18.000" },
@@ -259,7 +258,7 @@ const products = [
   { id: 241, category: "XL & Axis", name: "AKRAB Megabig Area 3 (95 - 97 GB)", desc: "Masa Aktif -", price: "Rp 107.000" },
   { id: 242, category: "XL & Axis", name: "AKRAB Megabig Area 4 (105 - 107 GB)", desc: "Masa Aktif -", price: "Rp 107.000" },
 
-  // --- SMARTFREN ---
+  // --- SMARTFREN (44 Paket) ---
   { id: 243, category: "Smartfren", name: "Data 10 GB", desc: "Masa Aktif 30 Hari", price: "Rp 44.000" },
   { id: 244, category: "Smartfren", name: "Data 14 GB", desc: "Masa Aktif 30 Hari", price: "Rp 44.000" },
   { id: 245, category: "Smartfren", name: "Data 16 GB", desc: "Masa Aktif 30 Hari", price: "Rp 48.000" },
@@ -390,102 +389,167 @@ export default function LandingPage() {
     setSelectedVariants(prev => ({...prev, [groupId]: variantName}));
   };
 
+  const getBadgeLabel = (priceStr: string) => {
+    const price = priceToNumber(priceStr);
+    if (price < 30000) return "Murah";
+    if (price < 70000) return "Hemat";
+    if (price < 120000) return "Cepat";
+    return "Mantul";
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-black tracking-tighter text-blue-600">ARWANI D'GABRIEL <span className="text-slate-400">STORE</span></h1>
-          <a href={getWaLink("Informasi Umum")} target="_blank" className="bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition">Hubungi Admin</a>
-        </div>
-      </header>
-
-      <section className="max-w-4xl mx-auto px-6 py-16 text-center">
-        <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-          Solusi Kebutuhan Digital <br/> <span className="text-blue-600">Cepat, Murah, Terpercaya.</span>
-        </h2>
-      </section>
-
-      <section className="max-w-6xl mx-auto px-6 mb-6">
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
-          {categories.map(category => (
-            <button key={category} onClick={() => handleCategoryClick(category)} className={`px-6 py-2 rounded-full font-bold transition shadow-sm ${activeCategory === category ? "bg-blue-600 text-white" : "bg-white text-slate-600 border border-slate-200 hover:bg-blue-50"}`}>
-              {category}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-4 border-t border-slate-200/60 max-w-5xl mx-auto">
-          <div className="flex flex-wrap justify-center md:justify-start gap-2">
-            {availableTypes.map(type => (
-              <button key={type} onClick={() => setActiveType(type)} className={`px-4 py-1.5 rounded-lg text-sm font-medium transition ${activeType === type ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>
-                {type}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
-            <span className="text-[10px] font-bold text-slate-400 ml-2 uppercase tracking-widest">Urutkan:</span>
-            <button onClick={() => setSortBy("Default")} className={`px-3 py-1 rounded-lg text-xs font-bold transition ${sortBy === "Default" ? "bg-blue-100 text-blue-600" : "text-slate-400 hover:text-slate-600"}`}>Terbaru</button>
-            <button onClick={() => setSortBy("Termurah")} className={`px-3 py-1 rounded-lg text-xs font-bold transition ${sortBy === "Termurah" ? "bg-blue-600 text-white shadow-md" : "text-slate-400 hover:text-slate-600"}`}>💸 Termurah</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="produk" className="max-w-6xl mx-auto px-6 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {finalProducts.map((item) => {
-            if (item.isGroup) {
-              const selectedVarName = selectedVariants[item.id] || item.variants[0].name;
-              const selectedVar = item.variants.find((v: any) => v.name === selectedVarName);
-              return (
-                <div key={item.id} className="bg-blue-50 p-6 rounded-3xl border-2 border-blue-200 shadow-md flex flex-col justify-between transition-all">
-                  <div>
-                    <div className="h-14 mb-4 flex items-center justify-start">
-                      <img src={getProviderLogo(item.category)} alt={item.category} className="max-h-full max-w-[100px] object-contain" />
-                    </div>
-                    <div className="flex justify-between items-center mb-1">
-                      <div className="text-xs font-bold text-blue-600 uppercase">{item.category}</div>
-                      <div className="text-[10px] bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full font-bold">PILIHAN GANDA</div>
-                    </div>
-                    <h3 className="text-lg font-bold mb-1 text-slate-900">{item.name}</h3>
-                    <select className="w-full p-2 mt-2 border border-blue-300 rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-blue-500 outline-none" value={selectedVarName} onChange={(e) => handleVariantChange(item.id, e.target.value)}>
-                      {item.variants.map((v: any) => <option key={v.id} value={v.name}>{v.name}</option>)}
-                    </select>
-                  </div>
-                  <div className="bg-white p-3 rounded-xl border border-blue-100 my-4">
-                     <p className="text-sm font-semibold text-slate-800">{selectedVar.desc}</p>
-                     <div className="text-xl font-black text-blue-600">{selectedVar.price}</div>
-                  </div>
-                  <a href={getWaLink(selectedVar.name, selectedVar.price)} target="_blank" className="w-full py-3 bg-blue-600 text-white text-center font-bold rounded-xl hover:bg-blue-700 transition block shadow-sm">Pesan Sekarang</a>
-                </div>
-              );
-            }
-            return (
-              <div key={item.id} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition group flex flex-col justify-between">
-                <div>
-                  <div className="h-10 mb-5 flex items-center justify-start">
-                     <img src={getProviderLogo(item.category)} alt={item.category} className="max-h-full max-w-[90px] object-contain drop-shadow-sm" />
-                  </div>
-                  <div className="flex justify-between items-center mb-1">
-                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{item.category}</div>
-                    <div className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{getPackageType(item.name)}</div>
-                  </div>
-                  <h3 className="text-lg font-bold mb-1 leading-snug text-slate-800">{item.name}</h3>
-                  <p className="text-slate-500 text-sm mb-4">{item.desc}</p>
-                </div>
-                <div>
-                  <div className="text-xl font-black text-blue-600 mb-4">{item.price}</div>
-                  <a href={getWaLink(item.name, item.price)} target="_blank" className="w-full py-3 bg-blue-50 text-blue-700 text-center font-bold rounded-xl group-hover:bg-blue-600 group-hover:text-white transition block">Pesan Sekarang</a>
-                </div>
+    <div className="bg-slate-200 min-h-screen flex justify-center font-sans">
+      <div className="bg-slate-50 w-full max-w-md relative shadow-2xl overflow-hidden flex flex-col h-screen">
+        
+        <div className="flex-1 overflow-y-auto pb-24 scrollbar-hide">
+          
+          <div className="bg-teal-600 text-white px-5 py-6 rounded-b-[2rem] shadow-md relative z-10">
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <p className="text-sm opacity-90">Selamat Pagi 👋</p>
+                <h1 className="text-lg font-bold">Kang Arwani</h1>
               </div>
-            );
-          })}
-        </div>
-      </section>
+              <div className="bg-white/20 p-2 rounded-full cursor-pointer hover:bg-white/30 transition">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+              </div>
+            </div>
+            
+            <div className="bg-teal-700/50 rounded-2xl p-4 flex justify-between items-center border border-teal-500/30">
+              <div>
+                <p className="text-xs opacity-80 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg> 
+                  Saldo Anda
+                </p>
+                <p className="text-xl font-extrabold mt-1">Rp 1.713</p>
+              </div>
+              <div className="text-right border-l border-teal-500/30 pl-4">
+                <p className="text-xs opacity-80">Poin Anda</p>
+                <p className="text-xl font-bold text-yellow-400 mt-1">23</p>
+              </div>
+            </div>
+          </div>
 
-      <footer className="py-10 text-center text-slate-400 text-sm bg-blue-900 text-white">
-        <p>© 2026 Arwani D'Gabriel Store. Pelayanan sepenuh hati.</p>
-      </footer>
+          <div className="px-5 mt-6">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-slate-800 font-bold text-lg">Pilih Produk</h2>
+              <div className="flex items-center gap-1 bg-white p-1 rounded-lg shadow-sm">
+                <button onClick={() => setSortBy("Default")} className={`px-2 py-1 rounded-md text-[10px] font-bold ${sortBy === "Default" ? "bg-teal-100 text-teal-700" : "text-slate-400"}`}>Terbaru</button>
+                <button onClick={() => setSortBy("Termurah")} className={`px-2 py-1 rounded-md text-[10px] font-bold ${sortBy === "Termurah" ? "bg-teal-600 text-white" : "text-slate-400"}`}>Termurah</button>
+              </div>
+            </div>
+            
+            <div className="flex overflow-x-auto pb-3 gap-2 scrollbar-hide -mx-5 px-5">
+              {categories.map(category => (
+                <button 
+                  key={category} 
+                  onClick={() => handleCategoryClick(category)} 
+                  className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition shadow-sm border ${activeCategory === category ? "bg-teal-600 text-white border-teal-600" : "bg-white text-slate-600 border-slate-200"}`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            {availableTypes.length > 2 && (
+              <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-5 px-5 mt-1">
+                {availableTypes.map(type => (
+                  <button 
+                    key={type} 
+                    onClick={() => setActiveType(type)} 
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold transition border ${activeType === type ? "bg-slate-800 text-white border-slate-800" : "bg-white text-slate-500 border-slate-200"}`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="px-5 mt-2 pb-6">
+            <div className="grid grid-cols-2 gap-3">
+              {finalProducts.map((item) => {
+                if (item.isGroup) {
+                  const selectedVarName = selectedVariants[item.id] || item.variants[0].name;
+                  const selectedVar = item.variants.find((v: any) => v.name === selectedVarName);
+                  return (
+                    <div key={item.id} className="bg-white rounded-2xl p-3 shadow-sm border border-slate-100 relative overflow-hidden col-span-2">
+                      <div className="absolute top-0 left-0 bg-teal-600 text-white text-[9px] font-bold px-3 py-1 rounded-br-lg z-10">Pilihan Lengkap</div>
+                      <div className="flex gap-3 items-center mt-4">
+                        <div className="w-12 h-12 bg-slate-50 rounded-xl p-2 flex items-center justify-center flex-shrink-0 border border-slate-100">
+                          <img src={getProviderLogo(item.category)} alt={item.category} className="max-h-full max-w-full object-contain" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-sm font-bold text-slate-800 leading-tight">{item.name}</h3>
+                          <p className="text-[10px] text-slate-400 mt-0.5">{item.desc}</p>
+                        </div>
+                      </div>
+                      <select className="w-full mt-3 p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 font-medium outline-none text-slate-700" value={selectedVarName} onChange={(e) => handleVariantChange(item.id, e.target.value)}>
+                        {item.variants.map((v: any) => <option key={v.id} value={v.name}>{v.name}</option>)}
+                      </select>
+                      <div className="mt-3 flex justify-between items-center">
+                        <div className="text-sm font-black text-teal-600">{selectedVar.price}</div>
+                        <a href={getWaLink(selectedVar.name, selectedVar.price)} target="_blank" className="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">Pesan</a>
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div key={item.id} className="bg-white rounded-2xl p-3 shadow-sm border border-slate-100 relative flex flex-col justify-between h-full hover:border-teal-300 transition">
+                    <div className="absolute top-0 left-0 bg-teal-600 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-br-lg rounded-tl-2xl z-10">
+                      {getBadgeLabel(item.price)}
+                    </div>
+                    <div className="mt-4 flex flex-col items-start">
+                      <div className="w-10 h-10 mb-2 flex items-center justify-start flex-shrink-0">
+                         <img src={getProviderLogo(item.category)} alt={item.category} className="max-h-full max-w-full object-contain" />
+                      </div>
+                      <h3 className="text-[11px] font-bold text-slate-800 leading-snug">{item.name}</h3>
+                      <p className="text-[9px] text-slate-400 mt-1 line-clamp-2">{item.desc}</p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-slate-50 w-full">
+                      <div className="text-xs font-black text-slate-800 mb-2">{item.price}</div>
+                      <a href={getWaLink(item.name, item.price)} target="_blank" className="w-full text-center bg-teal-50 text-teal-700 py-1.5 rounded-lg text-[10px] font-bold block">Pilih</a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {finalProducts.length === 0 && (
+              <div className="text-center py-10 bg-white rounded-2xl mt-4">
+                <p className="text-slate-400 text-sm">Produk tidak ditemukan.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="absolute bottom-0 w-full bg-white border-t border-slate-200 rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-6 py-2 flex justify-between items-center z-50">
+          <div className="flex flex-col items-center text-teal-600 cursor-pointer">
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+            <span className="text-[9px] font-bold mt-1">Home</span>
+          </div>
+          <div className="flex flex-col items-center text-slate-400 cursor-pointer hover:text-teal-600 transition">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span className="text-[9px] font-bold mt-1">Transaksi</span>
+          </div>
+          
+          <div className="relative -top-5">
+            <div className="bg-teal-600 w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-4 border-slate-50 cursor-pointer hover:scale-105 transition transform">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center text-slate-400 cursor-pointer hover:text-teal-600 transition">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <span className="text-[9px] font-bold mt-1">Mutasi</span>
+          </div>
+          <div className="flex flex-col items-center text-slate-400 cursor-pointer hover:text-teal-600 transition">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            <span className="text-[9px] font-bold mt-1">Profil</span>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
