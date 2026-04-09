@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 const categories = ["Telkomsel", "by.U", "Indosat", "XL & Axis", "Tri", "Smartfren"];
 
-// DATABASE PRODUK LENGKAP (Aman 100%, Akrab disederhanakan)
+// DATABASE PRODUK LENGKAP (Aman 100%, Akrab Sederhana)
 const products = [
   // --- TELKOMSEL ---
   { id: 1, category: "Telkomsel", name: "Data Flash 50 GB", desc: "Masa Aktif 30 Hari", price: "Rp 109.618" },
@@ -228,7 +228,7 @@ const products = [
   
   // --- XL & AXIS (AKRAB SEDERHANA) ---
   { id: 215, category: "XL & Axis", name: "AKRAB Super Mini", desc: "13 - 32 GB", price: "Rp 51.000" },
-  { id: 216, category: "XL & Axis", name: "AKRAB Mini Area 1", desc: "32 - 51 GB", price: "Rp 65.000" },
+  { id: 216, category: "XL & Axis", name: "AKRAB Mini", desc: "32 - 51 GB", price: "Rp 65.000" },
   { id: 217, category: "XL & Axis", name: "AKRAB Big", desc: "38 - 57 GB", price: "Rp 70.000" },
   { id: 218, category: "XL & Axis", name: "AKRAB Jumbo V2", desc: "50 - 69 GB", price: "Rp 79.000" },
   { id: 219, category: "XL & Axis", name: "AKRAB Jumbo New", desc: "63 - 82 GB", price: "Rp 88.000" },
@@ -285,7 +285,7 @@ const products = [
 export default function LandingPage() {
   const whatsappNumber = "6285967096912";
   
-  // DEFAULT SEKARANG ADALAH "Home"
+  // DEFAULT ADALAH "Home"
   const [activeCategory, setActiveCategory] = useState("Home");
   const [activeType, setActiveType] = useState("Semua Tipe");
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
@@ -338,7 +338,7 @@ export default function LandingPage() {
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
 
-  // LOGIKA PENCARIAN PRODUK
+  // LOGIKA FILTER PRODUK
   let displayProducts: any[] = [];
   
   if (activeCategory === "MasaAktif") {
@@ -398,7 +398,7 @@ export default function LandingPage() {
         
         <div className="flex-1 overflow-y-auto pb-24 scrollbar-hide">
           
-          {/* HEADER */}
+          {/* HEADER: Warna Secondary Gelap (#1E293B) */}
           <div className="bg-[#1E293B] text-white px-5 py-6 rounded-b-[2.5rem] shadow-md relative z-10">
             <div className="flex justify-between items-start mb-6">
               <div>
@@ -418,7 +418,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* TAMPILAN JIKA HALAMAN UTAMA (HOME) */}
+          {/* JIKA DI HALAMAN HOME */}
           {activeCategory === "Home" ? (
             <div className="px-5 mt-6 pb-6">
               <h2 className="font-bold text-lg text-[#334155] mb-4">Pilih Operator</h2>
@@ -436,11 +436,11 @@ export default function LandingPage() {
               </div>
             </div>
           ) : (
-            /* TAMPILAN JIKA SUDAH MEMILIH PROVIDER / MASA AKTIF */
+            /* JIKA MASUK KE DALAM PROVIDER ATAU MASA AKTIF */
             <>
               <div className="px-5 mt-6">
                 <div className="flex items-center justify-between mb-3">
-                  <button onClick={() => setActiveCategory("Home")} className="flex items-center gap-1 text-[#334155] font-bold text-sm bg-white px-3 py-1.5 rounded-lg shadow-sm border border-slate-100 hover:bg-slate-50">
+                  <button onClick={() => setActiveCategory("Home")} className="flex items-center gap-1 text-[#334155] font-bold text-xs bg-white px-3 py-1.5 rounded-lg shadow-sm border border-slate-100 hover:bg-slate-50 transition">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Kembali
                   </button>
@@ -453,8 +453,24 @@ export default function LandingPage() {
                   )}
                 </div>
 
+                {/* SCROLLBAR PROVIDER LANGSUNG DI DALAM (Mencegah harus bolak-balik ke Home) */}
+                {activeCategory !== "MasaAktif" && (
+                  <div className="flex overflow-x-auto pb-3 gap-2 scrollbar-hide -mx-5 px-5 mt-4">
+                    {categories.map(cat => (
+                      <button 
+                        key={cat} 
+                        onClick={() => handleCategoryClick(cat)} 
+                        className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm border ${activeCategory === cat ? "bg-[#FF6B35] text-white border-[#FF6B35]" : "bg-white text-[#334155] border-slate-200 hover:border-[#FF6B35]/50"}`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* SCROLLBAR TIPE PAKET */}
                 {activeCategory !== "MasaAktif" && availableTypes.length > 2 && (
-                  <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-5 px-5 mt-3">
+                  <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-5 px-5 mt-1">
                     {availableTypes.map(type => (
                       <button 
                         key={type} 
@@ -468,7 +484,7 @@ export default function LandingPage() {
                 )}
                 
                 {activeCategory === "MasaAktif" && (
-                  <h2 className="font-bold text-lg text-[#334155] mb-2 mt-4">Katalog Masa Aktif</h2>
+                   <h2 className="font-bold text-lg text-[#334155] mb-2 mt-4">Katalog Masa Aktif</h2>
                 )}
               </div>
 
@@ -476,7 +492,7 @@ export default function LandingPage() {
                 <div className="grid grid-cols-2 gap-3">
                   {finalProducts.map((item) => {
                     
-                    // --- KARTU AKRAB ---
+                    // --- KARTU AKRAB (SEDERHANA) ---
                     if (item.isGroup) {
                       const selectedVarName = selectedVariants[item.id] || item.variants[0].name;
                       const selectedVar = item.variants.find((v: any) => v.name === selectedVarName);
@@ -556,22 +572,28 @@ export default function LandingPage() {
           )}
         </div>
 
-        {/* BOTTOM NAVIGATION BAR BARU (Home, Kuota, Admin WA, Masa Aktif) */}
+        {/* BOTTOM NAV BAR (HOME, BELI KUOTA, WA, MASA AKTIF) - BEBAS BUG */}
         <div className="absolute bottom-0 w-full bg-white border-t border-slate-200 rounded-t-[1.5rem] shadow-[0_-10px_30px_rgba(0,0,0,0.08)] px-4 py-2 flex justify-between items-end z-50 h-16">
           
           <div className="flex justify-around w-[40%] pb-2">
-            <div onClick={() => setActiveCategory("Home")} className={`flex flex-col items-center cursor-pointer transition ${activeCategory === "Home" ? "text-[#FF6B35]" : "text-slate-400 hover:text-[#FF6B35]"}`}>
+            <div onClick={() => { setActiveCategory("Home"); setActiveType("Semua Tipe"); }} className={`flex flex-col items-center cursor-pointer transition ${activeCategory === "Home" ? "text-[#FF6B35]" : "text-slate-400 hover:text-[#FF6B35]"}`}>
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
               <span className="text-[9px] font-bold mt-1">Home</span>
             </div>
             
-            <div onClick={() => setActiveCategory("Home")} className={`flex flex-col items-center cursor-pointer transition ${activeCategory !== "Home" && activeCategory !== "MasaAktif" ? "text-[#FF6B35]" : "text-slate-400 hover:text-[#FF6B35]"}`}>
+            {/* Tombol Beli Kuota ini HANYA navigasi ke Telkomsel JIKA posisi user sedang di Home/MasaAktif */}
+            <div onClick={() => { 
+                if (activeCategory === "Home" || activeCategory === "MasaAktif") {
+                  handleCategoryClick("Telkomsel"); 
+                } 
+              }} 
+              className={`flex flex-col items-center cursor-pointer transition ${activeCategory !== "Home" && activeCategory !== "MasaAktif" ? "text-[#FF6B35]" : "text-slate-400 hover:text-[#FF6B35]"}`}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
               <span className="text-[9px] font-bold mt-1">Beli Kuota</span>
             </div>
           </div>
 
-          <a href={getWaLink("Bantuan Admin")} target="_blank" className="absolute left-1/2 transform -translate-x-1/2 -top-5 flex flex-col items-center">
+          <a href={getWaLink("Bantuan Admin")} target="_blank" className="absolute left-1/2 transform -translate-x-1/2 -top-5 flex flex-col items-center z-50">
             <div className="bg-[#10B981] w-14 h-14 rounded-full flex items-center justify-center shadow-[0_5px_15px_rgba(16,185,129,0.4)] border-4 border-[#F8FAFC] cursor-pointer hover:scale-105 transition transform">
               <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.115.548 4.184 1.59 6.002L.004 24l6.104-1.601A11.96 11.96 0 0012.031 24c6.646 0 12.031-5.385 12.031-12.031C24.062 5.385 18.677 0 12.031 0zM18.16 16.924c-.26.735-1.503 1.4-2.074 1.458-.528.054-1.203.11-3.486-.838-2.738-1.134-4.516-3.923-4.654-4.108-.138-.184-1.11-1.478-1.11-2.822s.7-1.996.953-2.285c.253-.29.548-.363.733-.363.184 0 .368.006.533.013.178.008.416-.073.654.492.247.585.83 2.03.904 2.179.073.15.123.324.03.508-.091.184-.138.301-.276.467-.138.167-.291.353-.414.491-.133.15-.276.315-.12.565.156.248.694 1.133 1.493 1.894 1.033.985 1.9 1.288 2.146 1.402.247.114.39.096.536-.07.146-.167.632-.735.802-.988.17-.253.34-.212.565-.125.225.086 1.428.673 1.674.795.247.123.411.184.473.288.062.103.062.605-.198 1.34z"></path></svg>
             </div>
@@ -579,7 +601,7 @@ export default function LandingPage() {
           </a>
 
           <div className="flex justify-end w-[40%] pr-4 pb-2">
-            <div onClick={() => setActiveCategory("MasaAktif")} className={`flex flex-col items-center cursor-pointer transition ${activeCategory === "MasaAktif" ? "text-[#FF6B35]" : "text-slate-400 hover:text-[#FF6B35]"}`}>
+            <div onClick={() => { setActiveCategory("MasaAktif"); setActiveType("Semua Tipe"); }} className={`flex flex-col items-center cursor-pointer transition ${activeCategory === "MasaAktif" ? "text-[#FF6B35]" : "text-slate-400 hover:text-[#FF6B35]"}`}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
               <span className="text-[9px] font-bold mt-1">Beli Masa Aktif</span>
             </div>
