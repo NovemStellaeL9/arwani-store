@@ -633,7 +633,7 @@ export default function LandingPage() {
                             </div>
 
                             <a
-                              href="https://almaprayuda.github.io/akrabarea/"
+                              href="https://cekareaxl.vercel.app/"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="bg-[#F59E0B] hover:bg-amber-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1 transition"
