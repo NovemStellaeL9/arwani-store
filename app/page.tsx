@@ -70,7 +70,7 @@ const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
 const MASA_AKTIF_OPERATORS = ["Semua", "Telkomsel", "Indosat", "Tri", "Axis", "XL"];
 
 // ─────────────────────────────────────────────────────────────
-// DATABASE PRODUK
+// DATABASE PRODUK (286 DATA AMAN 100%)
 // ─────────────────────────────────────────────────────────────
 const products: Product[] = [
   // --- TELKOMSEL ---
@@ -224,10 +224,10 @@ const products: Product[] = [
   { id: 409, category: "XL & Axis", name: "Data 10 GB",                                 desc: "Masa Aktif 30 Hari", price: "Rp 77.000"  },
   { id: 410, category: "XL & Axis", name: "Data 12 GB",                                 desc: "Masa Aktif 30 Hari", price: "Rp 55.000"  },
   { id: 411, category: "XL & Axis", name: "Data 140 GB",                                desc: "Masa Aktif 28 Hari", price: "Rp 145.000" },
-  { id: 412, category: "XL & Axis", name: "OWSEM 1 GB + 1 GB 4G",                      desc: "Masa Aktif 30 Hari", price: "Rp 21.000"  },
-  { id: 413, category: "XL & Axis", name: "OWSEM 1 GB + 3 GB 4G",                      desc: "Masa Aktif 30 Hari", price: "Rp 33.000"  },
-  { id: 414, category: "XL & Axis", name: "OWSEM 2 GB + 6 GB 4G",                      desc: "Masa Aktif 30 Hari", price: "Rp 50.000"  },
-  { id: 415, category: "XL & Axis", name: "OWSEM 3 GB + 9 GB 4G",                      desc: "Masa Aktif 30 Hari", price: "Rp 66.000"  },
+  { id: 412, category: "XL & Axis", name: "OWSEM 1 GB + 1 GB 4G",                       desc: "Masa Aktif 30 Hari", price: "Rp 21.000"  },
+  { id: 413, category: "XL & Axis", name: "OWSEM 1 GB + 3 GB 4G",                       desc: "Masa Aktif 30 Hari", price: "Rp 33.000"  },
+  { id: 414, category: "XL & Axis", name: "OWSEM 2 GB + 6 GB 4G",                       desc: "Masa Aktif 30 Hari", price: "Rp 50.000"  },
+  { id: 415, category: "XL & Axis", name: "OWSEM 3 GB + 9 GB 4G",                       desc: "Masa Aktif 30 Hari", price: "Rp 66.000"  },
   { id: 416, category: "XL & Axis", name: "OWSEM 16 GB + Unlimited Game",               desc: "Masa Aktif 30 Hari", price: "Rp 44.000"  },
   { id: 417, category: "XL & Axis", name: "OWSEM 24 GB + Unlimited Game",               desc: "Masa Aktif 30 Hari", price: "Rp 45.000"  },
   { id: 418, category: "XL & Axis", name: "OWSEM 32 GB + Unlimited Game",               desc: "Masa Aktif 30 Hari", price: "Rp 52.000"  },
@@ -301,50 +301,50 @@ const products: Product[] = [
   { id: 486, category: "XL & Axis", name: "AKRAB Megabig",     desc: "88 - 107 GB", price: "Rp 107.000" },
 
   // --- SMARTFREN ---
-  { id: 501, category: "Smartfren", name: "Data 10 GB",                             desc: "Masa Aktif 30 Hari", price: "Rp 44.000"  },
-  { id: 502, category: "Smartfren", name: "Data 14 GB",                             desc: "Masa Aktif 30 Hari", price: "Rp 44.000"  },
-  { id: 503, category: "Smartfren", name: "Data 16 GB",                             desc: "Masa Aktif 30 Hari", price: "Rp 48.000"  },
-  { id: 504, category: "Smartfren", name: "Data 19 GB",                             desc: "Masa Aktif 30 Hari", price: "Rp 96.000"  },
-  { id: 505, category: "Smartfren", name: "Data 30 GB",                             desc: "Masa Aktif 30 Hari", price: "Rp 76.000"  },
-  { id: 506, category: "Smartfren", name: "Data 32 GB",                             desc: "Masa Aktif 30 Hari", price: "Rp 77.000"  },
-  { id: 507, category: "Smartfren", name: "Data 40 GB",                             desc: "Masa Aktif 14 Hari", price: "Rp 66.000"  },
-  { id: 508, category: "Smartfren", name: "Data 50 GB",                             desc: "Masa Aktif 30 Hari", price: "Rp 102.000" },
-  { id: 509, category: "Smartfren", name: "Data 66 GB",                             desc: "Masa Aktif 28 Hari", price: "Rp 104.000" },
-  { id: 510, category: "Smartfren", name: "Data 100 GB",                            desc: "Masa Aktif 30 Hari", price: "Rp 124.000" },
-  { id: 511, category: "Smartfren", name: "Data Unlimited Harian 500 MB",           desc: "Masa Aktif 28 Hari", price: "Rp 82.000"  },
-  { id: 512, category: "Smartfren", name: "Data Unlimited Harian 1 GB",             desc: "Masa Aktif 30 Hari", price: "Rp 83.000"  },
-  { id: 513, category: "Smartfren", name: "Data Unlimited Harian 2 GB",             desc: "Masa Aktif 28 Hari", price: "Rp 94.000"  },
-  { id: 514, category: "Smartfren", name: "Data Unlimited Harian 2 GB",             desc: "Masa Aktif 30 Hari", price: "Rp 94.000"  },
-  { id: 515, category: "Smartfren", name: "Data Unlimited Harian 3 GB",             desc: "Masa Aktif 28 Hari", price: "Rp 120.000" },
-  { id: 516, category: "Smartfren", name: "Data Unlimited Harian 3 GB",             desc: "Masa Aktif 30 Hari", price: "Rp 125.000" },
-  { id: 517, category: "Smartfren", name: "Data Unlimited Harian 4 GB",             desc: "Masa Aktif 28 Hari", price: "Rp 145.000" },
-  { id: 518, category: "Smartfren", name: "Data Unlimited Harian 4 GB",             desc: "Masa Aktif 30 Hari", price: "Rp 174.000" },
-  { id: 519, category: "Smartfren", name: "Data Unlimited Harian 5 GB",             desc: "Masa Aktif 30 Hari", price: "Rp 198.000" },
-  { id: 520, category: "Smartfren", name: "Data Nonton 4GB + Utama 6GB + Viu",      desc: "Masa Aktif 30 Hari", price: "Rp 51.000"  },
-  { id: 521, category: "Smartfren", name: "Data Kuota 7 GB",                        desc: "Masa Aktif 30 Hari", price: "Rp 35.000"  },
-  { id: 522, category: "Smartfren", name: "Data Kuota 17 GB",                       desc: "Masa Aktif 14 Hari", price: "Rp 40.000"  },
-  { id: 523, category: "Smartfren", name: "Data Kuota 18 GB",                       desc: "Masa Aktif 30 Hari", price: "Rp 41.000"  },
-  { id: 524, category: "Smartfren", name: "Data Kuota 25 GB",                       desc: "Masa Aktif 7 Hari",  price: "Rp 42.000"  },
-  { id: 525, category: "Smartfren", name: "Data Kuota 40 GB",                       desc: "Masa Aktif 14 Hari", price: "Rp 66.000"  },
-  { id: 526, category: "Smartfren", name: "Data Kuota 50 GB",                       desc: "Masa Aktif 14 Hari", price: "Rp 66.000"  },
-  { id: 527, category: "Smartfren", name: "Data Kuota 50 GB",                       desc: "Masa Aktif 30 Hari", price: "Rp 100.000" },
-  { id: 528, category: "Smartfren", name: "Data Kuota 57 GB",                       desc: "Masa Aktif 30 Hari", price: "Rp 104.000" },
-  { id: 529, category: "Smartfren", name: "Data Kuota 66 GB",                       desc: "Masa Aktif 28 Hari", price: "Rp 102.000" },
-  { id: 530, category: "Smartfren", name: "Data Kuota 100 GB",                      desc: "Masa Aktif 30 Hari", price: "Rp 110.000" },
-  { id: 531, category: "Smartfren", name: "Data Kuota 150 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 143.000" },
-  { id: 532, category: "Smartfren", name: "Data Kuota 5G 175 GB",                   desc: "Masa Aktif 28 Hari", price: "Rp 177.000" },
-  { id: 533, category: "Smartfren", name: "Data Kuota 200 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 201.000" },
-  { id: 534, category: "Smartfren", name: "Data Kuota 200 GB",                      desc: "Masa Aktif 30 Hari", price: "Rp 196.000" },
-  { id: 535, category: "Smartfren", name: "Data Kuota 250 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 194.000" },
-  { id: 536, category: "Smartfren", name: "Data Kuota 5G 250 GB",                   desc: "Masa Aktif 28 Hari", price: "Rp 252.000" },
-  { id: 537, category: "Smartfren", name: "Data Kuota 300 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 261.000" },
-  { id: 538, category: "Smartfren", name: "Data Kuota 5G 350 GB",                   desc: "Masa Aktif 28 Hari", price: "Rp 351.000" },
-  { id: 539, category: "Smartfren", name: "Data Kuota 500 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 400.000" },
-  { id: 540, category: "Smartfren", name: "Data Kuota M (14 GB)",                   desc: "Masa Aktif 30 Hari", price: "Rp 46.000"  },
-  { id: 541, category: "Smartfren", name: "Data Kuota L (24 GB)",                   desc: "Masa Aktif 30 Hari", price: "Rp 65.000"  },
-  { id: 542, category: "Smartfren", name: "Data Kuota 2L (45 GB)",                  desc: "Masa Aktif 30 Hari", price: "Rp 86.000"  },
-  { id: 543, category: "Smartfren", name: "Data Kuota 3L (85 GB)",                  desc: "Masa Aktif 30 Hari", price: "Rp 132.000" },
-  { id: 544, category: "Smartfren", name: "Data Kuota 4L (125 GB)",                 desc: "Masa Aktif 30 Hari", price: "Rp 141.000" },
+  { id: 501, category: "Smartfren", name: "Data 10 GB",                              desc: "Masa Aktif 30 Hari", price: "Rp 44.000"  },
+  { id: 502, category: "Smartfren", name: "Data 14 GB",                              desc: "Masa Aktif 30 Hari", price: "Rp 44.000"  },
+  { id: 503, category: "Smartfren", name: "Data 16 GB",                              desc: "Masa Aktif 30 Hari", price: "Rp 48.000"  },
+  { id: 504, category: "Smartfren", name: "Data 19 GB",                              desc: "Masa Aktif 30 Hari", price: "Rp 96.000"  },
+  { id: 505, category: "Smartfren", name: "Data 30 GB",                              desc: "Masa Aktif 30 Hari", price: "Rp 76.000"  },
+  { id: 506, category: "Smartfren", name: "Data 32 GB",                              desc: "Masa Aktif 30 Hari", price: "Rp 77.000"  },
+  { id: 507, category: "Smartfren", name: "Data 40 GB",                              desc: "Masa Aktif 14 Hari", price: "Rp 66.000"  },
+  { id: 508, category: "Smartfren", name: "Data 50 GB",                              desc: "Masa Aktif 30 Hari", price: "Rp 102.000" },
+  { id: 509, category: "Smartfren", name: "Data 66 GB",                              desc: "Masa Aktif 28 Hari", price: "Rp 104.000" },
+  { id: 510, category: "Smartfren", name: "Data 100 GB",                             desc: "Masa Aktif 30 Hari", price: "Rp 124.000" },
+  { id: 511, category: "Smartfren", name: "Data Unlimited Harian 500 MB",            desc: "Masa Aktif 28 Hari", price: "Rp 82.000"  },
+  { id: 512, category: "Smartfren", name: "Data Unlimited Harian 1 GB",              desc: "Masa Aktif 30 Hari", price: "Rp 83.000"  },
+  { id: 513, category: "Smartfren", name: "Data Unlimited Harian 2 GB",              desc: "Masa Aktif 28 Hari", price: "Rp 94.000"  },
+  { id: 514, category: "Smartfren", name: "Data Unlimited Harian 2 GB",              desc: "Masa Aktif 30 Hari", price: "Rp 94.000"  },
+  { id: 515, category: "Smartfren", name: "Data Unlimited Harian 3 GB",              desc: "Masa Aktif 28 Hari", price: "Rp 120.000" },
+  { id: 516, category: "Smartfren", name: "Data Unlimited Harian 3 GB",              desc: "Masa Aktif 30 Hari", price: "Rp 125.000" },
+  { id: 517, category: "Smartfren", name: "Data Unlimited Harian 4 GB",              desc: "Masa Aktif 28 Hari", price: "Rp 145.000" },
+  { id: 518, category: "Smartfren", name: "Data Unlimited Harian 4 GB",              desc: "Masa Aktif 30 Hari", price: "Rp 174.000" },
+  { id: 519, category: "Smartfren", name: "Data Unlimited Harian 5 GB",              desc: "Masa Aktif 30 Hari", price: "Rp 198.000" },
+  { id: 520, category: "Smartfren", name: "Data Nonton 4GB + Utama 6GB + Viu",       desc: "Masa Aktif 30 Hari", price: "Rp 51.000"  },
+  { id: 521, category: "Smartfren", name: "Data Kuota 7 GB",                         desc: "Masa Aktif 30 Hari", price: "Rp 35.000"  },
+  { id: 522, category: "Smartfren", name: "Data Kuota 17 GB",                        desc: "Masa Aktif 14 Hari", price: "Rp 40.000"  },
+  { id: 523, category: "Smartfren", name: "Data Kuota 18 GB",                        desc: "Masa Aktif 30 Hari", price: "Rp 41.000"  },
+  { id: 524, category: "Smartfren", name: "Data Kuota 25 GB",                        desc: "Masa Aktif 7 Hari",  price: "Rp 42.000"  },
+  { id: 525, category: "Smartfren", name: "Data Kuota 40 GB",                        desc: "Masa Aktif 14 Hari", price: "Rp 66.000"  },
+  { id: 526, category: "Smartfren", name: "Data Kuota 50 GB",                        desc: "Masa Aktif 14 Hari", price: "Rp 66.000"  },
+  { id: 527, category: "Smartfren", name: "Data Kuota 50 GB",                        desc: "Masa Aktif 30 Hari", price: "Rp 100.000" },
+  { id: 528, category: "Smartfren", name: "Data Kuota 57 GB",                        desc: "Masa Aktif 30 Hari", price: "Rp 104.000" },
+  { id: 529, category: "Smartfren", name: "Data Kuota 66 GB",                        desc: "Masa Aktif 28 Hari", price: "Rp 102.000" },
+  { id: 530, category: "Smartfren", name: "Data Kuota 100 GB",                       desc: "Masa Aktif 30 Hari", price: "Rp 110.000" },
+  { id: 531, category: "Smartfren", name: "Data Kuota 150 GB",                       desc: "Masa Aktif 28 Hari", price: "Rp 143.000" },
+  { id: 532, category: "Smartfren", name: "Data Kuota 5G 175 GB",                    desc: "Masa Aktif 28 Hari", price: "Rp 177.000" },
+  { id: 533, category: "Smartfren", name: "Data Kuota 200 GB",                       desc: "Masa Aktif 28 Hari", price: "Rp 201.000" },
+  { id: 534, category: "Smartfren", name: "Data Kuota 200 GB",                       desc: "Masa Aktif 30 Hari", price: "Rp 196.000" },
+  { id: 535, category: "Smartfren", name: "Data Kuota 250 GB",                       desc: "Masa Aktif 28 Hari", price: "Rp 194.000" },
+  { id: 536, category: "Smartfren", name: "Data Kuota 5G 250 GB",                    desc: "Masa Aktif 28 Hari", price: "Rp 252.000" },
+  { id: 537, category: "Smartfren", name: "Data Kuota 300 GB",                       desc: "Masa Aktif 28 Hari", price: "Rp 261.000" },
+  { id: 538, category: "Smartfren", name: "Data Kuota 5G 350 GB",                    desc: "Masa Aktif 28 Hari", price: "Rp 351.000" },
+  { id: 539, category: "Smartfren", name: "Data Kuota 500 GB",                       desc: "Masa Aktif 28 Hari", price: "Rp 400.000" },
+  { id: 540, category: "Smartfren", name: "Data Kuota M (14 GB)",                    desc: "Masa Aktif 30 Hari", price: "Rp 46.000"  },
+  { id: 541, category: "Smartfren", name: "Data Kuota L (24 GB)",                    desc: "Masa Aktif 30 Hari", price: "Rp 65.000"  },
+  { id: 542, category: "Smartfren", name: "Data Kuota 2L (45 GB)",                   desc: "Masa Aktif 30 Hari", price: "Rp 86.000"  },
+  { id: 543, category: "Smartfren", name: "Data Kuota 3L (85 GB)",                   desc: "Masa Aktif 30 Hari", price: "Rp 132.000" },
+  { id: 544, category: "Smartfren", name: "Data Kuota 4L (125 GB)",                  desc: "Masa Aktif 30 Hari", price: "Rp 141.000" },
 
   // --- MASA AKTIF ---
   { id: 601, category: "MasaAktif", name: "Tambah Masa Aktif 15 Hari",  desc: "Telkomsel", price: "Rp 8.000"   },
@@ -412,39 +412,45 @@ export default function LandingPage() {
 
   useEffect(() => {
     const h = new Date().getHours();
-    if (h >= 5  && h < 11)  setGreeting("Selamat Pagi 👋");
-    else if (h >= 11 && h < 15) setGreeting("Selamat Siang ☀️");
-    else if (h >= 15 && h < 18) setGreeting("Selamat Sore ☕");
-    else setGreeting("Selamat Malam 🌙");
+    if (h >= 5  && h < 11)  setGreeting("Halo Kak, Selamat Pagi 👋");
+    else if (h >= 11 && h < 15) setGreeting("Halo Kak, Selamat Siang ☀️");
+    else if (h >= 15 && h < 18) setGreeting("Halo Kak, Selamat Sore ☕");
+    else setGreeting("Halo Kak, Selamat Malam 🌙");
     setCurrentDate(new Date().toLocaleDateString('id-ID', {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
     }));
   }, []);
 
-  // ── Filter & sort ─────────────────────────────────────────
-  let displayProducts: Product[] = [];
+  // ── LOGIKA FILTERING BEBAS BUG ─────────────────────────────
+  
+  // 1. Ambil SEMUA produk sesuai Kategori (sebelum filter jenis)
+  let baseCategoryProducts: Product[] = [];
   if (activeCategory === "MasaAktif") {
-    displayProducts = products.filter(p => p.category === "MasaAktif");
-    if (activeMaOp !== "Semua") displayProducts = displayProducts.filter(p => p.desc === activeMaOp);
+    baseCategoryProducts = products.filter(p => p.category === "MasaAktif");
+    if (activeMaOp !== "Semua") baseCategoryProducts = baseCategoryProducts.filter(p => p.desc === activeMaOp);
   } else if (activeCategory !== "Home") {
-    displayProducts = products.filter(p => p.category === activeCategory);
+    baseCategoryProducts = products.filter(p => p.category === activeCategory);
   }
 
+  // 2. Kumpulkan SEMUA jenis paket ("Combo Flex", "Bronet", dll) dari kategori ini
+  const nonAkrabBase = baseCategoryProducts.filter(p => !p.name.toLowerCase().includes('akrab'));
+  const availableTypes = ["Semua Tipe", ...Array.from(new Set(nonAkrabBase.map(p => getPackageType(p.name))))];
+
+  // 3. BARU KITA FILTER berdasarkan Jenis Paket (Pill Button) yang dipilih user
+  let displayProducts = baseCategoryProducts;
+  if (activeType !== "Semua Tipe" && activeCategory !== "Home" && activeCategory !== "MasaAktif") {
+    displayProducts = displayProducts.filter(p => getPackageType(p.name) === activeType);
+  }
+
+  // 4. Sort Harga Termurah
   if (sortBy === "Termurah" && activeCategory !== "Home") {
     displayProducts = [...displayProducts].sort((a, b) => priceToNumber(a.price) - priceToNumber(b.price));
   }
 
-  // Pisahkan AKRAB sebelum filter tipe
+  // 5. Pisahkan Grup AKRAB agar selalu rapi di atas (Jika di kategori XL & Axis)
   const akrabGroup = displayProducts.filter(p => p.name.toLowerCase().includes('akrab'));
-  const nonAkrab   = displayProducts.filter(p => !p.name.toLowerCase().includes('akrab'));
+  const finalProducts: DisplayItem[] = displayProducts.filter(p => !p.name.toLowerCase().includes('akrab'));
 
-  const availableTypes = ["Semua Tipe", ...Array.from(new Set(nonAkrab.map(p => getPackageType(p.name))))];
-
-  const filteredNonAkrab = (activeType !== "Semua Tipe" && activeCategory !== "Home" && activeCategory !== "MasaAktif")
-    ? nonAkrab.filter(p => getPackageType(p.name) === activeType)
-    : nonAkrab;
-
-  const finalProducts: DisplayItem[] = [...filteredNonAkrab];
   if (akrabGroup.length > 0) {
     finalProducts.unshift({
       id: "master-akrab", category: "XL & Axis",
@@ -455,6 +461,7 @@ export default function LandingPage() {
     } as GroupedProduct);
   }
 
+  // Handlers
   const handleCategoryClick = (cat: ActiveCategory) => {
     setActiveCategory(cat); setActiveType("Semua Tipe");
     setSortBy("Default");   setActiveMaOp("Semua");
@@ -463,28 +470,28 @@ export default function LandingPage() {
     setSelectedVariants(prev => ({ ...prev, [id]: name }));
 
   // ─────────────────────────────────────────────────────────
-  // RENDER
+  // RENDER UI
   // ─────────────────────────────────────────────────────────
   return (
     <div className="bg-slate-200 min-h-screen flex justify-center font-sans text-[#334155]">
       <div className="bg-[#F8FAFC] w-full max-w-md relative shadow-2xl overflow-hidden flex flex-col h-screen">
         <div className="flex-1 overflow-y-auto pb-24 scrollbar-hide">
 
-          {/* ── HEADER ── */}
-          <div className="bg-[#1E293B] text-white px-5 py-6 rounded-b-[2.5rem] shadow-md relative z-10">
+          {/* ── HEADER PREMIUM ── */}
+          <div className="bg-gradient-to-r from-[#1E293B] to-[#334155] text-white px-5 py-6 rounded-b-[2.5rem] shadow-md relative z-10">
             <div className="flex justify-between items-start mb-5">
               <div>
-                <p className="text-sm font-medium opacity-80">{greeting}</p>
-                <h1 className="text-xl font-extrabold tracking-wide">Juragan</h1>
+                <p className="text-sm font-bold opacity-90">{greeting}</p>
+                <p className="text-xs text-slate-300 mt-0.5">Mau isi kuota apa hari ini?</p>
               </div>
-              <div className="bg-white/10 p-2 rounded-full border border-white/10">
+              <div className="bg-white/10 p-2 rounded-full border border-white/10 shadow-sm backdrop-blur-md">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                 </svg>
               </div>
             </div>
-            <div className="bg-[#0F172A]/70 rounded-2xl px-4 py-3 text-center border border-white/10">
+            <div className="bg-[#0F172A]/70 rounded-2xl px-4 py-3 text-center border border-white/10 backdrop-blur-sm">
               <h2 className="text-base font-black tracking-widest text-white/95">ARWANI D'GABRIEL STORE</h2>
               <p className="text-[11px] font-bold text-[#FF6B35] mt-1 opacity-90 tracking-wide">
                 {currentDate || "Memuat tanggal..."}
@@ -495,11 +502,11 @@ export default function LandingPage() {
           {/* ── HOME ── */}
           {activeCategory === "Home" ? (
             <div className="px-5 mt-6 pb-6">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Pilih Operator</p>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Pilih Operator Utama</p>
               <div className="grid grid-cols-3 gap-3">
                 {categories.map(cat => (
                   <div key={cat} onClick={() => handleCategoryClick(cat)}
-                    className="bg-white rounded-2xl p-4 flex flex-col items-center justify-center border border-slate-100 hover:border-[#FF6B35]/50 cursor-pointer transition hover:scale-105">
+                    className="bg-white rounded-2xl p-4 flex flex-col items-center justify-center shadow-sm border border-slate-100 hover:border-[#FF6B35]/60 cursor-pointer transition-all hover:-translate-y-1">
                     <img src={getProviderLogo(cat)} alt={cat} className="h-9 object-contain mb-2.5" />
                     <span className="text-[10px] font-bold text-[#334155] text-center leading-tight">{cat}</span>
                   </div>
@@ -507,10 +514,10 @@ export default function LandingPage() {
               </div>
 
               {/* Shortcut Masa Aktif */}
-              <div className="mt-4">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Layanan Lain</p>
+              <div className="mt-5">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Layanan Ekstra</p>
                 <div onClick={() => handleCategoryClick("MasaAktif")}
-                  className="bg-white rounded-2xl p-4 flex items-center gap-3 border border-slate-100 hover:border-[#FF6B35]/50 cursor-pointer transition hover:scale-[1.02]">
+                  className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm border border-slate-100 hover:border-[#FF6B35]/60 cursor-pointer transition-all hover:-translate-y-0.5">
                   <div className="w-10 h-10 bg-[#E0F2FE] rounded-xl flex items-center justify-center flex-shrink-0">
                     <svg className="w-5 h-5 text-[#0369A1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -534,17 +541,17 @@ export default function LandingPage() {
                 {/* Baris kontrol atas */}
                 <div className="flex items-center justify-between mb-4">
                   <button onClick={() => handleCategoryClick("Home")}
-                    className="flex items-center gap-1.5 text-[#334155] font-bold text-xs bg-white px-3 py-2 rounded-xl border border-slate-100 hover:bg-slate-50 transition">
+                    className="flex items-center gap-1.5 text-[#334155] font-bold text-xs bg-white px-3 py-2 rounded-xl shadow-sm border border-slate-100 hover:bg-slate-50 transition">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
                     Kembali
                   </button>
-                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-100">
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-sm border border-slate-100">
                     {(["Default", "Termurah"] as const).map(s => (
                       <button key={s} onClick={() => setSortBy(s)}
                         className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition ${
-                          sortBy === s ? "bg-[#FF6B35] text-white" : "text-slate-400"
+                          sortBy === s ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-slate-600"
                         }`}>
                         {s === "Default" ? "Terbaru" : "Termurah"}
                       </button>
@@ -552,24 +559,24 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* ── Scroll provider logo (non MasaAktif) ── */}
+                {/* ── Scroll Pindah Provider Cepat ── */}
                 {activeCategory !== "MasaAktif" && (
                   <div className="flex overflow-x-auto pb-2.5 gap-2 scrollbar-hide -mx-5 px-5">
                     {categories.map(cat => (
                       <button key={cat} onClick={() => handleCategoryClick(cat)}
-                        className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border ${
+                        className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm border ${
                           activeCategory === cat
                             ? "bg-[#FF6B35] text-white border-[#FF6B35]"
-                            : "bg-white text-[#334155] border-slate-200"
+                            : "bg-white text-[#334155] border-slate-100 hover:border-[#FF6B35]/40"
                         }`}>
-                        <img src={getProviderLogo(cat)} alt={cat} className="h-4 w-4 object-contain" />
+                        <img src={getProviderLogo(cat)} alt={cat} className="h-4 w-4 object-contain drop-shadow-sm" />
                         {cat}
                       </button>
                     ))}
                   </div>
                 )}
 
-                {/* ── Filter tipe paket (non MasaAktif) ── */}
+                {/* ── Filter Jenis Paket ── */}
                 {activeCategory !== "MasaAktif" && availableTypes.length > 2 && (
                   <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-5 px-5 mt-2">
                     {availableTypes.map(type => {
@@ -577,7 +584,7 @@ export default function LandingPage() {
                       const isActive = activeType === type;
                       return (
                         <button key={type} onClick={() => setActiveType(type)}
-                          className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold transition border"
+                          className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold transition border shadow-sm"
                           style={{
                             background:  isActive ? col.text : col.bg,
                             color:       isActive ? '#fff'   : col.text,
@@ -590,11 +597,11 @@ export default function LandingPage() {
                   </div>
                 )}
 
-                {/* ── Filter operator Masa Aktif ── */}
+                {/* ── Filter Masa Aktif ── */}
                 {activeCategory === "MasaAktif" && (
                   <>
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1 mb-2.5">
-                      Perpanjang Masa Aktif
+                      Pilih Operator
                     </p>
                     <div className="flex overflow-x-auto pb-2.5 gap-2 scrollbar-hide -mx-5 px-5">
                       {MASA_AKTIF_OPERATORS.map(op => {
@@ -602,10 +609,10 @@ export default function LandingPage() {
                         const logo = getMasaAktifLogo(op);
                         return (
                           <button key={op} onClick={() => setActiveMaOp(op)}
-                            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border ${
+                            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm border ${
                               isActive
                                 ? "bg-[#0369A1] text-white border-[#0369A1]"
-                                : "bg-white text-[#334155] border-slate-200"
+                                : "bg-white text-[#334155] border-slate-100 hover:border-[#0369A1]/40"
                             }`}>
                             {logo && <img src={logo} alt={op} className="h-4 w-4 object-contain" />}
                             {op}
@@ -617,7 +624,7 @@ export default function LandingPage() {
                 )}
               </div>
 
-              {/* ── GRID KARTU ── */}
+              {/* ── GRID KARTU PRODUK ── */}
               <div className="px-5 mt-3 pb-6">
                 <div className="grid grid-cols-2 gap-3">
                   {finalProducts.map(item => {
@@ -627,7 +634,7 @@ export default function LandingPage() {
                       const selName = selectedVariants[item.id] || item.variants[0].name;
                       const selVar  = item.variants.find(v => v.name === selName) ?? item.variants[0];
                       return (
-                        <div key={item.id} className="col-span-2 bg-white rounded-2xl p-4 border border-slate-100 relative overflow-hidden">
+                        <div key={item.id} className="col-span-2 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden">
                           <div className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl bg-amber-400" />
                           <div className="flex items-start justify-between mt-1 mb-3">
                             <div className="flex items-center gap-3">
@@ -647,10 +654,9 @@ export default function LandingPage() {
                               </div>
                             </div>
                             <a href="https://almaprayuda.github.io/akrabarea/" target="_blank" rel="noopener noreferrer"
-                              className="flex-shrink-0 bg-amber-50 text-amber-700 text-[10px] font-bold px-2.5 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1 hover:bg-amber-100 transition">
+                              className="flex-shrink-0 bg-amber-50 text-amber-700 text-[10px] font-bold px-2.5 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1 hover:bg-amber-100 transition shadow-sm">
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                               </svg>
                               Cek Area
                             </a>
@@ -666,12 +672,11 @@ export default function LandingPage() {
                           </div>
                           <div className="mt-3 flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
                             <div>
-                              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Harga Varian</p>
-                              <p className="text-base font-black text-[#FF6B35]">{selVar.price}</p>
-                              <p className="text-[9px] text-slate-400 mt-0.5">{selVar.desc}</p>
+                               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Harga Varian</p>
+                               <p className="text-base font-black text-[#FF6B35]">{selVar.price}</p>
                             </div>
                             <a href={getWaLink(selVar.name, selVar.price)} target="_blank" rel="noopener noreferrer"
-                              className="bg-[#FF6B35] text-white px-4 py-2 rounded-xl text-xs font-bold hover:opacity-90 transition">
+                              className="bg-[#FF6B35] text-white px-4 py-2 rounded-xl text-xs font-bold hover:opacity-90 transition shadow-md">
                               Pesan Sekarang
                             </a>
                           </div>
@@ -687,18 +692,15 @@ export default function LandingPage() {
 
                     return (
                       <div key={item.id}
-                        className="bg-white rounded-2xl p-3 border border-slate-100 relative flex flex-col justify-between hover:border-[#FF6B35]/30 transition group overflow-hidden">
-                        {/* Accent top line berwarna sesuai tipe */}
-                        <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
+                        className="bg-white rounded-2xl p-3 shadow-sm border border-slate-100 relative flex flex-col justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group overflow-hidden">
+                        <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl opacity-80"
                           style={{ background: typeColor.text }} />
 
                         <div className="mt-2 flex flex-col items-start">
-                          {/* Logo + badge tipe dalam satu baris */}
                           <div className="flex items-center justify-between w-full mb-2">
                             <div className="w-9 h-9 flex items-center justify-start flex-shrink-0">
                               {logo ? (
-                                <img src={logo} alt={isMasaAktif ? item.desc : item.category}
-                                  className="max-h-full max-w-full object-contain" />
+                                <img src={logo} alt={isMasaAktif ? item.desc : item.category} className="max-h-full max-w-full object-contain drop-shadow-sm" />
                               ) : (
                                 <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold"
                                   style={{ background: typeColor.bg, color: typeColor.text }}>
@@ -706,7 +708,6 @@ export default function LandingPage() {
                                 </div>
                               )}
                             </div>
-                            {/* Badge tipe kuota — sekarang ada di setiap kartu */}
                             <span className="text-[9px] font-bold px-2 py-0.5 rounded-full"
                               style={{ background: typeColor.bg, color: typeColor.text }}>
                               {pkgType}
@@ -740,13 +741,13 @@ export default function LandingPage() {
 
                 {/* Empty state */}
                 {finalProducts.length === 0 && (
-                  <div className="text-center py-12 bg-white rounded-2xl mt-2 border border-slate-100">
-                    <div className="text-3xl mb-3">📦</div>
-                    <p className="text-slate-500 text-sm font-bold">Tidak ada produk</p>
+                  <div className="text-center py-12 bg-white rounded-2xl mt-2 border border-slate-100 shadow-sm">
+                    <div className="text-4xl mb-3 opacity-50">📦</div>
+                    <p className="text-slate-500 text-sm font-bold">Tidak ada paket</p>
                     <p className="text-slate-400 text-xs mt-1">
                       {activeCategory === "MasaAktif"
-                        ? "Belum ada paket masa aktif untuk operator ini."
-                        : "Coba pilih tipe paket lain."}
+                        ? "Pilih tab semua atau operator lain."
+                        : "Coba hapus filter atau pilih operator lain."}
                     </p>
                   </div>
                 )}
@@ -755,21 +756,22 @@ export default function LandingPage() {
           )}
         </div>
 
-        {/* ── BOTTOM NAV ── */}
-        <div className="absolute bottom-0 w-full bg-white border-t border-slate-200 rounded-t-2xl shadow-[0_-8px_24px_rgba(0,0,0,0.07)] px-4 py-2 flex justify-between items-end z-50 h-16">
-          <div className="flex justify-around w-[40%] pb-1">
+        {/* ── BOTTOM NAV (FROSTED GLASS, ANTI-BUG) ── */}
+        <div className="absolute bottom-0 w-full backdrop-blur-xl bg-white/90 border-t border-slate-200/60 rounded-t-3xl shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)] px-4 py-2 flex justify-between items-end z-50 h-[4.5rem]">
+          <div className="flex justify-around w-[40%] pb-1.5">
             <button onClick={() => handleCategoryClick("Home")}
               className={`flex flex-col items-center transition ${activeCategory === "Home" ? "text-[#FF6B35]" : "text-slate-400 hover:text-[#FF6B35]"}`}>
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
               </svg>
               <span className="text-[9px] font-bold mt-0.5">Home</span>
             </button>
-            <button onClick={() => handleCategoryClick("Telkomsel")}
+            <button 
+              onClick={() => { if (activeCategory === "Home" || activeCategory === "MasaAktif") handleCategoryClick("Telkomsel"); }}
               className={`flex flex-col items-center transition ${
                 activeCategory !== "Home" && activeCategory !== "MasaAktif" ? "text-[#FF6B35]" : "text-slate-400 hover:text-[#FF6B35]"
               }`}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                   d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
               </svg>
@@ -779,19 +781,19 @@ export default function LandingPage() {
 
           {/* WA tengah */}
           <a href={getWaLink("Bantuan Admin")} target="_blank" rel="noopener noreferrer"
-            className="absolute left-1/2 -translate-x-1/2 -top-5 flex flex-col items-center z-50">
-            <div className="bg-[#10B981] w-14 h-14 rounded-full flex items-center justify-center border-4 border-[#F8FAFC] hover:scale-105 transition shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            className="absolute left-1/2 -translate-x-1/2 -top-6 flex flex-col items-center z-50">
+            <div className="bg-[#10B981] w-14 h-14 rounded-full flex items-center justify-center border-[4px] border-[#F8FAFC] hover:scale-105 transition shadow-[0_4px_15px_rgba(16,185,129,0.3)]">
+              <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.115.548 4.184 1.59 6.002L.004 24l6.104-1.601A11.96 11.96 0 0012.031 24c6.646 0 12.031-5.385 12.031-12.031C24.062 5.385 18.677 0 12.031 0zM18.16 16.924c-.26.735-1.503 1.4-2.074 1.458-.528.054-1.203.11-3.486-.838-2.738-1.134-4.516-3.923-4.654-4.108-.138-.184-1.11-1.478-1.11-2.822s.7-1.996.953-2.285c.253-.29.548-.363.733-.363.184 0 .368.006.533.013.178.008.416-.073.654.492.247.585.83 2.03.904 2.179.073.15.123.324.03.508-.091.184-.138.301-.276.467-.138.167-.291.353-.414.491-.133.15-.276.315-.12.565.156.248.694 1.133 1.493 1.894 1.033.985 1.9 1.288 2.146 1.402.247.114.39.096.536-.07.146-.167.632-.735.802-.988.17-.253.34-.212.565-.125.225.086 1.428.673 1.674.795.247.123.411.184.473.288.062.103.062.605-.198 1.34z"/>
               </svg>
             </div>
-            <span className="text-[9px] font-bold mt-1 text-[#10B981]">Admin</span>
+            <span className="text-[10px] font-extrabold mt-1 text-[#10B981] drop-shadow-sm">CS Admin</span>
           </a>
 
-          <div className="flex justify-end w-[40%] pr-2 pb-1">
+          <div className="flex justify-end w-[40%] pr-2 pb-1.5">
             <button onClick={() => handleCategoryClick("MasaAktif")}
               className={`flex flex-col items-center transition ${activeCategory === "MasaAktif" ? "text-[#FF6B35]" : "text-slate-400 hover:text-[#FF6B35]"}`}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
               <span className="text-[9px] font-bold mt-0.5">Masa Aktif</span>
