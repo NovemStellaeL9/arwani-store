@@ -50,7 +50,7 @@ const MASA_AKTIF_LOGOS: Record<string, string> = {
   "XL":        "/xl.png",
 };
 
-// Warna badge per tipe kuota (Ditambahkan FlexMax)
+// WARNA BADGE DIPERBARUI (Memisahkan Combo Flex dan FlexMax)
 const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
   'Data Flash':        { bg: '#FEF3C7', text: '#92400E' },
   'Freedom':           { bg: '#EDE9FE', text: '#5B21B6' },
@@ -59,8 +59,8 @@ const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
   'BRONET':            { bg: '#DBEAFE', text: '#1E40AF' },
   'OWSEM':             { bg: '#FEE2E2', text: '#991B1B' },
   'Combo':             { bg: '#F0FDF4', text: '#14532D' },
-  'FlexMax':           { bg: '#ECFCCB', text: '#3F6212' }, // Warna khusus FlexMax
-  'Combo Flex':        { bg: '#ECFDF5', text: '#065F46' },
+  'FlexMax':           { bg: '#ECFCCB', text: '#3F6212' }, // Warna FlexMax (Lime)
+  'Combo Flex':        { bg: '#ECFDF5', text: '#065F46' }, // Warna Combo Flex (Mint)
   'Paket Kuota':       { bg: '#F1F5F9', text: '#334155' },
   'Paket by.U':        { bg: '#EFF6FF', text: '#1D4ED8' },
   'Reguler / Lainnya': { bg: '#F3F4F6', text: '#6B7280' },
@@ -71,7 +71,7 @@ const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
 const MASA_AKTIF_OPERATORS = ["Semua", "Telkomsel", "Indosat", "Tri", "Axis", "XL"];
 
 // ─────────────────────────────────────────────────────────────
-// DATABASE PRODUK (UPDATE DATA XL FLEXMAX)
+// DATABASE PRODUK
 // ─────────────────────────────────────────────────────────────
 const products: Product[] = [
   // --- TELKOMSEL ---
@@ -118,14 +118,14 @@ const products: Product[] = [
   { id: 114, category: "by.U", name: "by.U Kuota 20 GB All",            desc: "Masa Aktif 30 Hari", price: "Rp 65.000"  },
   { id: 115, category: "by.U", name: "by.U Kuota 18 GB",                desc: "Masa Aktif 30 Hari", price: "Rp 80.000"  },
   { id: 116, category: "by.U", name: "by.U Kuota 6 GB All (All Zona)",  desc: "Masa Aktif 30 Hari", price: "Rp 81.000"  },
-  { id: 117, category: "by.U", name: "by.U Kuota 42 GB All",            desc: "Masa Aktif 30 Hari", price: "Rp 104.000" },
-  { id: 118, category: "by.U", name: "by.U Kuota 50 GB All",            desc: "Masa Aktif 30 Hari", price: "Rp 104.000" },
-  { id: 119, category: "by.U", name: "by.U Kuota 65 GB All",            desc: "Masa Aktif 30 Hari", price: "Rp 104.000" },
-  { id: 120, category: "by.U", name: "by.U Kuota 37 GB All",            desc: "Masa Aktif 30 Hari", price: "Rp 107.000" },
-  { id: 121, category: "by.U", name: "by.U Kuota 9 GB All (All Zona)",  desc: "Masa Aktif 30 Hari", price: "Rp 108.000" },
-  { id: 122, category: "by.U", name: "by.U Kuota 12 GB All (All Zona)", desc: "Masa Aktif 30 Hari", price: "Rp 126.000" },
-  { id: 123, category: "by.U", name: "by.U Kuota 20 GB All (All Zona)", desc: "Masa Aktif 30 Hari", price: "Rp 157.000" },
-  { id: 124, category: "by.U", name: "by.U Kuota 125 GB All",           desc: "Masa Aktif 30 Hari", price: "Rp 216.000" },
+  { id: 117, category: "by.U", name: "by.U Kuota 42 GB All",            desc: "Masa Aktif 30 Hari", price: "Rp 104.000"  },
+  { id: 118, category: "by.U", name: "by.U Kuota 50 GB All",            desc: "Masa Aktif 30 Hari", price: "Rp 104.000"  },
+  { id: 119, category: "by.U", name: "by.U Kuota 65 GB All",            desc: "Masa Aktif 30 Hari", price: "Rp 104.000"  },
+  { id: 120, category: "by.U", name: "by.U Kuota 37 GB All",            desc: "Masa Aktif 30 Hari", price: "Rp 107.000"  },
+  { id: 121, category: "by.U", name: "by.U Kuota 9 GB All (All Zona)",  desc: "Masa Aktif 30 Hari", price: "Rp 108.000"  },
+  { id: 122, category: "by.U", name: "by.U Kuota 12 GB All (All Zona)", desc: "Masa Aktif 30 Hari", price: "Rp 126.000"  },
+  { id: 123, category: "by.U", name: "by.U Kuota 20 GB All (All Zona)", desc: "Masa Aktif 30 Hari", price: "Rp 157.000"  },
+  { id: 124, category: "by.U", name: "by.U Kuota 125 GB All",           desc: "Masa Aktif 30 Hari", price: "Rp 216.000"  },
 
   // --- TRI ---
   { id: 201, category: "Tri", name: "Data AlwaysOn 1.5 GB",            desc: "Masa Aktif -",       price: "Rp 27.000"  },
@@ -271,32 +271,52 @@ const products: Product[] = [
   { id: 455, category: "XL & Axis", name: "Xtra Combo VIP 20+40 GB",                    desc: "Masa Aktif 30 Hari", price: "Rp 176.000" },
   { id: 456, category: "XL & Axis", name: "Xtra Combo 35+70 GB (105 GB)",               desc: "Masa Aktif 28 Hari", price: "Rp 232.000" },
   
-  // --- MULAI DATA FLEXMAX BARU ---
-  { id: 457, category: "XL & Axis", name: "Data FlexMax 7 GB",                          desc: "Masa Aktif 28 Hari", price: "Rp 36.000"  },
-  { id: 458, category: "XL & Axis", name: "Data FlexMax 16 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 48.500"  },
-  { id: 459, category: "XL & Axis", name: "Data FlexMax 23 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 58.000"  },
-  { id: 460, category: "XL & Axis", name: "XL Data FlexMax 33 GB",                      desc: "Masa Aktif 14 Hari", price: "Rp 64.000"  },
-  { id: 461, category: "XL & Axis", name: "Data FlexMax 31 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 64.000"  },
-  { id: 462, category: "XL & Axis", name: "XL Data FlexMax 75 GB",                      desc: "Masa Aktif 14 Hari", price: "Rp 73.500"  },
-  { id: 463, category: "XL & Axis", name: "Data FlexMax 40 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 74.500"  },
-  { id: 464, category: "XL & Axis", name: "XL Data FlexMax 50 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 85.000"  },
-  { id: 465, category: "XL & Axis", name: "XL Data FlexMax 65 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 93.000"  },
-  { id: 466, category: "XL & Axis", name: "XL Data FlexMax 60 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 95.000"  },
-  { id: 467, category: "XL & Axis", name: "Data FlexMax 100 GB",                        desc: "Masa Aktif 28 Hari", price: "Rp 119.000" },
-  { id: 468, category: "XL & Axis", name: "XL Data FlexMax 80 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 119.000" },
-  { id: 469, category: "XL & Axis", name: "XL Data FlexMax 72 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 120.500" },
-  { id: 470, category: "XL & Axis", name: "XL Data FlexMax 150 GB",                     desc: "Masa Aktif 28 Hari", price: "Rp 142.000" },
-  { id: 471, category: "XL & Axis", name: "XL Data FlexMax 250 GB",                     desc: "Masa Aktif 28 Hari", price: "Rp 192.000" },
-  { id: 472, category: "XL & Axis", name: "XL Data FlexMax 500 GB",                     desc: "Masa Aktif 28 Hari", price: "Rp 289.000" },
-  // --- AKHIR DATA FLEXMAX BARU ---
+  // --- MULAI DATA COMBO FLEX (Data Lama Dikembalikan) ---
+  { id: 457, category: "XL & Axis", name: "Data Combo FLEX 7 GB",                          desc: "Masa Aktif 28 Hari", price: "Rp 34.000"  },
+  { id: 458, category: "XL & Axis", name: "Data Combo FLEX 13 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 48.000"  },
+  { id: 459, category: "XL & Axis", name: "Data Combo FLEX 19 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 57.000"  },
+  { id: 460, category: "XL & Axis", name: "Data Combo FLEX 26 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 65.000"  },
+  { id: 461, category: "XL & Axis", name: "Data Combo FLEX 34 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 76.000"  },
+  { id: 462, category: "XL & Axis", name: "Combo FLEX S 4GB NAS + Local + 5Mnt Nelp All",       desc: "Masa Aktif 14 Hari", price: "Rp 27.000"  },
+  { id: 463, category: "XL & Axis", name: "Combo FLEX S 3.5GB NAS + Local + 5Mnt Nelp All",     desc: "Masa Aktif 21 Hari", price: "Rp 31.000"  },
+  { id: 464, category: "XL & Axis", name: "Combo FLEX S 3.5GB NAS + Local + 5Mnt Nelp All",     desc: "Masa Aktif 28 Hari", price: "Rp 36.000"  },
+  { id: 465, category: "XL & Axis", name: "Combo FLEX S 7GB NAS",                          desc: "Masa Aktif 28 Hari", price: "Rp 36.000"  },
+  { id: 466, category: "XL & Axis", name: "Combo FLEX S 7GB NAS + Local + 5Mnt Nelp All",       desc: "Masa Aktif 28 Hari", price: "Rp 37.000"  },
+  { id: 467, category: "XL & Axis", name: "Combo FLEX M 10GB NAS + Local + 5Mnt Nelp All",      desc: "Masa Aktif 28 Hari", price: "Rp 53.000"  },
+  { id: 468, category: "XL & Axis", name: "Combo FLEX M+ 14GB NAS + Local + 5Mnt Nelp All",     desc: "Masa Aktif 28 Hari", price: "Rp 63.000"  },
+  { id: 469, category: "XL & Axis", name: "Combo FLEX L 18GB NAS + Local + 5Mnt Nelp All",      desc: "Masa Aktif 28 Hari", price: "Rp 71.000"  },
+  { id: 470, category: "XL & Axis", name: "Combo FLEX L+ 26GB NAS + Local + 5Mnt Nelp All",     desc: "Masa Aktif 28 Hari", price: "Rp 87.000"  },
+  { id: 471, category: "XL & Axis", name: "Combo FLEX XL 32GB NAS + Local + 5Mnt Nelp All",     desc: "Masa Aktif 21 Hari", price: "Rp 108.000" },
+  { id: 472, category: "XL & Axis", name: "Combo FLEX XL 32GB NAS + Local + 5Mnt Nelp All",     desc: "Masa Aktif 28 Hari", price: "Rp 108.000" },
+  { id: 473, category: "XL & Axis", name: "Combo FLEX Max 55GB NAS + Local + 5Mnt Nelp All",    desc: "Masa Aktif 28 Hari", price: "Rp 145.000" }, // Tambahan Combo Flex Max
+  { id: 474, category: "XL & Axis", name: "Combo FLEX XXXL 120GB NAS + Local + 5Mnt Nelp All",  desc: "Masa Aktif 28 Hari", price: "Rp 167.000" },
 
-  { id: 480, category: "XL & Axis", name: "AKRAB Super Mini", desc: "13 - 32 GB",  price: "Rp 51.000"  },
-  { id: 481, category: "XL & Axis", name: "AKRAB Mini",        desc: "32 - 51 GB",  price: "Rp 65.000"  },
-  { id: 482, category: "XL & Axis", name: "AKRAB Big",         desc: "38 - 57 GB",  price: "Rp 70.000"  },
-  { id: 483, category: "XL & Axis", name: "AKRAB Jumbo V2",    desc: "50 - 69 GB",  price: "Rp 79.000"  },
-  { id: 484, category: "XL & Axis", name: "AKRAB Jumbo New",   desc: "63 - 82 GB",  price: "Rp 88.000"  },
-  { id: 485, category: "XL & Axis", name: "AKRAB Jumbo M",     desc: "69 - 88 GB",  price: "Rp 93.000"  },
-  { id: 486, category: "XL & Axis", name: "AKRAB Megabig",     desc: "88 - 107 GB", price: "Rp 107.000" },
+  // --- MULAI DATA FLEXMAX TERBARU ---
+  { id: 475, category: "XL & Axis", name: "Data FlexMax 7 GB",                          desc: "Masa Aktif 28 Hari", price: "Rp 36.000"  },
+  { id: 476, category: "XL & Axis", name: "Data FlexMax 16 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 48.500"  },
+  { id: 477, category: "XL & Axis", name: "Data FlexMax 23 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 58.000"  },
+  { id: 478, category: "XL & Axis", name: "XL Data FlexMax 33 GB",                      desc: "Masa Aktif 14 Hari", price: "Rp 64.000"  },
+  { id: 479, category: "XL & Axis", name: "Data FlexMax 31 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 64.000"  },
+  { id: 480, category: "XL & Axis", name: "XL Data FlexMax 75 GB",                      desc: "Masa Aktif 14 Hari", price: "Rp 73.500"  },
+  { id: 481, category: "XL & Axis", name: "Data FlexMax 40 GB",                         desc: "Masa Aktif 28 Hari", price: "Rp 74.500"  },
+  { id: 482, category: "XL & Axis", name: "XL Data FlexMax 50 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 85.000"  },
+  { id: 483, category: "XL & Axis", name: "XL Data FlexMax 65 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 93.000"  },
+  { id: 484, category: "XL & Axis", name: "XL Data FlexMax 60 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 95.000"  },
+  { id: 485, category: "XL & Axis", name: "Data FlexMax 100 GB",                        desc: "Masa Aktif 28 Hari", price: "Rp 119.000" },
+  { id: 486, category: "XL & Axis", name: "XL Data FlexMax 80 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 119.000" },
+  { id: 487, category: "XL & Axis", name: "XL Data FlexMax 72 GB",                      desc: "Masa Aktif 28 Hari", price: "Rp 120.500" },
+  { id: 488, category: "XL & Axis", name: "XL Data FlexMax 150 GB",                     desc: "Masa Aktif 28 Hari", price: "Rp 142.000" },
+  { id: 489, category: "XL & Axis", name: "XL Data FlexMax 250 GB",                     desc: "Masa Aktif 28 Hari", price: "Rp 192.000" },
+  { id: 490, category: "XL & Axis", name: "XL Data FlexMax 500 GB",                     desc: "Masa Aktif 28 Hari", price: "Rp 289.000" },
+  // --- AKHIR DATA FLEXMAX TERBARU ---
+
+  { id: 491, category: "XL & Axis", name: "AKRAB Super Mini", desc: "13 - 32 GB",  price: "Rp 51.000"  },
+  { id: 492, category: "XL & Axis", name: "AKRAB Mini",        desc: "32 - 51 GB",  price: "Rp 65.000"  },
+  { id: 493, category: "XL & Axis", name: "AKRAB Big",         desc: "38 - 57 GB",  price: "Rp 70.000"  },
+  { id: 494, category: "XL & Axis", name: "AKRAB Jumbo V2",    desc: "50 - 69 GB",  price: "Rp 79.000"  },
+  { id: 495, category: "XL & Axis", name: "AKRAB Jumbo New",   desc: "63 - 82 GB",  price: "Rp 88.000"  },
+  { id: 496, category: "XL & Axis", name: "AKRAB Jumbo M",     desc: "69 - 88 GB",  price: "Rp 93.000"  },
+  { id: 497, category: "XL & Axis", name: "AKRAB Megabig",     desc: "88 - 107 GB", price: "Rp 107.000" },
 
   // --- SMARTFREN ---
   { id: 501, category: "Smartfren", name: "Data 10 GB",                              desc: "Masa Aktif 30 Hari", price: "Rp 44.000"  },
@@ -370,12 +390,16 @@ const products: Product[] = [
 // ─────────────────────────────────────────────────────────────
 const priceToNumber = (p: string): number => parseInt(p.replace(/[^0-9]/g, ""), 10) || 0;
 
+// PENYEMPURNAAN LOGIKA PENDETEKSI NAMA PAKET
 const getPackageType = (name: string): string => {
   const n = name.toLowerCase();
   if (n.includes('akrab'))                                   return 'AKRAB';
   if (n.includes('by.u'))                                    return 'Paket by.U';
-  if (n.includes('flexmax'))                                 return 'FlexMax'; // Rule baru untuk mendeteksi FlexMax
+  
+  // URUTAN PENTING: Deteksi "flexmax" dulu, baru "flex"
+  if (n.includes('flexmax'))                                 return 'FlexMax'; 
   if (n.includes('flex'))                                    return 'Combo Flex';
+  
   if (n.includes('flash'))                                   return 'Data Flash';
   if (n.includes('freedom'))                                 return 'Freedom';
   if (n.includes('always') || n.includes('alwayson'))        return 'AlwaysOn';
@@ -431,7 +455,7 @@ export default function LandingPage() {
     baseCategoryProducts = products.filter(p => p.category === activeCategory);
   }
 
-  // 2. Kumpulkan SEMUA jenis paket ("Combo Flex", "Bronet", dll) dari kategori ini
+  // 2. Kumpulkan SEMUA jenis paket ("Combo Flex", "FlexMax", dll) dari kategori ini
   const nonAkrabBase = baseCategoryProducts.filter(p => !p.name.toLowerCase().includes('akrab'));
   const availableTypes = ["Semua Tipe", ...Array.from(new Set(nonAkrabBase.map(p => getPackageType(p.name))))];
 
