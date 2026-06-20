@@ -57,7 +57,7 @@ export default function Home() {
       <div className="px-5 mt-6 space-y-6">
         
         {/* ── PROMO BANNER ── */}
-        <Link href="/semua-produk?category=Telkomsel&type=Circel+Reguler" className="block">
+        <Link href="/semua-produk?category=XL+%26+Axis&type=Circel+Reguler+28+Hari" className="block">
           <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl p-5 text-white shadow-md relative overflow-hidden group hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
             {/* Background elements */}
             <div className="absolute right-0 bottom-0 translate-y-4 translate-x-2 w-32 h-32 bg-white/10 rounded-full blur-xl group-hover:scale-125 transition-transform duration-500" />
@@ -67,7 +67,7 @@ export default function Home() {
               Promo Terbatas 🔥
             </span>
             <h2 className="text-base font-black leading-snug tracking-wide">
-              Paket Telkomsel Circel Reguler 28 Hari
+              Paket XL & Axis Circel Reguler 28 Hari
             </h2>
             <p className="text-[10px] text-orange-100 font-semibold mt-1 max-w-[80%]">
               Internet full 24 jam mulai dari 10 GB hingga 69 GB. Proses instan langsung aktif!
@@ -96,7 +96,7 @@ export default function Home() {
                 <div className="h-9 w-9 flex items-center justify-center mb-2.5 transition-transform duration-300 group-hover:scale-110">
                   <img src={getProviderLogo(cat)} alt={cat} className="max-h-full max-w-full object-contain filter drop-shadow-sm" />
                 </div>
-                <span className="text-[10px] font-black text-slate-700 dark:text-slate-350 tracking-wide uppercase leading-none text-center">
+                <span className="text-[10px] font-black text-slate-700 dark:text-slate-300 tracking-wide uppercase leading-none text-center">
                   {cat}
                 </span>
               </button>
@@ -120,11 +120,11 @@ export default function Home() {
                 <p className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                   Masa Aktif Ekstra
                 </p>
-                <p className="text-[9px] font-bold text-slate-450 dark:text-slate-555 uppercase mt-0.5 tracking-wide">
+                <p className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase mt-0.5 tracking-wide">
                   Tambah masa aktif tanpa beli kuota utama
                 </p>
               </div>
-              <svg className="w-4 h-4 text-slate-300 dark:text-slate-650 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
+              <svg className="w-4 h-4 text-slate-300 dark:text-slate-600 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </div>
@@ -173,7 +173,7 @@ export default function Home() {
             <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
               Promo & Paket Terbaru
             </p>
-            <Link href="/semua-produk?category=Telkomsel&type=Circel+Reguler" className="text-[9px] font-black text-orange-500 dark:text-emerald-400 uppercase tracking-wider">
+            <Link href="/semua-produk?category=XL+%26+Axis&type=Circel+Reguler+28+Hari" className="text-[9px] font-black text-orange-500 dark:text-emerald-400 uppercase tracking-wider">
               Lihat Promo
             </Link>
           </div>
@@ -183,23 +183,23 @@ export default function Home() {
               // Loading skeleton
               Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800/85 shadow-sm space-y-3">
-                  <div className="h-4 bg-slate-200 dark:bg-slate-850 rounded w-12 animate-pulse" />
-                  <div className="h-6 bg-slate-200 dark:bg-slate-850 rounded w-3/4 animate-pulse" />
-                  <div className="h-4 bg-slate-200 dark:bg-slate-850 rounded w-1/2 animate-pulse" />
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-12 animate-pulse" />
+                  <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4 animate-pulse" />
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2 animate-pulse" />
                 </div>
               ))
             ) : (
               latestProducts.map((p) => (
                 <Link
                   key={p.id}
-                  href={`/semua-produk?category=${encodeURIComponent(p.category)}&type=Circel+Reguler`}
+                  href={`/semua-produk?category=${encodeURIComponent(p.category)}&type=Circel+Reguler+28+Hari`}
                   className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800/80 hover:border-orange-500 dark:hover:border-emerald-500 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
                 >
                   <div>
-                    <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-red-50 dark:bg-red-950/20 text-red-650 dark:text-red-400 border border-red-100 dark:border-red-900/30 uppercase tracking-widest mb-2 inline-block">
+                    <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 uppercase tracking-widest mb-2 inline-block">
                       🔥 Circel
                     </span>
-                    <h3 className="text-[11px] font-black text-slate-800 dark:text-slate-350 leading-tight group-hover:text-orange-500 dark:group-hover:text-emerald-400 transition-colors">
+                    <h3 className="text-[11px] font-black text-slate-800 dark:text-slate-300 leading-tight group-hover:text-orange-500 dark:group-hover:text-emerald-400 transition-colors">
                       {p.name}
                     </h3>
                     <p className="text-[9px] text-slate-400 dark:text-slate-500 mt-1 uppercase tracking-wide">

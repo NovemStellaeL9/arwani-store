@@ -9,6 +9,7 @@ import {
   getProviderLogo,
   getMasaAktifLogo,
   getWaLink,
+  getProductBadge,
 } from "@/utils/helpers";
 
 interface ProductCardProps {
@@ -29,8 +30,7 @@ export default function ProductCard({
     ? getMasaAktifLogo(product.desc)
     : getProviderLogo(product.category);
 
-  // Check if it is a Circel Reguler product to add a custom badge
-  const isCircel = product.name.toLowerCase().includes("circel");
+  const badge = getProductBadge(product.name, product.price, product.category, product.id);
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800/80 flex flex-col justify-between group overflow-hidden relative">
@@ -65,7 +65,7 @@ export default function ProductCard({
             <button
               onClick={() => onToggleFavorite(product.id)}
               aria-label={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-              className="p-1.5 rounded-full bg-slate-50 dark:bg-slate-950/30 border border-slate-100 dark:border-slate-850 hover:bg-red-50 dark:hover:bg-red-950/20 group/fav hover:scale-110 active:scale-90 transition-all duration-350"
+              className="p-1.5 rounded-full bg-slate-50 dark:bg-slate-950/30 border border-slate-100 dark:border-slate-800 hover:bg-red-50 dark:hover:bg-red-950/20 group/fav hover:scale-110 active:scale-90 transition-all duration-350"
             >
               <svg
                 className={`w-4 h-4 transition-all duration-350 ${
@@ -85,13 +85,27 @@ export default function ProductCard({
             </button>
           </div>
         </div>
-
-        {/* Circel Promo Badge */}
-        {isCircel && (
+ 
+        {/* Dynamic Badges */}
+        {badge && (
           <div className="mb-2">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[8px] font-black bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 uppercase tracking-widest border border-red-200 dark:border-red-900/30 animate-pulse">
-              🔥 PROMO CIRCEL 🔥
-            </span>
+            {badge === "🔥 PROMO CIRCEL 🔥" ? (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[8px] font-black bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 uppercase tracking-widest border border-red-200 dark:border-red-900/30 animate-pulse">
+                🔥 PROMO CIRCEL 🔥
+              </span>
+            ) : badge === "BEST SELLER" ? (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-amber-100 dark:bg-amber-950/30 text-amber-800 dark:text-amber-400 uppercase tracking-wider border border-amber-200/50 dark:border-amber-900/30">
+                ⭐ BEST SELLER
+              </span>
+            ) : badge === "PROMO" ? (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-orange-100 dark:bg-orange-950/20 text-orange-700 dark:text-orange-400 uppercase tracking-wider border border-orange-200/40 dark:border-orange-900/20">
+                🏷️ PROMO
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-emerald-100 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-400 uppercase tracking-wider border border-emerald-200/50 dark:border-emerald-900/30">
+                ✨ BARU
+              </span>
+            )}
           </div>
         )}
 

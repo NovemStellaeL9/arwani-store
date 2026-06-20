@@ -9,8 +9,10 @@ interface SearchBarProps {
   activeType: string;
   onTypeChange: (t: string) => void;
   availableTypes: string[];
-  sortBy: "Default" | "Termurah" | "Termahal";
-  onSortChange: (s: "Default" | "Termurah" | "Termahal") => void;
+  sortBy: "Default" | "Termurah" | "Termahal" | "AZ";
+  onSortChange: (s: "Default" | "Termurah" | "Termahal" | "AZ") => void;
+  priceFilter: string;
+  onPriceFilterChange: (p: string) => void;
   activeMaOp?: string;
   onMaOpChange?: (op: string) => void;
   isMasaAktif?: boolean;
@@ -26,6 +28,8 @@ export default function SearchBar({
   availableTypes,
   sortBy,
   onSortChange,
+  priceFilter,
+  onPriceFilterChange,
   activeMaOp,
   onMaOpChange,
   isMasaAktif = false,
@@ -61,23 +65,41 @@ export default function SearchBar({
       {/* Sorting Control Row */}
       <div className="flex items-center justify-between gap-2">
         <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-          Urutkan Harga
+          Urutkan Produk
         </span>
         <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
-          {(["Default", "Termurah", "Termahal"] as const).map((s) => (
+          {(["Default", "Termurah", "Termahal", "AZ"] as const).map((s) => (
             <button
               key={s}
               onClick={() => onSortChange(s)}
-              className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold transition-all duration-300 uppercase tracking-wider ${
+              className={`px-2.5 py-1.5 rounded-lg text-[10px] font-extrabold transition-all duration-300 uppercase tracking-wider ${
                 sortBy === s
                   ? "bg-orange-500 dark:bg-emerald-500 text-white shadow-sm"
                   : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
               }`}
             >
-              {s === "Default" ? "Biasa" : s === "Termurah" ? "Termurah" : "Termahal"}
+              {s === "Default" ? "Biasa" : s === "Termurah" ? "Termurah" : s === "Termahal" ? "Termahal" : "A-Z"}
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Price Range Filter Row */}
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+          Filter Harga
+        </span>
+        <select
+          value={priceFilter}
+          onChange={(e) => onPriceFilterChange(e.target.value)}
+          className="text-[10px] font-black bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 px-3 py-2 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm outline-none focus:border-orange-500 dark:focus:border-emerald-500 transition-colors"
+        >
+          <option value="all">Semua Harga</option>
+          <option value="under25">Di bawah Rp 25.000</option>
+          <option value="25to50">Rp 25.000 - Rp 50.000</option>
+          <option value="50to100">Rp 50.000 - Rp 100.000</option>
+          <option value="over100">Di atas Rp 100.000</option>
+        </select>
       </div>
 
       {/* Operator Filter for Masa Aktif */}

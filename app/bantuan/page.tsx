@@ -128,7 +128,7 @@ export default function Bantuan() {
                 >
                   <button
                     onClick={() => toggleFaq(i)}
-                    className="w-full px-4 py-3.5 text-left flex justify-between items-center text-slate-750 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-850/30 transition-all duration-300"
+                    className="w-full px-4 py-3.5 text-left flex justify-between items-center text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/35 transition-all duration-300"
                   >
                     <span className="text-xs font-black leading-tight">{faq.q}</span>
                     <svg
@@ -144,7 +144,7 @@ export default function Bantuan() {
                     </svg>
                   </button>
                   {isOpen && (
-                    <div className="px-4 pb-4 pt-1 text-[10.5px] font-medium text-slate-450 dark:text-slate-450 leading-relaxed border-t border-slate-50 dark:border-slate-800/40">
+                    <div className="px-4 pb-4 pt-1 text-[10.5px] font-medium text-slate-500 dark:text-slate-400 leading-relaxed border-t border-slate-50 dark:border-slate-800/40">
                       {faq.a}
                     </div>
                   )}

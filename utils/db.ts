@@ -16,13 +16,24 @@ class LocalStorageProvider implements DatabaseProvider {
   private getLocal(): Product[] {
     if (typeof window === "undefined") return initialProducts;
     const data = localStorage.getItem(this.key);
-    if (!data) {
+    if (data) {
+      try {
+        const parsed = JSON.parse(data) as Product[];
+        const hasOldCircel = parsed.some((p) => p.name.toLowerCase().includes("circel") && p.category === "Telkomsel");
+        // If old cached data has Circel Reguler under Telkomsel, force reset cache
+        if (hasOldCircel) {
+          localStorage.removeItem(this.key);
+          localStorage.setItem(this.key, JSON.stringify(initialProducts));
+          return initialProducts;
+        }
+        return parsed;
+      } catch {
+        localStorage.removeItem(this.key);
+        localStorage.setItem(this.key, JSON.stringify(initialProducts));
+        return initialProducts;
+      }
+    } else {
       localStorage.setItem(this.key, JSON.stringify(initialProducts));
-      return initialProducts;
-    }
-    try {
-      return JSON.parse(data);
-    } catch {
       return initialProducts;
     }
   }

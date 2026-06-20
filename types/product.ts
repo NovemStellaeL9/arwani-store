@@ -23,6 +23,7 @@ export type DisplayItem = Product | GroupedProduct;
 
 export type ActiveCategory =
   | "Home"
+  | "Semua"
   | "MasaAktif"
   | "Telkomsel"
   | "by.U"

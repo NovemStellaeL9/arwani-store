@@ -13,7 +13,7 @@ export const getPackageType = (name: string): string => {
   const n = name.toLowerCase();
   if (n.includes('akrab'))                                   return 'AKRAB';
   if (n.includes('by.u'))                                    return 'Paket by.U';
-  if (n.includes('circel'))                                  return 'Circel Reguler';
+  if (n.includes('circel'))                                  return 'Circel Reguler 28 Hari';
   if (n.includes('flexmax'))                                 return 'FlexMax'; 
   if (n.includes('flex'))                                    return 'Combo Flex';
   if (n.includes('flash'))                                   return 'Data Flash';
@@ -56,7 +56,7 @@ const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
   'Combo Flex':        { bg: '#ECFDF5', text: '#065F46' },
   'Paket Kuota':       { bg: '#F1F5F9', text: '#334155' },
   'Paket by.U':        { bg: '#EFF6FF', text: '#1D4ED8' },
-  'Circel Reguler':    { bg: '#FEE2E2', text: '#EF4444' }, // Red theme for Circel Promo
+  'Circel Reguler 28 Hari': { bg: '#FEE2E2', text: '#EF4444' }, // Red theme for Circel Promo
   'Reguler / Lainnya': { bg: '#F3F4F6', text: '#6B7280' },
   'AKRAB':             { bg: '#FFFBEB', text: '#92400E' },
   'Masa Aktif':        { bg: '#E0F2FE', text: '#0369A1' },
@@ -71,4 +71,18 @@ export const getWaLink = (name: string, price: number | string): string => {
   const t = formattedPrice ? ` dengan harga ${formattedPrice}` : "";
   const msg = `Halo Arwani D'Gabriel Store, saya ingin memesan ${name}${t}. Bagaimana prosedurnya?`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+};
+
+export const getProductBadge = (name: string, price: number, category: string, id: number): "BEST SELLER" | "PROMO" | "BARU" | "🔥 PROMO CIRCEL 🔥" | null => {
+  const n = name.toLowerCase();
+  if (n.includes("circel")) return "🔥 PROMO CIRCEL 🔥";
+  if (n.includes("akrab")) return "BEST SELLER";
+  if (category !== "MasaAktif" && price < 25000) return "PROMO";
+  
+  // Alive badges spacing
+  if (id % 11 === 0 && category !== "MasaAktif") return "BEST SELLER";
+  if (id % 13 === 0 && category !== "MasaAktif") return "PROMO";
+  if (id % 19 === 0 && category !== "MasaAktif") return "BARU";
+  
+  return null;
 };

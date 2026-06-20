@@ -50,7 +50,7 @@ export default function ProductGroup({
               >
                 AKRAB
               </span>
-              <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-55 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30 uppercase tracking-wide">
+              <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30 uppercase tracking-wide">
                 Keluarga
               </span>
             </div>
@@ -113,7 +113,7 @@ export default function ProductGroup({
         <select
           value={selectedVariantId}
           onChange={handleVariantChange}
-          className="w-full p-3 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs bg-slate-50 dark:bg-slate-950 font-bold text-slate-700 dark:text-slate-350 outline-none focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-emerald-500/5 focus:border-orange-500 dark:focus:border-emerald-500 transition-all duration-300"
+          className="w-full p-3 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs bg-slate-50 dark:bg-slate-950 font-bold text-slate-700 dark:text-slate-300 outline-none focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-emerald-500/5 focus:border-orange-500 dark:focus:border-emerald-500 transition-all duration-300"
         >
           {group.variants.map((v) => (
             <option key={v.id} value={v.id}>
@@ -132,7 +132,7 @@ export default function ProductGroup({
       </div>
 
       {/* Pricing and WhatsApp Buy action */}
-      <div className="mt-4 flex justify-between items-center bg-slate-50 dark:bg-slate-950/40 p-4 rounded-2xl border border-slate-100/80 dark:border-slate-850">
+      <div className="mt-4 flex justify-between items-center bg-slate-50 dark:bg-slate-950/40 p-4 rounded-2xl border border-slate-100/80 dark:border-slate-800">
         <div>
           <p className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
             Harga Varian

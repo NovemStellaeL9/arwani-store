@@ -1,12 +1,29 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getWaLink } from "@/utils/helpers";
 
 export default function Footer() {
   const pathname = usePathname();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const checkAdmin = () => {
+    if (typeof window !== "undefined") {
+      setIsAdmin(localStorage.getItem("admin_logged_in") === "true");
+    }
+  };
+
+  useEffect(() => {
+    checkAdmin();
+    window.addEventListener("storage", checkAdmin);
+    window.addEventListener("admin_login_change", checkAdmin);
+    return () => {
+      window.removeEventListener("storage", checkAdmin);
+      window.removeEventListener("admin_login_change", checkAdmin);
+    };
+  }, []);
 
   const isActive = (path: string) => {
     return pathname === path;
@@ -23,7 +40,7 @@ export default function Footer() {
           className={`flex flex-col items-center justify-center transition-all duration-300 active:scale-90 ${
             isActive("/")
               ? "text-orange-500 dark:text-emerald-400 font-black scale-105"
-              : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350"
+              : "text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
           }`}
         >
           <svg className="w-5.5 h-5.5" fill="currentColor" viewBox="0 0 20 20">
@@ -38,7 +55,7 @@ export default function Footer() {
           className={`flex flex-col items-center justify-center transition-all duration-300 active:scale-90 ${
             isActive("/semua-produk")
               ? "text-orange-500 dark:text-emerald-400 font-black scale-105"
-              : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350"
+              : "text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
           }`}
         >
           <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
@@ -74,7 +91,7 @@ export default function Footer() {
           className={`flex flex-col items-center justify-center transition-all duration-300 active:scale-90 ${
             isActive("/bantuan")
               ? "text-orange-500 dark:text-emerald-400 font-black scale-105"
-              : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350"
+              : "text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
           }`}
         >
           <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
@@ -83,19 +100,25 @@ export default function Footer() {
           <span className="text-[9px] font-bold mt-1 tracking-wide">Bantuan</span>
         </Link>
 
-        {/* Tentang Kami */}
+        {/* Admin Login/Dashboard */}
         <Link
-          href="/tentang-kami"
+          href="/admin"
           className={`flex flex-col items-center justify-center transition-all duration-300 active:scale-90 ${
-            isActive("/tentang-kami")
+            isActive("/admin")
               ? "text-orange-500 dark:text-emerald-400 font-black scale-105"
-              : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350"
+              : "text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
           }`}
         >
           <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            {isAdmin ? (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            )}
           </svg>
-          <span className="text-[9px] font-bold mt-1 tracking-wide">Info Toko</span>
+          <span className="text-[9px] font-bold mt-1 tracking-wide text-center leading-none">
+            {isAdmin ? "Admin" : "Login Admin"}
+          </span>
         </Link>
       </div>
 

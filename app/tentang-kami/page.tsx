@@ -53,14 +53,14 @@ export default function TentangKami() {
             <h3 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
               Instan & Cepat
             </h3>
-            <p className="text-[10px] text-slate-450 dark:text-slate-500 mt-1 leading-relaxed">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
               Proses pengiriman paket data langsung diproses setelah konfirmasi WhatsApp diterima.
             </p>
           </div>
 
           {/* Hemat */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800/80 shadow-sm transition-colors duration-500">
-            <div className="w-9 h-9 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl flex items-center justify-center text-emerald-650 dark:text-emerald-400 mb-3">
+            <div className="w-9 h-9 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M12 16v1" />
               </svg>
@@ -68,7 +68,7 @@ export default function TentangKami() {
             <h3 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
               Harga Terbaik
             </h3>
-            <p className="text-[10px] text-slate-450 dark:text-slate-500 mt-1 leading-relaxed">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
               Harga paket data dijamin murah dibanding aplikasi ritel seluler resmi lainnya.
             </p>
           </div>
@@ -83,7 +83,7 @@ export default function TentangKami() {
             <h3 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
               Paket Lengkap
             </h3>
-            <p className="text-[10px] text-slate-450 dark:text-slate-500 mt-1 leading-relaxed">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
               Mulai dari data reguler, flash, combo flex, hingga penambahan masa aktif kartu setahun.
             </p>
           </div>
@@ -98,7 +98,7 @@ export default function TentangKami() {
             <h3 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
               Dukungan CS
             </h3>
-            <p className="text-[10px] text-slate-450 dark:text-slate-500 mt-1 leading-relaxed">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
               Tim admin CS kami selalu siaga melayani pemesanan dan pertanyaan seputar produk.
             </p>
           </div>
@@ -106,8 +106,8 @@ export default function TentangKami() {
         </div>
 
         {/* ── ADMIN ACCESS BAR ── */}
-        <div className="pt-6 border-t border-slate-200 dark:border-slate-850 flex flex-col items-center">
-          <p className="text-[9px] font-bold text-slate-405 dark:text-slate-500 uppercase tracking-widest mb-2.5">
+        <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col items-center">
+          <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2.5">
             Manajemen Internal
           </p>
           <Link

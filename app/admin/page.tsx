@@ -1,19 +1,26 @@
 "use client";
-
+ 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { Product, ActiveCategory } from "@/types/product";
+import { Product } from "@/types/product";
 import { getDbProvider } from "@/utils/db";
 import { formatRupiah } from "@/utils/helpers";
-
+ 
 const categories = ["Telkomsel", "by.U", "Indosat", "XL & Axis", "Tri", "Smartfren", "MasaAktif"] as const;
-
+ 
 export default function AdminDashboard() {
+  // Authentication State
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginUsername, setLoginUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  // Catalog State
   const [products, setProducts] = useState<Product[]>([]);
   const [dbProviderName, setDbProviderName] = useState("LocalStorage Fallback");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-
+ 
   // Form State
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -22,10 +29,21 @@ export default function AdminDashboard() {
   const [formDesc, setFormDesc] = useState("");
   const [formPrice, setFormPrice] = useState("");
   const [formError, setFormError] = useState("");
-
+ 
   const db = useMemo(() => getDbProvider(), []);
-
+ 
+  // Check Login State on Mount
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const auth = localStorage.getItem("admin_logged_in") === "true";
+      setIsLoggedIn(auth);
+    }
+  }, []);
+
+  // Load products and provider information if logged in
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
     // Detect provider
     const providerEnv = process.env.NEXT_PUBLIC_DATABASE_PROVIDER;
     if (providerEnv === "supabase") {
@@ -35,10 +53,10 @@ export default function AdminDashboard() {
     } else {
       setDbProviderName("LocalStorage Offline");
     }
-
+ 
     loadProducts();
-  }, [db]);
-
+  }, [db, isLoggedIn]);
+ 
   const loadProducts = async () => {
     try {
       setIsLoading(true);
@@ -50,6 +68,30 @@ export default function AdminDashboard() {
       setIsLoading(false);
     }
   };
+ 
+  // Handle Admin Login Action
+  const handleLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError("");
+
+    if (loginUsername.trim() === "admin" && loginPassword === "admin123") {
+      localStorage.setItem("admin_logged_in", "true");
+      setIsLoggedIn(true);
+      // Dispatch event to update the footer navigation bar instantly
+      window.dispatchEvent(new Event("admin_login_change"));
+    } else {
+      setLoginError("Username atau password salah.");
+    }
+  };
+
+  // Handle Admin Logout Action
+  const handleLogout = () => {
+    if (!confirm("Apakah Anda yakin ingin logout dari Panel Admin?")) return;
+    localStorage.removeItem("admin_logged_in");
+    setIsLoggedIn(false);
+    // Dispatch event to update the footer navigation bar instantly
+    window.dispatchEvent(new Event("admin_login_change"));
+  };
 
   const handleOpenAddForm = () => {
     setIsEditing(false);
@@ -60,7 +102,7 @@ export default function AdminDashboard() {
     setFormPrice("");
     setFormError("");
   };
-
+ 
   const handleOpenEditForm = (p: Product) => {
     setIsEditing(true);
     setEditingId(p.id);
@@ -70,7 +112,7 @@ export default function AdminDashboard() {
     setFormPrice(String(p.price));
     setFormError("");
   };
-
+ 
   const handleDeleteProduct = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus produk ini?")) return;
     try {
@@ -80,22 +122,22 @@ export default function AdminDashboard() {
       alert("Gagal menghapus produk: " + err);
     }
   };
-
+ 
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
-
+ 
     if (!formName.trim() || !formDesc.trim() || !formPrice.trim()) {
       setFormError("Semua field wajib diisi.");
       return;
     }
-
+ 
     const parsedPrice = parseInt(formPrice.replace(/[^0-9]/g, ""), 10);
     if (isNaN(parsedPrice) || parsedPrice <= 0) {
       setFormError("Harga harus berupa angka yang valid.");
       return;
     }
-
+ 
     try {
       if (isEditing && editingId !== null) {
         // Edit existing product
@@ -116,7 +158,7 @@ export default function AdminDashboard() {
         // Auto-generate ID: Find max ID in active database + 1
         const maxId = products.reduce((max, p) => (p.id > max ? p.id : max), 0);
         const newId = maxId + 1;
-
+ 
         const newProd: Product = {
           id: newId,
           category: formCategory,
@@ -124,19 +166,19 @@ export default function AdminDashboard() {
           desc: formDesc,
           price: parsedPrice,
         };
-
+ 
         await db.saveProduct(newProd);
         setProducts((prev) => [...prev, newProd]);
         alert(`Produk berhasil ditambahkan dengan ID: ${newId}`);
       }
-
+ 
       // Reset form fields
       handleOpenAddForm();
     } catch (err) {
       setFormError("Gagal menyimpan produk: " + err);
     }
   };
-
+ 
   // Search filtered products
   const filteredProducts = useMemo(() => {
     if (!searchQuery.trim()) return products;
@@ -148,7 +190,89 @@ export default function AdminDashboard() {
         p.desc.toLowerCase().includes(q)
     );
   }, [products, searchQuery]);
+ 
+  // ── RENDER SECURITY LOGIN PANEL IF NOT AUTHENTICATED ──
+  if (!isLoggedIn) {
+    return (
+      <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-[#0b0f19] justify-center items-center px-6 transition-colors duration-500 pb-20">
+        
+        {/* Logo and Greeting */}
+        <div className="text-center mb-6">
+          <div className="w-16 h-16 bg-gradient-to-tr from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-lg mx-auto mb-3.5">
+            🔑
+          </div>
+          <h2 className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-wider leading-none">
+            Login Admin
+          </h2>
+          <p className="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-widest mt-1.5 font-bold">
+            Masukkan kredensial untuk mengelola produk
+          </p>
+        </div>
 
+        {/* Login Form Card */}
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-xl w-full max-w-sm transition-colors duration-500">
+          <form onSubmit={handleLoginSubmit} className="space-y-4">
+            {loginError && (
+              <p className="text-[10.5px] font-black text-red-600 bg-red-50 dark:bg-red-950/20 p-3 rounded-xl border border-red-200 dark:border-red-900/30">
+                ⚠️ {loginError}
+              </p>
+            )}
+
+            {/* Username Input */}
+            <div className="space-y-1">
+              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block">
+                Username
+              </label>
+              <input
+                type="text"
+                value={loginUsername}
+                onChange={(e) => setLoginUsername(e.target.value)}
+                placeholder="Masukkan username"
+                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none focus:border-orange-500 dark:focus:border-emerald-500 transition-colors"
+                required
+              />
+            </div>
+
+            {/* Password Input */}
+            <div className="space-y-1">
+              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block">
+                Password
+              </label>
+              <input
+                type="password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                placeholder="Masukkan password"
+                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none focus:border-orange-500 dark:focus:border-emerald-500 transition-colors"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 mt-2.5 bg-orange-500 dark:bg-emerald-500 hover:bg-orange-600 dark:hover:bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 shadow-md active:scale-95 cursor-pointer"
+            >
+              Masuk Sekarang
+            </button>
+          </form>
+        </div>
+
+        {/* Back Link */}
+        <Link
+          href="/"
+          className="mt-6 flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+          Kembali ke Dashboard Toko
+        </Link>
+
+      </div>
+    );
+  }
+ 
+  // ── RENDER DASHBOARD PANEL IF AUTHENTICATED ──
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-[#0b0f19] pb-10 transition-colors duration-500">
       
@@ -163,11 +287,19 @@ export default function AdminDashboard() {
           </svg>
           Kembali
         </Link>
-        <span className="text-xs font-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">
-          Admin Panel
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">
+            Admin Panel
+          </span>
+          <button
+            onClick={handleLogout}
+            className="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[9px] font-black uppercase tracking-wider active:scale-95 transition-all"
+          >
+            Logout
+          </button>
+        </div>
       </div>
-
+ 
       <div className="px-5 mt-6 space-y-6">
         
         {/* Connection Status Panel */}
@@ -185,24 +317,24 @@ export default function AdminDashboard() {
             <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
           </span>
         </div>
-
+ 
         {/* Add/Edit Product Form Panel */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm transition-colors duration-500">
           <h3 className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider mb-4">
             {isEditing ? `Edit Produk (ID: ${editingId})` : "Tambah Produk Baru"}
           </h3>
-
+ 
           <form onSubmit={handleSaveProduct} className="space-y-3.5">
             {formError && (
               <p className="text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-950/20 p-2.5 rounded-xl border border-red-200 dark:border-red-900/30">
                 ⚠️ {formError}
               </p>
             )}
-
+ 
             <div className="grid grid-cols-2 gap-3">
               {/* Category */}
               <div>
-                <label className="text-[9px] font-black text-slate-450 dark:text-slate-500 uppercase tracking-wider block mb-1">
+                <label className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
                   Kategori
                 </label>
                 <select
@@ -217,10 +349,10 @@ export default function AdminDashboard() {
                   ))}
                 </select>
               </div>
-
+ 
               {/* Price */}
               <div>
-                <label className="text-[9px] font-black text-slate-450 dark:text-slate-500 uppercase tracking-wider block mb-1">
+                <label className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
                   Harga (Rupiah)
                 </label>
                 <input
@@ -232,10 +364,10 @@ export default function AdminDashboard() {
                 />
               </div>
             </div>
-
+ 
             {/* Name */}
             <div>
-              <label className="text-[9px] font-black text-slate-450 dark:text-slate-500 uppercase tracking-wider block mb-1">
+              <label className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
                 Nama Produk
               </label>
               <input
@@ -246,10 +378,10 @@ export default function AdminDashboard() {
                 className="w-full p-2.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-bold text-slate-700 dark:text-slate-300 rounded-xl outline-none"
               />
             </div>
-
+ 
             {/* Description */}
             <div>
-              <label className="text-[9px] font-black text-slate-450 dark:text-slate-500 uppercase tracking-wider block mb-1">
+              <label className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
                 Deskripsi / Masa Aktif
               </label>
               <input
@@ -260,11 +392,11 @@ export default function AdminDashboard() {
                 className="w-full p-2.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-bold text-slate-700 dark:text-slate-300 rounded-xl outline-none"
               />
             </div>
-
+ 
             <div className="flex gap-2.5 pt-2">
               <button
                 type="submit"
-                className="flex-1 py-2.5 bg-orange-500 dark:bg-emerald-500 hover:bg-orange-600 dark:hover:bg-emerald-650 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 shadow-sm active:scale-95"
+                className="flex-1 py-2.5 bg-orange-500 dark:bg-emerald-500 hover:bg-orange-600 dark:hover:bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 shadow-sm active:scale-95"
               >
                 {isEditing ? "Simpan Perubahan" : "Tambah Paket"}
               </button>
@@ -280,17 +412,17 @@ export default function AdminDashboard() {
             </div>
           </form>
         </div>
-
+ 
         {/* Existing Products List Panel */}
         <div className="space-y-3.5">
           <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
             Daftar Paket Aktif ({filteredProducts.length})
           </p>
-
+ 
           {/* Quick Search */}
           <div className="relative">
             <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="w-3.5 h-3.5 text-slate-450" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </span>
@@ -299,10 +431,10 @@ export default function AdminDashboard() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari nama, operator, atau deskripsi..."
-              className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 text-xs font-semibold text-slate-750 dark:text-slate-205 placeholder-slate-400 outline-none focus:border-orange-500 dark:focus:border-emerald-500 transition shadow-sm"
+              className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 text-xs font-semibold text-slate-700 dark:text-slate-300 placeholder-slate-400 outline-none focus:border-orange-500 dark:focus:border-emerald-500 transition shadow-sm"
             />
           </div>
-
+ 
           <div className="space-y-2 max-h-[30rem] overflow-y-auto pr-1 pb-4 scrollbar-hide">
             {isLoading ? (
               <div className="text-center py-6 text-xs text-slate-400 font-bold animate-pulse">
@@ -318,23 +450,23 @@ export default function AdminDashboard() {
                     <span className="text-[7.5px] font-black px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 uppercase border border-slate-200/50 dark:border-slate-800/40 tracking-wider">
                       ID: {p.id}
                     </span>
-                    <span className="text-[7.5px] font-black px-1.5 py-0.5 rounded bg-orange-50 dark:bg-orange-950/20 text-orange-655 dark:text-orange-400 uppercase tracking-wider">
+                    <span className="text-[7.5px] font-black px-1.5 py-0.5 rounded bg-orange-50 dark:bg-orange-950/20 text-orange-600 dark:text-orange-400 uppercase tracking-wider">
                       {p.category}
                     </span>
                   </div>
-                  <h4 className="text-xs font-bold text-slate-800 dark:text-slate-250 truncate">
+                  <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
                     {p.name}
                   </h4>
                   <p className="text-[9px] font-medium text-slate-400 dark:text-slate-500">
                     {p.desc} — <span className="font-extrabold text-orange-500 dark:text-emerald-400">{formatRupiah(p.price)}</span>
                   </p>
                 </div>
-
+ 
                 {/* Edit & Delete Action Panel */}
                 <div className="flex gap-1.5 flex-shrink-0">
                   <button
                     onClick={() => handleOpenEditForm(p)}
-                    className="p-2 bg-slate-50 hover:bg-orange-50 dark:bg-slate-950 dark:hover:bg-orange-950/20 border border-slate-100 dark:border-slate-850 text-slate-450 dark:text-slate-500 hover:text-orange-550 dark:hover:text-orange-455 rounded-xl transition duration-300 active:scale-90"
+                    className="p-2 bg-slate-50 hover:bg-orange-50 dark:bg-slate-950 dark:hover:bg-orange-950/20 border border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-500 hover:text-orange-600 dark:hover:text-orange-500 rounded-xl transition duration-300 active:scale-90"
                     aria-label="Edit product"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
@@ -343,7 +475,7 @@ export default function AdminDashboard() {
                   </button>
                   <button
                     onClick={() => handleDeleteProduct(p.id)}
-                    className="p-2 bg-slate-50 hover:bg-red-50 dark:bg-slate-950 dark:hover:bg-red-950/20 border border-slate-100 dark:border-slate-850 text-slate-450 dark:text-slate-500 hover:text-red-550 dark:hover:text-red-455 rounded-xl transition duration-300 active:scale-90"
+                    className="p-2 bg-slate-50 hover:bg-red-50 dark:bg-slate-950 dark:hover:bg-red-950/20 border border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-500 rounded-xl transition duration-300 active:scale-90"
                     aria-label="Delete product"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
@@ -353,7 +485,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
             ))}
-
+ 
             {filteredProducts.length === 0 && !isLoading && (
               <div className="text-center py-6 text-xs text-slate-400 font-bold bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
                 Tidak ada produk yang cocok.
@@ -361,7 +493,7 @@ export default function AdminDashboard() {
             )}
           </div>
         </div>
-
+ 
       </div>
     </div>
   );
