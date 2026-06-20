@@ -33,7 +33,7 @@ export default function ProductCard({
   const badge = getProductBadge(product.name, product.price, product.category, product.id);
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800/80 flex flex-col justify-between group overflow-hidden relative">
+    <div className="bg-app-card rounded-2xl p-4 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-app-border flex flex-col justify-between group overflow-hidden relative">
       {/* Top Edge Indicator */}
       <div
         className="absolute top-0 left-0 right-0 h-1.5 opacity-90 transition-colors duration-300"
@@ -43,7 +43,7 @@ export default function ProductCard({
       <div>
         {/* Card Header (Logo & Badges & Favorite) */}
         <div className="flex items-start justify-between mb-3 mt-1">
-          <div className="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-950/40 p-1.5 rounded-xl border border-slate-100/80 dark:border-slate-800/50 flex-shrink-0">
+          <div className="w-10 h-10 flex items-center justify-center bg-app-bg p-1.5 rounded-xl border border-app-border flex-shrink-0">
             {logo ? (
               <img
                 src={logo}
@@ -65,13 +65,13 @@ export default function ProductCard({
             <button
               onClick={() => onToggleFavorite(product.id)}
               aria-label={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-              className="p-1.5 rounded-full bg-slate-50 dark:bg-slate-950/30 border border-slate-100 dark:border-slate-800 hover:bg-red-50 dark:hover:bg-red-950/20 group/fav hover:scale-110 active:scale-90 transition-all duration-350"
+              className="p-1.5 rounded-full bg-app-bg border border-app-border hover:bg-app-danger-light group/fav hover:scale-110 active:scale-90 transition-all duration-350"
             >
               <svg
                 className={`w-4 h-4 transition-all duration-350 ${
                   isFavorite
                     ? "fill-red-500 stroke-red-500 scale-110"
-                    : "stroke-slate-400 dark:stroke-slate-500 fill-none group-hover/fav:stroke-red-400"
+                    : "stroke-app-text-secondary fill-none group-hover/fav:stroke-red-400"
                 }`}
                 viewBox="0 0 24 24"
                 strokeWidth="2.5"
@@ -90,19 +90,19 @@ export default function ProductCard({
         {badge && (
           <div className="mb-2">
             {badge === "🔥 PROMO CIRCEL 🔥" ? (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[8px] font-black bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 uppercase tracking-widest border border-red-200 dark:border-red-900/30 animate-pulse">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[8px] font-black bg-app-danger-light text-app-danger-dark uppercase tracking-widest border border-app-danger/25 animate-pulse">
                 🔥 PROMO CIRCEL 🔥
               </span>
             ) : badge === "BEST SELLER" ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-amber-100 dark:bg-amber-950/30 text-amber-800 dark:text-amber-400 uppercase tracking-wider border border-amber-200/50 dark:border-amber-900/30">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-app-warning-light text-app-warning-dark uppercase tracking-wider border border-app-warning/25">
                 ⭐ BEST SELLER
               </span>
             ) : badge === "PROMO" ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-orange-100 dark:bg-orange-950/20 text-orange-700 dark:text-orange-400 uppercase tracking-wider border border-orange-200/40 dark:border-orange-900/20">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-app-primary-light text-app-primary-dark uppercase tracking-wider border border-app-primary/20">
                 🏷️ PROMO
               </span>
             ) : (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-emerald-100 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-400 uppercase tracking-wider border border-emerald-200/50 dark:border-emerald-900/30">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-app-success-light text-app-success-dark uppercase tracking-wider border border-app-success/25">
                 ✨ BARU
               </span>
             )}
@@ -120,17 +120,17 @@ export default function ProductCard({
         </div>
 
         {/* Product Title & Description */}
-        <h3 className="text-xs font-black text-slate-800 dark:text-slate-200 leading-snug line-clamp-2 min-h-[2rem]">
+        <h3 className="text-xs font-black text-app-text leading-snug line-clamp-2 min-h-[2rem]">
           {product.name}
         </h3>
-        <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-1 uppercase tracking-wide">
+        <p className="text-[10px] font-semibold text-app-text-secondary mt-1 uppercase tracking-wide">
           {product.desc}
         </p>
       </div>
 
       {/* Pricing & Call to Action */}
-      <div className="mt-4 pt-2.5 border-t border-slate-50 dark:border-slate-800/60 w-full flex flex-col gap-2">
-        <p className="text-sm font-black text-orange-500 dark:text-emerald-400">
+      <div className="mt-4 pt-2.5 border-t border-app-border w-full flex flex-col gap-2">
+        <p className="text-sm font-black text-app-primary">
           {formatRupiah(product.price)}
         </p>
         

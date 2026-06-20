@@ -40,7 +40,7 @@ export default function SearchBar({
       <div className="relative">
         <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
           <svg
-            className="w-4 h-4 text-slate-400 dark:text-slate-500"
+            className="w-4 h-4 text-app-text-secondary/60"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -58,24 +58,24 @@ export default function SearchBar({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Cari paket internet..."
-          className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-sm font-semibold text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-orange-500 dark:focus:border-emerald-500 focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-emerald-500/5 transition-all duration-300 shadow-sm"
+          className="w-full pl-10 pr-4 py-3 rounded-2xl bg-app-card border border-app-border text-sm font-semibold text-app-text placeholder-app-text-secondary/50 outline-none focus:border-app-primary focus:ring-4 focus:ring-app-primary/10 transition-all duration-300 shadow-sm"
         />
       </div>
 
       {/* Sorting Control Row */}
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+        <span className="text-[11px] font-bold text-app-text-secondary uppercase tracking-widest">
           Urutkan Produk
         </span>
-        <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
+        <div className="flex items-center gap-1 bg-app-card p-1 rounded-xl border border-app-border shadow-sm">
           {(["Default", "Termurah", "Termahal", "AZ"] as const).map((s) => (
             <button
               key={s}
               onClick={() => onSortChange(s)}
               className={`px-2.5 py-1.5 rounded-lg text-[10px] font-extrabold transition-all duration-300 uppercase tracking-wider ${
                 sortBy === s
-                  ? "bg-orange-500 dark:bg-emerald-500 text-white shadow-sm"
-                  : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                  ? "bg-app-primary text-app-header-text shadow-sm"
+                  : "text-app-text-secondary hover:text-app-text"
               }`}
             >
               {s === "Default" ? "Biasa" : s === "Termurah" ? "Termurah" : s === "Termahal" ? "Termahal" : "A-Z"}
@@ -86,13 +86,13 @@ export default function SearchBar({
 
       {/* Price Range Filter Row */}
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+        <span className="text-[11px] font-bold text-app-text-secondary uppercase tracking-widest">
           Filter Harga
         </span>
         <select
           value={priceFilter}
           onChange={(e) => onPriceFilterChange(e.target.value)}
-          className="text-[10px] font-black bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 px-3 py-2 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm outline-none focus:border-orange-500 dark:focus:border-emerald-500 transition-colors"
+          className="text-[10px] font-black bg-app-card text-app-text px-3 py-2 rounded-xl border border-app-border shadow-sm outline-none focus:border-app-primary transition-colors"
         >
           <option value="all">Semua Harga</option>
           <option value="under25">Di bawah Rp 25.000</option>
@@ -105,7 +105,7 @@ export default function SearchBar({
       {/* Operator Filter for Masa Aktif */}
       {isMasaAktif && activeMaOp && onMaOpChange && (
         <div className="space-y-2">
-          <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+          <p className="text-[11px] font-bold text-app-text-secondary uppercase tracking-widest">
             Pilih Operator
           </p>
           <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-5 px-5">
@@ -118,8 +118,8 @@ export default function SearchBar({
                   onClick={() => onMaOpChange(op)}
                   className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-300 shadow-sm border ${
                     isActive
-                      ? "bg-sky-500 dark:bg-sky-600 text-white border-sky-500 dark:border-sky-600"
-                      : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-100 dark:border-slate-800/80 hover:border-sky-400/55"
+                      ? "bg-app-info text-app-header-text border-app-info"
+                      : "bg-app-card text-app-text border-app-border hover:border-app-info"
                   }`}
                 >
                   {logo && (

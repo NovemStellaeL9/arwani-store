@@ -13,24 +13,24 @@ import ProductGroup from "@/components/ProductGroup";
 // Shimmer skeleton component matching product cards
 function ProductCardSkeleton() {
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl p-4 border border-slate-100 dark:border-slate-800/80 shadow-sm flex flex-col justify-between h-44 relative overflow-hidden">
+    <div className="bg-app-card rounded-3xl p-4 border border-app-border shadow-sm flex flex-col justify-between h-44 relative overflow-hidden">
       <div className="animate-shimmer absolute inset-0 z-0" />
       <div className="space-y-3 relative z-10">
         {/* Badge skeleton */}
-        <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-md w-16" />
+        <div className="h-4 bg-app-bg animate-pulse rounded-md w-16" />
         {/* Title skeleton */}
         <div className="space-y-1.5">
-          <div className="h-3.5 bg-slate-200 dark:bg-slate-800 rounded-md w-11/12" />
-          <div className="h-3.5 bg-slate-200 dark:bg-slate-800 rounded-md w-8/12" />
+          <div className="h-3.5 bg-app-bg animate-pulse rounded-md w-11/12" />
+          <div className="h-3.5 bg-app-bg animate-pulse rounded-md w-8/12" />
         </div>
         {/* Description skeleton */}
-        <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded-md w-10/12" />
+        <div className="h-3 bg-app-bg animate-pulse rounded-md w-10/12" />
       </div>
       <div className="flex items-center justify-between mt-4 relative z-10">
         {/* Price skeleton */}
-        <div className="h-5 bg-slate-200 dark:bg-slate-800 rounded-md w-20" />
+        <div className="h-5 bg-app-bg animate-pulse rounded-md w-20" />
         {/* Button skeleton */}
-        <div className="h-7 w-7 rounded-full bg-slate-200 dark:bg-slate-800" />
+        <div className="h-7 w-7 rounded-full bg-app-bg animate-pulse" />
       </div>
     </div>
   );
@@ -39,18 +39,18 @@ function ProductCardSkeleton() {
 // Skeleton screen loader for initial load
 function CatalogSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] px-5 py-6 space-y-4">
+    <div className="min-h-screen bg-app-bg px-5 py-6 space-y-4">
       <div className="flex items-center gap-2 mb-4 animate-pulse">
-        <div className="h-9 bg-slate-200 dark:bg-slate-800 rounded-xl w-24" />
-        <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded-xl w-32 ml-auto" />
+        <div className="h-9 bg-app-card rounded-xl w-24" />
+        <div className="h-6 bg-app-card rounded-xl w-32 ml-auto" />
       </div>
-      <div className="h-12 bg-slate-200 dark:bg-slate-800 rounded-2xl w-full animate-pulse" />
+      <div className="h-12 bg-app-card rounded-2xl w-full animate-pulse" />
       <div className="grid grid-cols-2 gap-3 mt-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="bg-white dark:bg-slate-900 rounded-3xl p-4 border border-slate-200 dark:border-slate-800/80 space-y-3">
-            <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-1/3 animate-pulse" />
-            <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4 animate-pulse" />
-            <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded-xl w-full animate-pulse" />
+          <div key={i} className="bg-app-card rounded-3xl p-4 border border-app-border space-y-3">
+            <div className="h-8 bg-app-bg rounded w-1/3 animate-pulse" />
+            <div className="h-6 bg-app-bg rounded w-3/4 animate-pulse" />
+            <div className="h-10 bg-app-bg rounded-xl w-full animate-pulse" />
           </div>
         ))}
       </div>
@@ -240,15 +240,15 @@ function CatalogContent() {
     setActiveMaOp("Semua");
     setSortBy("Default");
   };
- 
+
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-[#0b0f19] pb-10 transition-colors duration-500">
+    <div className="flex flex-col min-h-screen bg-app-bg pb-10 transition-colors duration-500">
       
       {/* Top sticky controls */}
-      <div className="bg-slate-900 text-white px-5 py-4 flex items-center justify-between border-b border-white/10 relative z-20">
+      <div className="bg-app-header-bg text-app-header-text px-5 py-4 flex items-center justify-between border-b border-app-border/10 relative z-20">
         <Link
           href="/"
-          className="flex items-center gap-1 text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition"
+          className="flex items-center gap-1 text-xs font-black uppercase tracking-wider text-app-header-text/80 hover:text-app-header-text transition"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -259,7 +259,7 @@ function CatalogContent() {
           Katalog Paket
         </span>
       </div>
- 
+  
       <div className="px-5 mt-5 space-y-4">
         {/* Category horizontal scrolling bar */}
         <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-5 px-5">
@@ -273,8 +273,8 @@ function CatalogContent() {
                   onClick={() => handleCategoryClick(cat)}
                   className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-sm border ${
                     isActive
-                      ? "bg-orange-500 dark:bg-emerald-500 text-white border-orange-500 dark:border-emerald-500"
-                      : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-100 dark:border-slate-800/80 hover:border-orange-500/50 dark:hover:border-emerald-500/50"
+                      ? "bg-app-primary text-app-header-text border-app-primary"
+                      : "bg-app-card text-app-text border-app-border hover:border-app-primary/50"
                   }`}
                 >
                   {cat === "MasaAktif" ? (
@@ -294,7 +294,7 @@ function CatalogContent() {
             }
           )}
         </div>
- 
+  
         {/* Filter & Search Dashboard */}
         <SearchBar
           searchQuery={searchQuery}
@@ -313,11 +313,11 @@ function CatalogContent() {
 
         {/* ── STATISTICS COUNTER ── */}
         <div className="flex items-center justify-between px-1">
-          <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+          <span className="text-[10px] font-black text-app-text-secondary uppercase tracking-widest">
             Menampilkan {processedItems.length} Produk
           </span>
         </div>
-
+ 
         {/* ── AUTOMATED PROMO BANNERS ── */}
         <div className="space-y-3">
           {/* Circel Promo Banner */}
@@ -338,7 +338,7 @@ function CatalogContent() {
                 </div>
               </div>
           )}
-
+ 
           {/* AKRAB Promo Banner */}
           {(activeCategory === "XL & Axis" || activeCategory === "Semua") && 
             (activeType === "AKRAB" || activeType === "Semua Tipe") && (
@@ -358,7 +358,7 @@ function CatalogContent() {
                   href="https://gress-cell.github.io/GRESS-CELL-CEK-AREA/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2.5 inline-flex items-center gap-1 text-[9px] font-bold bg-white text-orange-600 px-2 py-1 rounded-lg hover:bg-orange-50 active:scale-95 transition-all"
+                  className="mt-2.5 inline-flex items-center gap-1 text-[9px] font-bold bg-app-card text-app-primary px-2 py-1 rounded-lg border border-app-border hover:bg-app-bg active:scale-95 transition-all"
                 >
                   Cek Area Di Sini
                   <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -400,19 +400,19 @@ function CatalogContent() {
  
         {/* Load more trigger marker */}
         {paginatedItems.length < processedItems.length && (
-          <div ref={loadMoreRef} className="py-6 text-center text-xs font-bold text-slate-400 animate-pulse">
+          <div ref={loadMoreRef} className="py-6 text-center text-xs font-bold text-app-text-secondary animate-pulse">
             Memuat paket selanjutnya...
           </div>
         )}
  
         {/* Empty Search / Filter Results State */}
         {!isLoading && processedItems.length === 0 && (
-          <div className="text-center py-14 bg-white dark:bg-slate-900 rounded-3xl mt-4 border border-slate-100 dark:border-slate-800 shadow-sm transition-colors duration-500">
+          <div className="text-center py-14 bg-app-card rounded-3xl mt-4 border border-app-border shadow-sm transition-colors duration-500">
             <div className="text-5xl mb-3.5 opacity-55 animate-bounce">📦</div>
-            <h4 className="text-slate-700 dark:text-slate-300 text-sm font-black uppercase tracking-wider">
+            <h4 className="text-app-text text-sm font-black uppercase tracking-wider">
               Tidak Ada Paket Ditemukan
             </h4>
-            <p className="text-slate-400 dark:text-slate-500 text-xs mt-1.5 px-6 font-semibold">
+            <p className="text-app-text-secondary text-xs mt-1.5 px-6 font-semibold">
               Coba gunakan kata kunci pencarian lain atau pilih kategori operator yang berbeda.
             </p>
           </div>

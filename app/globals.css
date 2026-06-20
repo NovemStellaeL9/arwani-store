@@ -1,15 +1,46 @@
 @import "tailwindcss";
-
+ 
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
+  
   --bg: #f8fafc;
   --card: #ffffff;
   --text: #0f172a;
   --text-secondary: #475569;
   --border: #e2e8f0;
+  
+  --primary: #f97316;
+  --primary-hover: #ea580c;
+  --primary-light: #ffedd5;
+  --primary-dark: #7c2d12;
+  
+  --success: #10b981;
+  --success-hover: #059669;
+  --success-light: #d1fae5;
+  --success-dark: #064e3b;
+ 
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --danger-light: #fee2e2;
+  --danger-dark: #7f1d1d;
+  
+  --warning: #f59e0b;
+  --warning-hover: #d97706;
+  --warning-light: #fef3c7;
+  --warning-dark: #78350f;
+ 
+  --info: #0ea5e9;
+  --info-hover: #0284c7;
+  --info-light: #e0f2fe;
+  --info-dark: #0c4a6e;
+ 
+  --header-bg: #0f172a;
+  --header-text: #ffffff;
+  --footer-bg: rgba(255, 255, 255, 0.8);
+  --footer-border: rgba(226, 232, 240, 0.55);
 }
-
+ 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -21,43 +52,134 @@
   --color-app-text: var(--text);
   --color-app-text-secondary: var(--text-secondary);
   --color-app-border: var(--border);
+  
+  --color-app-primary: var(--primary);
+  --color-app-primary-hover: var(--primary-hover);
+  --color-app-primary-light: var(--primary-light);
+  --color-app-primary-dark: var(--primary-dark);
+ 
+  --color-app-success: var(--success);
+  --color-app-success-hover: var(--success-hover);
+  --color-app-success-light: var(--success-light);
+  --color-app-success-dark: var(--success-dark);
+ 
+  --color-app-danger: var(--danger);
+  --color-app-danger-hover: var(--danger-hover);
+  --color-app-danger-light: var(--danger-light);
+  --color-app-danger-dark: var(--danger-dark);
+ 
+  --color-app-warning: var(--warning);
+  --color-app-warning-hover: var(--warning-hover);
+  --color-app-warning-light: var(--warning-light);
+  --color-app-warning-dark: var(--warning-dark);
+ 
+  --color-app-info: var(--info);
+  --color-app-info-hover: var(--info-hover);
+  --color-app-info-light: var(--info-light);
+  --color-app-info-dark: var(--info-dark);
+ 
+  --color-app-header-bg: var(--header-bg);
+  --color-app-header-text: var(--header-text);
+  --color-app-footer-bg: var(--footer-bg);
+  --color-app-footer-border: var(--footer-border);
 }
-
+ 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0b0f19;
     --foreground: #f1f5f9;
+    
     --bg: #0b0f19;
-    --card: #0f172a;
+    --card: #111827;
     --text: #f1f5f9;
     --text-secondary: #94a3b8;
     --border: #1e293b;
+    
+    --primary: #10b981;
+    --primary-hover: #059669;
+    --primary-light: rgba(16, 185, 129, 0.15);
+    --primary-dark: #a7f3d0;
+    
+    --success: #10b981;
+    --success-hover: #059669;
+    --success-light: rgba(16, 185, 129, 0.15);
+    --success-dark: #a7f3d0;
+ 
+    --danger: #f87171;
+    --danger-hover: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.15);
+    --danger-dark: #fca5a5;
+ 
+    --warning: #fbbf24;
+    --warning-hover: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.15);
+    --warning-dark: #fde68a;
+ 
+    --info: #38bdf8;
+    --info-hover: #0ea5e9;
+    --info-light: rgba(14, 165, 233, 0.15);
+    --info-dark: #bae6fd;
+ 
+    --header-bg: #1e1b4b;
+    --header-text: #f1f5f9;
+    --footer-bg: rgba(11, 15, 25, 0.8);
+    --footer-border: rgba(30, 41, 59, 0.6);
   }
 }
-
-/* Also support manual .dark class toggle */
+ 
 .dark {
   --background: #0b0f19;
   --foreground: #f1f5f9;
+  
   --bg: #0b0f19;
-  --card: #0f172a;
+  --card: #111827;
   --text: #f1f5f9;
   --text-secondary: #94a3b8;
   --border: #1e293b;
+  
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --primary-light: rgba(16, 185, 129, 0.15);
+  --primary-dark: #a7f3d0;
+  
+  --success: #10b981;
+  --success-hover: #059669;
+  --success-light: rgba(16, 185, 129, 0.15);
+  --success-dark: #a7f3d0;
+ 
+  --danger: #f87171;
+  --danger-hover: #ef4444;
+  --danger-light: rgba(239, 68, 68, 0.15);
+  --danger-dark: #fca5a5;
+ 
+  --warning: #fbbf24;
+  --warning-hover: #f59e0b;
+  --warning-light: rgba(245, 158, 11, 0.15);
+  --warning-dark: #fde68a;
+ 
+  --info: #38bdf8;
+  --info-hover: #0ea5e9;
+  --info-light: rgba(14, 165, 233, 0.15);
+  --info-dark: #bae6fd;
+ 
+  --header-bg: #1e1b4b;
+  --header-text: #f1f5f9;
+  --footer-bg: rgba(11, 15, 25, 0.8);
+  --footer-border: rgba(30, 41, 59, 0.6);
 }
-
+ 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
-
+ 
 @keyframes shimmer {
   100% {
     transform: translateX(100%);
   }
 }
-
+ 
 .animate-shimmer {
   position: absolute;
   top: 0;
@@ -68,20 +190,19 @@ body {
   background-image: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.25) 20%,
-    rgba(255, 255, 255, 0.55) 60%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0.35) 60%,
     rgba(255, 255, 255, 0) 100%
   );
   animation: shimmer 1.8s infinite;
 }
-
+ 
 .dark .animate-shimmer {
   background-image: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.04) 20%,
-    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0.03) 20%,
+    rgba(255, 255, 255, 0.08) 60%,
     rgba(255, 255, 255, 0) 100%
   );
 }
-

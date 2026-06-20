@@ -194,33 +194,33 @@ export default function AdminDashboard() {
   // ── RENDER SECURITY LOGIN PANEL IF NOT AUTHENTICATED ──
   if (!isLoggedIn) {
     return (
-      <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-[#0b0f19] justify-center items-center px-6 transition-colors duration-500 pb-20">
+      <div className="flex flex-col min-h-screen bg-app-bg justify-center items-center px-6 transition-colors duration-500 pb-20">
         
         {/* Logo and Greeting */}
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-tr from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-lg mx-auto mb-3.5">
             🔑
           </div>
-          <h2 className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-wider leading-none">
+          <h2 className="text-lg font-black text-app-text uppercase tracking-wider leading-none">
             Login Admin
           </h2>
-          <p className="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-widest mt-1.5 font-bold">
+          <p className="text-[10px] text-app-text-secondary uppercase tracking-widest mt-1.5 font-bold">
             Masukkan kredensial untuk mengelola produk
           </p>
         </div>
 
         {/* Login Form Card */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-xl w-full max-w-sm transition-colors duration-500">
+        <div className="bg-app-card rounded-3xl p-6 border border-app-border shadow-xl w-full max-w-sm transition-colors duration-500">
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             {loginError && (
-              <p className="text-[10.5px] font-black text-red-600 bg-red-50 dark:bg-red-950/20 p-3 rounded-xl border border-red-200 dark:border-red-900/30">
+              <p className="text-[10.5px] font-black text-app-danger bg-app-danger-light p-3 rounded-xl border border-app-danger/25">
                 ⚠️ {loginError}
               </p>
             )}
 
             {/* Username Input */}
             <div className="space-y-1">
-              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block">
+              <label className="text-[10px] font-black text-app-text-secondary uppercase tracking-wider block">
                 Username
               </label>
               <input
@@ -228,14 +228,14 @@ export default function AdminDashboard() {
                 value={loginUsername}
                 onChange={(e) => setLoginUsername(e.target.value)}
                 placeholder="Masukkan username"
-                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none focus:border-orange-500 dark:focus:border-emerald-500 transition-colors"
+                className="w-full p-3 rounded-xl bg-app-bg border border-app-border text-xs font-bold text-app-text outline-none focus:border-app-primary transition-colors"
                 required
               />
             </div>
 
             {/* Password Input */}
             <div className="space-y-1">
-              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block">
+              <label className="text-[10px] font-black text-app-text-secondary uppercase tracking-wider block">
                 Password
               </label>
               <input
@@ -243,14 +243,14 @@ export default function AdminDashboard() {
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
                 placeholder="Masukkan password"
-                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none focus:border-orange-500 dark:focus:border-emerald-500 transition-colors"
+                className="w-full p-3 rounded-xl bg-app-bg border border-app-border text-xs font-bold text-app-text outline-none focus:border-app-primary transition-colors"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 mt-2.5 bg-orange-500 dark:bg-emerald-500 hover:bg-orange-600 dark:hover:bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 shadow-md active:scale-95 cursor-pointer"
+              className="w-full py-3 mt-2.5 bg-app-primary hover:bg-app-primary-hover text-app-header-text font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 shadow-md active:scale-95 cursor-pointer"
             >
               Masuk Sekarang
             </button>
@@ -260,7 +260,7 @@ export default function AdminDashboard() {
         {/* Back Link */}
         <Link
           href="/"
-          className="mt-6 flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+          className="mt-6 flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-app-text-secondary hover:text-app-text transition-colors"
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
@@ -274,13 +274,13 @@ export default function AdminDashboard() {
  
   // ── RENDER DASHBOARD PANEL IF AUTHENTICATED ──
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-[#0b0f19] pb-10 transition-colors duration-500">
+    <div className="flex flex-col min-h-screen bg-app-bg pb-10 transition-colors duration-500">
       
       {/* Header Bar */}
-      <div className="bg-slate-900 text-white px-5 py-4 flex items-center justify-between border-b border-white/10 relative z-20">
+      <div className="bg-app-header-bg text-app-header-text px-5 py-4 flex items-center justify-between border-b border-app-border/10 relative z-20">
         <Link
           href="/"
-          className="flex items-center gap-1 text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition"
+          className="flex items-center gap-1 text-xs font-black uppercase tracking-wider text-app-header-text/80 hover:text-app-header-text transition"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -293,7 +293,7 @@ export default function AdminDashboard() {
           </span>
           <button
             onClick={handleLogout}
-            className="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[9px] font-black uppercase tracking-wider active:scale-95 transition-all"
+            className="px-2.5 py-1 bg-app-danger hover:bg-app-danger/90 text-app-header-text rounded-lg text-[9px] font-black uppercase tracking-wider active:scale-95 transition-all"
           >
             Logout
           </button>
@@ -303,12 +303,12 @@ export default function AdminDashboard() {
       <div className="px-5 mt-6 space-y-6">
         
         {/* Connection Status Panel */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between transition-colors duration-500">
+        <div className="bg-app-card rounded-3xl p-5 border border-app-border shadow-sm flex items-center justify-between transition-colors duration-500">
           <div>
-            <h3 className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider">
+            <h3 className="text-xs font-black text-app-text uppercase tracking-wider">
               Status Database
             </h3>
-            <p className="text-[10px] text-slate-400 mt-0.5 font-bold uppercase tracking-wider">
+            <p className="text-[10px] text-app-text-secondary mt-0.5 font-bold uppercase tracking-wider">
               Aktif: {dbProviderName}
             </p>
           </div>
@@ -319,14 +319,14 @@ export default function AdminDashboard() {
         </div>
  
         {/* Add/Edit Product Form Panel */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm transition-colors duration-500">
-          <h3 className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider mb-4">
+        <div className="bg-app-card rounded-3xl p-5 border border-app-border shadow-sm transition-colors duration-500">
+          <h3 className="text-xs font-black text-app-text uppercase tracking-wider mb-4">
             {isEditing ? `Edit Produk (ID: ${editingId})` : "Tambah Produk Baru"}
           </h3>
  
           <form onSubmit={handleSaveProduct} className="space-y-3.5">
             {formError && (
-              <p className="text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-950/20 p-2.5 rounded-xl border border-red-200 dark:border-red-900/30">
+              <p className="text-[10px] font-bold text-app-danger bg-app-danger-light p-2.5 rounded-xl border border-app-danger/25">
                 ⚠️ {formError}
               </p>
             )}
@@ -334,13 +334,13 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-2 gap-3">
               {/* Category */}
               <div>
-                <label className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
+                <label className="text-[9px] font-black text-app-text-secondary uppercase tracking-wider block mb-1">
                   Kategori
                 </label>
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full p-2.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-bold text-slate-700 dark:text-slate-300 rounded-xl outline-none"
+                  className="w-full p-2.5 border border-app-border bg-app-bg text-xs font-bold text-app-text rounded-xl outline-none"
                 >
                   {categories.map((c) => (
                     <option key={c} value={c}>
@@ -352,7 +352,7 @@ export default function AdminDashboard() {
  
               {/* Price */}
               <div>
-                <label className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
+                <label className="text-[9px] font-black text-app-text-secondary uppercase tracking-wider block mb-1">
                   Harga (Rupiah)
                 </label>
                 <input
@@ -360,14 +360,14 @@ export default function AdminDashboard() {
                   value={formPrice}
                   onChange={(e) => setFormPrice(e.target.value)}
                   placeholder="Contoh: 55000"
-                  className="w-full p-2.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-bold text-slate-700 dark:text-slate-300 rounded-xl outline-none"
+                  className="w-full p-2.5 border border-app-border bg-app-bg text-xs font-bold text-app-text rounded-xl outline-none"
                 />
               </div>
             </div>
  
             {/* Name */}
             <div>
-              <label className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
+              <label className="text-[9px] font-black text-app-text-secondary uppercase tracking-wider block mb-1">
                 Nama Produk
               </label>
               <input
@@ -375,13 +375,13 @@ export default function AdminDashboard() {
                 value={formName}
                 onChange={(e) => setFormName(e.target.value)}
                 placeholder="Contoh: Circel Reguler 10-14 GB"
-                className="w-full p-2.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-bold text-slate-700 dark:text-slate-300 rounded-xl outline-none"
+                className="w-full p-2.5 border border-app-border bg-app-bg text-xs font-bold text-app-text rounded-xl outline-none"
               />
             </div>
  
             {/* Description */}
             <div>
-              <label className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
+              <label className="text-[9px] font-black text-app-text-secondary uppercase tracking-wider block mb-1">
                 Deskripsi / Masa Aktif
               </label>
               <input
@@ -389,14 +389,14 @@ export default function AdminDashboard() {
                 value={formDesc}
                 onChange={(e) => setFormDesc(e.target.value)}
                 placeholder="Contoh: Masa Aktif 28 Hari (Full Utama)"
-                className="w-full p-2.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-bold text-slate-700 dark:text-slate-300 rounded-xl outline-none"
+                className="w-full p-2.5 border border-app-border bg-app-bg text-xs font-bold text-app-text rounded-xl outline-none"
               />
             </div>
  
             <div className="flex gap-2.5 pt-2">
               <button
                 type="submit"
-                className="flex-1 py-2.5 bg-orange-500 dark:bg-emerald-500 hover:bg-orange-600 dark:hover:bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 shadow-sm active:scale-95"
+                className="flex-1 py-2.5 bg-app-primary hover:bg-app-primary-hover text-app-header-text font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 shadow-sm active:scale-95"
               >
                 {isEditing ? "Simpan Perubahan" : "Tambah Paket"}
               </button>
@@ -404,7 +404,7 @@ export default function AdminDashboard() {
                 <button
                   type="button"
                   onClick={handleOpenAddForm}
-                  className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 active:scale-95"
+                  className="px-4 py-2.5 bg-app-bg hover:bg-app-bg/80 border border-app-border text-app-text font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 active:scale-95"
                 >
                   Batal
                 </button>
@@ -415,14 +415,14 @@ export default function AdminDashboard() {
  
         {/* Existing Products List Panel */}
         <div className="space-y-3.5">
-          <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+          <p className="text-[11px] font-bold text-app-text-secondary uppercase tracking-widest">
             Daftar Paket Aktif ({filteredProducts.length})
           </p>
  
           {/* Quick Search */}
           <div className="relative">
             <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 text-app-text-secondary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </span>
@@ -431,34 +431,34 @@ export default function AdminDashboard() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari nama, operator, atau deskripsi..."
-              className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 text-xs font-semibold text-slate-700 dark:text-slate-300 placeholder-slate-400 outline-none focus:border-orange-500 dark:focus:border-emerald-500 transition shadow-sm"
+              className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-app-card border border-app-border text-xs font-semibold text-app-text placeholder-app-text-secondary/50 outline-none focus:border-app-primary transition shadow-sm"
             />
           </div>
  
           <div className="space-y-2 max-h-[30rem] overflow-y-auto pr-1 pb-4 scrollbar-hide">
             {isLoading ? (
-              <div className="text-center py-6 text-xs text-slate-400 font-bold animate-pulse">
+              <div className="text-center py-6 text-xs text-app-text-secondary font-bold animate-pulse">
                 Memuat database produk...
               </div>
             ) : filteredProducts.map((p) => (
               <div
                 key={p.id}
-                className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm flex items-center justify-between gap-3 transition-colors duration-500"
+                className="bg-app-card p-3 rounded-2xl border border-app-border shadow-sm flex items-center justify-between gap-3 transition-colors duration-500"
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                    <span className="text-[7.5px] font-black px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 uppercase border border-slate-200/50 dark:border-slate-800/40 tracking-wider">
+                    <span className="text-[7.5px] font-black px-1.5 py-0.5 rounded bg-app-bg text-app-text-secondary uppercase border border-app-border tracking-wider">
                       ID: {p.id}
                     </span>
-                    <span className="text-[7.5px] font-black px-1.5 py-0.5 rounded bg-orange-50 dark:bg-orange-950/20 text-orange-600 dark:text-orange-400 uppercase tracking-wider">
+                    <span className="text-[7.5px] font-black px-1.5 py-0.5 rounded bg-app-primary-light text-app-primary-dark uppercase tracking-wider">
                       {p.category}
                     </span>
                   </div>
-                  <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                  <h4 className="text-xs font-bold text-app-text truncate">
                     {p.name}
                   </h4>
-                  <p className="text-[9px] font-medium text-slate-400 dark:text-slate-500">
-                    {p.desc} — <span className="font-extrabold text-orange-500 dark:text-emerald-400">{formatRupiah(p.price)}</span>
+                  <p className="text-[9px] font-medium text-app-text-secondary">
+                    {p.desc} — <span className="font-extrabold text-app-primary">{formatRupiah(p.price)}</span>
                   </p>
                 </div>
  
@@ -466,7 +466,7 @@ export default function AdminDashboard() {
                 <div className="flex gap-1.5 flex-shrink-0">
                   <button
                     onClick={() => handleOpenEditForm(p)}
-                    className="p-2 bg-slate-50 hover:bg-orange-50 dark:bg-slate-950 dark:hover:bg-orange-950/20 border border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-500 hover:text-orange-600 dark:hover:text-orange-500 rounded-xl transition duration-300 active:scale-90"
+                    className="p-2 bg-app-bg hover:bg-app-primary-light border border-app-border text-app-text-secondary hover:text-app-primary rounded-xl transition duration-300 active:scale-90"
                     aria-label="Edit product"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
@@ -475,7 +475,7 @@ export default function AdminDashboard() {
                   </button>
                   <button
                     onClick={() => handleDeleteProduct(p.id)}
-                    className="p-2 bg-slate-50 hover:bg-red-50 dark:bg-slate-950 dark:hover:bg-red-950/20 border border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-500 rounded-xl transition duration-300 active:scale-90"
+                    className="p-2 bg-app-bg hover:bg-app-danger-light border border-app-border text-app-text-secondary hover:text-app-danger rounded-xl transition duration-300 active:scale-90"
                     aria-label="Delete product"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
@@ -487,7 +487,7 @@ export default function AdminDashboard() {
             ))}
  
             {filteredProducts.length === 0 && !isLoading && (
-              <div className="text-center py-6 text-xs text-slate-400 font-bold bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+              <div className="text-center py-6 text-xs text-app-text-secondary font-bold bg-app-card border border-app-border rounded-2xl">
                 Tidak ada produk yang cocok.
               </div>
             )}

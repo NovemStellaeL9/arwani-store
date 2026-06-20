@@ -52,10 +52,10 @@ export default function Header() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-indigo-950 dark:via-purple-950 dark:to-indigo-950 text-white px-5 py-6 rounded-b-[2.5rem] shadow-xl relative z-20 border-b border-white/10 transition-colors duration-500">
+    <div className="bg-app-header-bg text-app-header-text px-5 py-6 rounded-b-[2.5rem] shadow-xl relative z-20 border-b border-app-border/10 transition-colors duration-500">
       <div className="flex justify-between items-start mb-5">
         <div>
-          <p className="text-sm font-bold text-emerald-400 dark:text-emerald-300 drop-shadow-sm transition-all duration-300 animate-pulse">
+          <p className="text-sm font-bold text-app-primary dark:text-emerald-300 drop-shadow-sm transition-all duration-300 animate-pulse">
             {greeting}
           </p>
           <p className="text-xs text-slate-300 dark:text-slate-400 mt-0.5 font-medium">
@@ -82,13 +82,13 @@ export default function Header() {
           )}
         </button>
       </div>
-
+ 
       {/* Glassmorphism Title Card */}
       <div className="bg-white/5 dark:bg-black/25 rounded-2xl px-4 py-3.5 text-center border border-white/10 dark:border-white/5 backdrop-blur-md shadow-lg">
         <h1 className="text-lg font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-white dark:from-white dark:via-purple-100 dark:to-emerald-200">
           ARWANI D'GABRIEL STORE
         </h1>
-        <p className="text-[11px] font-extrabold text-orange-400 dark:text-emerald-400 mt-1.5 tracking-wider uppercase">
+        <p className="text-[11px] font-extrabold text-app-primary mt-1.5 tracking-wider uppercase">
           {currentDate || "Memuat tanggal..."}
         </p>
       </div>

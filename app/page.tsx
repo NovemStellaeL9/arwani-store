@@ -49,7 +49,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-[#0b0f19] pb-8 transition-colors duration-500">
+    <div className="flex flex-col min-h-screen bg-app-bg pb-8 transition-colors duration-500">
       {/* ── HEADER ── */}
       <Header />
 
@@ -83,7 +83,7 @@ export default function Home() {
 
         {/* ── CHOOSE OPERATOR GRID ── */}
         <div>
-          <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3.5">
+          <p className="text-[11px] font-bold text-app-text-secondary uppercase tracking-widest mb-3.5">
             Pilih Provider Paket
           </p>
           <div className="grid grid-cols-3 gap-3">
@@ -91,12 +91,12 @@ export default function Home() {
               <button
                 key={cat}
                 onClick={() => handleCategoryClick(cat)}
-                className="group bg-white dark:bg-slate-900 rounded-2xl p-4 flex flex-col items-center justify-center border border-slate-100 dark:border-slate-800/80 hover:border-orange-500 dark:hover:border-emerald-500 shadow-sm hover:shadow-md active:scale-95 transition-all duration-300"
+                className="group bg-app-card rounded-2xl p-4 flex flex-col items-center justify-center border border-app-border hover:border-app-primary shadow-sm hover:shadow-md active:scale-95 transition-all duration-300"
               >
                 <div className="h-9 w-9 flex items-center justify-center mb-2.5 transition-transform duration-300 group-hover:scale-110">
                   <img src={getProviderLogo(cat)} alt={cat} className="max-h-full max-w-full object-contain filter drop-shadow-sm" />
                 </div>
-                <span className="text-[10px] font-black text-slate-700 dark:text-slate-300 tracking-wide uppercase leading-none text-center">
+                <span className="text-[10px] font-black text-app-text tracking-wide uppercase leading-none text-center">
                   {cat}
                 </span>
               </button>
@@ -106,25 +106,25 @@ export default function Home() {
 
         {/* ── MASA AKTIF BANNER SHORTCUT ── */}
         <div>
-          <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">
+          <p className="text-[11px] font-bold text-app-text-secondary uppercase tracking-widest mb-3">
             Perpanjangan Kartu
           </p>
           <Link href="/semua-produk?category=MasaAktif">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 flex items-center gap-3.5 border border-slate-100 dark:border-slate-800/80 hover:border-sky-500 dark:hover:border-sky-500 shadow-sm hover:shadow-md transition-all duration-300 active:scale-[0.99] group">
-              <div className="w-11 h-11 bg-sky-50 dark:bg-sky-950/40 rounded-xl flex items-center justify-center flex-shrink-0">
-                <svg className="w-5.5 h-5.5 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+            <div className="bg-app-card rounded-2xl p-4 flex items-center gap-3.5 border border-app-border hover:border-app-info shadow-sm hover:shadow-md transition-all duration-300 active:scale-[0.99] group">
+              <div className="w-11 h-11 bg-app-info-light rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-5.5 h-5.5 text-app-info" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div className="flex-1 text-left">
-                <p className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                <p className="text-xs font-black text-app-text uppercase tracking-wider">
                   Masa Aktif Ekstra
                 </p>
-                <p className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase mt-0.5 tracking-wide">
+                <p className="text-[9px] font-bold text-app-text-secondary uppercase mt-0.5 tracking-wide">
                   Tambah masa aktif tanpa beli kuota utama
                 </p>
               </div>
-              <svg className="w-4 h-4 text-slate-300 dark:text-slate-600 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
+              <svg className="w-4 h-4 text-app-text-secondary/50 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </div>
@@ -135,10 +135,10 @@ export default function Home() {
         {favoriteProducts.length > 0 && (
           <div>
             <div className="flex justify-between items-center mb-3">
-              <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+              <p className="text-[11px] font-bold text-app-text-secondary uppercase tracking-widest">
                 Paket Favorit Anda ({favoriteProducts.length})
               </p>
-              <Link href="/semua-produk" className="text-[9px] font-black text-orange-500 dark:text-emerald-400 uppercase tracking-wider">
+              <Link href="/semua-produk" className="text-[9px] font-black text-app-primary uppercase tracking-wider">
                 Lihat Semua
               </Link>
             </div>
@@ -148,17 +148,17 @@ export default function Home() {
                 <Link
                   key={p.id}
                   href={`/semua-produk?category=${encodeURIComponent(p.category)}&query=${encodeURIComponent(p.name)}`}
-                  className="flex-shrink-0 w-36 bg-white dark:bg-slate-900 rounded-2xl p-3 border border-slate-100 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+                  className="flex-shrink-0 w-36 bg-app-card rounded-2xl p-3 border border-app-border shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
                 >
                   <div>
-                    <span className="text-[8px] font-extrabold px-1.5 py-0.5 rounded bg-orange-50 dark:bg-orange-950/20 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-900/30 uppercase tracking-wider mb-2 inline-block">
+                    <span className="text-[8px] font-extrabold px-1.5 py-0.5 rounded bg-app-primary-light text-app-primary-dark border border-app-primary/20 uppercase tracking-wider mb-2 inline-block">
                       {p.category}
                     </span>
-                    <h3 className="text-[10px] font-black text-slate-700 dark:text-slate-300 leading-tight line-clamp-2">
+                    <h3 className="text-[10px] font-black text-app-text leading-tight line-clamp-2">
                       {p.name}
                     </h3>
                   </div>
-                  <p className="text-xs font-black text-orange-500 dark:text-emerald-400 mt-2">
+                  <p className="text-xs font-black text-app-primary mt-2">
                     {formatRupiah(p.price)}
                   </p>
                 </Link>
@@ -170,10 +170,10 @@ export default function Home() {
         {/* ── LATEST / NEW PRODUCTS ── */}
         <div>
           <div className="flex justify-between items-center mb-3.5">
-            <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+            <p className="text-[11px] font-bold text-app-text-secondary uppercase tracking-widest">
               Promo & Paket Terbaru
             </p>
-            <Link href="/semua-produk?category=XL+%26+Axis&type=Circel+Reguler+28+Hari" className="text-[9px] font-black text-orange-500 dark:text-emerald-400 uppercase tracking-wider">
+            <Link href="/semua-produk?category=XL+%26+Axis&type=Circel+Reguler+28+Hari" className="text-[9px] font-black text-app-primary uppercase tracking-wider">
               Lihat Promo
             </Link>
           </div>
@@ -182,10 +182,10 @@ export default function Home() {
             {isLoading ? (
               // Loading skeleton
               Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800/85 shadow-sm space-y-3">
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-12 animate-pulse" />
-                  <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4 animate-pulse" />
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2 animate-pulse" />
+                <div key={i} className="bg-app-card rounded-2xl p-4 border border-app-border shadow-sm space-y-3">
+                  <div className="h-4 bg-app-bg rounded w-12 animate-pulse" />
+                  <div className="h-6 bg-app-bg rounded w-3/4 animate-pulse" />
+                  <div className="h-4 bg-app-bg rounded w-1/2 animate-pulse" />
                 </div>
               ))
             ) : (
@@ -193,20 +193,20 @@ export default function Home() {
                 <Link
                   key={p.id}
                   href={`/semua-produk?category=${encodeURIComponent(p.category)}&type=Circel+Reguler+28+Hari`}
-                  className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800/80 hover:border-orange-500 dark:hover:border-emerald-500 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
+                  className="bg-app-card rounded-2xl p-4 border border-app-border hover:border-app-primary shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
                 >
                   <div>
-                    <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 uppercase tracking-widest mb-2 inline-block">
+                    <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-app-danger-light text-app-danger-dark border border-app-danger/20 uppercase tracking-widest mb-2 inline-block">
                       🔥 Circel
                     </span>
-                    <h3 className="text-[11px] font-black text-slate-800 dark:text-slate-300 leading-tight group-hover:text-orange-500 dark:group-hover:text-emerald-400 transition-colors">
+                    <h3 className="text-[11px] font-black text-app-text leading-tight group-hover:text-app-primary transition-colors">
                       {p.name}
                     </h3>
-                    <p className="text-[9px] text-slate-400 dark:text-slate-500 mt-1 uppercase tracking-wide">
+                    <p className="text-[9px] text-app-text-secondary mt-1 uppercase tracking-wide">
                       {p.desc}
                     </p>
                   </div>
-                  <p className="text-xs font-black text-orange-500 dark:text-emerald-400 mt-3.5">
+                  <p className="text-xs font-black text-app-primary mt-3.5">
                     {formatRupiah(p.price)}
                   </p>
                 </Link>
