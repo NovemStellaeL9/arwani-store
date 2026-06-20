@@ -271,7 +271,7 @@ function CatalogContent() {
                 <button
                   key={cat}
                   onClick={() => handleCategoryClick(cat)}
-                  className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-sm border ${
+                  className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition shadow-sm border hover:scale-[1.03] active:scale-95 duration-300 ${
                     isActive
                       ? "bg-app-primary text-app-header-text border-app-primary"
                       : "bg-app-card text-app-text border-app-border hover:border-app-primary/50"
@@ -286,7 +286,11 @@ function CatalogContent() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                   ) : (
-                    logo && <img src={logo} alt={cat} className="h-4 w-4 object-contain" />
+                    logo && (
+                      <span className="bg-white p-0.5 rounded-md flex items-center justify-center h-5 w-5 border border-slate-100/80 shadow-sm">
+                        <img src={logo} alt={cat} className="h-3.5 w-3.5 object-contain" />
+                      </span>
+                    )
                   )}
                   {cat === "MasaAktif" ? "Masa Aktif" : cat}
                 </button>

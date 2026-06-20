@@ -91,9 +91,9 @@ export default function Home() {
               <button
                 key={cat}
                 onClick={() => handleCategoryClick(cat)}
-                className="group bg-app-card rounded-2xl p-4 flex flex-col items-center justify-center border border-app-border hover:border-app-primary shadow-sm hover:shadow-md active:scale-95 transition-all duration-300"
+                className="group bg-app-card rounded-2xl p-4 flex flex-col items-center justify-center border border-app-border hover:scale-[1.03] hover:border-app-primary hover:shadow-md hover:shadow-app-primary/5 active:scale-95 transition-all duration-350"
               >
-                <div className="h-9 w-9 flex items-center justify-center mb-2.5 transition-transform duration-300 group-hover:scale-110">
+                <div className="h-11 w-11 bg-white rounded-xl p-1.5 flex items-center justify-center mb-2.5 transition-transform duration-300 group-hover:scale-110 shadow-inner border border-slate-100 dark:border-slate-200/50">
                   <img src={getProviderLogo(cat)} alt={cat} className="max-h-full max-w-full object-contain filter drop-shadow-sm" />
                 </div>
                 <span className="text-[10px] font-black text-app-text tracking-wide uppercase leading-none text-center">
