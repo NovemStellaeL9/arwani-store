@@ -215,25 +215,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ── DIRECT LINK CEK AREA & ESTIMASI KUOTA ── */}
-        <div className="bg-slate-900 dark:bg-slate-950 p-5 rounded-3xl text-white shadow-inner flex items-center justify-between gap-3 border border-white/5">
-          <div className="space-y-1">
-            <h4 className="text-xs font-black uppercase tracking-wider text-amber-400 dark:text-emerald-400">
-              Butuh Cek Estimasi Kuota?
-            </h4>
-            <p className="text-[10px] text-slate-350 font-semibold leading-relaxed">
-              Ketahui kecocokan kuota di wilayah Anda sebelum membeli paket internet.
-            </p>
-          </div>
-          <a
-            href="https://gress-cell.github.io/GRESS-CELL-CEK-AREA/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-shrink-0 bg-amber-400 dark:bg-emerald-500 text-slate-950 dark:text-white px-3.5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-amber-500/20"
-          >
-            Cek Area & Estimasi Kuota
-          </a>
-        </div>
+
 
       </div>
     </div>

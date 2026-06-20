@@ -178,86 +178,86 @@ export const products: Product[] = [
   },
   {
     id: 26,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 10–14 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 22000
   },
   {
     id: 27,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 15–19 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 28000
   },
   {
     id: 28,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 20–24 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 37000
   },
   {
     id: 29,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 25–29 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 45000
   },
   {
     id: 30,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 30–34 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 50000
   },
   {
     id: 31,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 35–39 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 55000
   },
   {
     id: 32,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 40–44 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 60000
   },
   {
     id: 33,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 45–49 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 65000
   },
   {
     id: 34,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 50–54 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 70000
   },
   {
     id: 35,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 55–59 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 75000
   },
   {
     id: 36,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 60–64 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 80000
   },
   {
     id: 37,
-    category: "Telkomsel",
+    category: "XL & Axis",
     name: "Circel Reguler 65–69 GB",
-    desc: "Masa Aktif 28 Hari (Full Utama 24 Jam)",
+    desc: "Masa Aktif Paket 28 Hari",
     price: 85000
   },
   {

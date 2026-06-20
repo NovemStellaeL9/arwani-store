@@ -59,26 +59,7 @@ export default function Bantuan() {
 
       <div className="px-5 mt-6 space-y-6">
         
-        {/* Cek Area Banner */}
-        <div className="bg-amber-500/10 dark:bg-emerald-500/5 rounded-3xl p-5 border border-amber-500/20 dark:border-emerald-500/20 space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">📍</span>
-            <h3 className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider">
-              Penting: Cek Area Kartu Anda!
-            </h3>
-          </div>
-          <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">
-            Guna memastikan kuota lokal operator (seperti XL AKRAB atau Combo Flex) dapat digunakan dengan maksimal di lokasi Anda, gunakan alat pengecekan resmi kami.
-          </p>
-          <a
-            href="https://gress-cell.github.io/GRESS-CELL-CEK-AREA/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-2.5 bg-orange-500 dark:bg-emerald-500 hover:bg-orange-600 dark:hover:bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest text-center block shadow-md transition-all duration-300 hover:-translate-y-0.5 active:scale-98"
-          >
-            Cek Area & Estimasi Kuota
-          </a>
-        </div>
+
 
         {/* Cara Pemesanan */}
         <div>

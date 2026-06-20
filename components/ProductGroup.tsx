@@ -77,7 +77,7 @@ export default function ProductGroup({
               d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          Cek Area & Estimasi Kuota
+          Cek Area & Estimasi Kuota AKRAB
         </a>
       </div>
 
@@ -121,6 +121,14 @@ export default function ProductGroup({
             </option>
           ))}
         </select>
+        
+        {/* Warning Text for AKRAB Area Estimates */}
+        <div className="mt-3.5 bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/30 px-3.5 py-2.5 rounded-xl flex items-start gap-2">
+          <span className="text-xs">⚠️</span>
+          <p className="text-[10px] text-amber-800 dark:text-amber-300 font-semibold leading-normal">
+            Kuota yang didapat dapat berbeda pada setiap area. Silakan cek estimasi area terlebih dahulu.
+          </p>
+        </div>
       </div>
 
       {/* Pricing and WhatsApp Buy action */}
