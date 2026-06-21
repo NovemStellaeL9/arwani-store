@@ -3,19 +3,10 @@
 import React, { useState, useEffect } from "react";
 
 export default function Header() {
-  const [greeting, setGreeting] = useState("Selamat Datang");
   const [currentDate, setCurrentDate] = useState("");
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    // Determine Greeting
-    const h = new Date().getHours();
-    if (h >= 5 && h < 11) setGreeting("Halo Kak, Selamat Pagi 👋");
-    else if (h >= 11 && h < 15) setGreeting("Halo Kak, Selamat Siang ☀️");
-    else if (h >= 15 && h < 18) setGreeting("Halo Kak, Selamat Sore ☕");
-    else setGreeting("Halo Kak, Selamat Malam 🌙");
-
-    // Format Date
+    // Format Indonesian Date
     setCurrentDate(
       new Date().toLocaleDateString("id-ID", {
         weekday: "long",
@@ -24,74 +15,43 @@ export default function Header() {
         year: "numeric",
       })
     );
-
-    // Initial Theme Sync
-    if (typeof window !== "undefined") {
-      const savedTheme = localStorage.getItem("theme");
-      const darkQuery = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (savedTheme === "dark" || (!savedTheme && darkQuery)) {
-        setIsDarkMode(true);
-        document.documentElement.classList.add("dark");
-      } else {
-        setIsDarkMode(false);
-        document.documentElement.classList.remove("dark");
-      }
-    }
   }, []);
 
-  const toggleTheme = () => {
-    if (isDarkMode) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-      setIsDarkMode(false);
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-      setIsDarkMode(true);
-    }
-  };
-
   return (
-    <div className="bg-app-header-bg/85 backdrop-blur-xl text-app-header-text px-5 py-6 rounded-b-[2.5rem] shadow-xl relative z-20 border-b border-app-border/20 transition-all duration-500">
-      <div className="flex justify-between items-start mb-5">
+    <div className="bg-white/[0.04] backdrop-blur-xl text-white px-5 py-6 rounded-b-[2.5rem] shadow-xl relative z-20 border-b border-white/10 transition-all duration-300">
+      
+      {/* Greeting Header */}
+      <div className="flex justify-between items-start mb-4">
         <div>
-          <p className="text-sm font-bold text-app-primary drop-shadow-sm transition-all duration-300 animate-pulse">
-            {greeting}
-          </p>
-          <p className="text-xs text-app-text-secondary mt-0.5 font-semibold">
-            Mau isi kuota apa hari ini?
+          <h2 className="text-base font-black tracking-tight text-white flex items-center gap-1">
+            Halo Kak, Selamat Datang 👋
+          </h2>
+          <p className="text-[11px] text-[#cbd5e1] font-semibold mt-1">
+            Pilih paket internet terbaikmu hari ini
           </p>
         </div>
+      </div>
+
+      {/* STORE CARD: Floating glass card */}
+      <div className="bg-white/[0.08] backdrop-blur-md border border-white/12 rounded-2xl p-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] hover:scale-[1.01] transition-transform duration-300">
+        <div className="flex justify-between items-center mb-2.5">
+          <h1 className="text-sm font-black tracking-wider text-white">
+            ARWANI D'GABRIEL STORE
+          </h1>
+          <span className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-black rounded-lg uppercase tracking-wider animate-pulse">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Online
+          </span>
+        </div>
         
-        {/* Theme Toggle Button */}
-        <button
-          onClick={toggleTheme}
-          aria-label="Toggle Theme"
-          className="bg-app-card/85 p-2.5 rounded-full border border-app-border shadow-sm backdrop-blur-md hover:scale-110 active:scale-95 transition-all duration-300 hover:bg-app-card text-app-text"
-        >
-          {isDarkMode ? (
-            // Sun Icon (Dark Mode is active, show Sun)
-            <svg className="w-5 h-5 text-amber-500 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 7a5 5 0 100 10 5 5 0 000-10z" />
-            </svg>
-          ) : (
-            // Moon Icon (Light Mode is active, show Moon)
-            <svg className="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          )}
-        </button>
+        <div className="flex justify-between items-center text-[10px] text-[#cbd5e1] font-semibold">
+          <span>Jam Operasional: 24 Jam</span>
+          <span className="font-extrabold text-blue-400 uppercase tracking-wide">
+            {currentDate || "Memuat tanggal..."}
+          </span>
+        </div>
       </div>
- 
-      {/* Glassmorphism Title Card */}
-      <div className="bg-app-card/65 rounded-2xl px-4 py-3.5 text-center border border-app-border/80 backdrop-blur-md shadow-lg transition-all duration-500">
-        <h1 className="text-lg font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-app-text via-app-primary to-app-text">
-          ARWANI D'GABRIEL STORE
-        </h1>
-        <p className="text-[11px] font-extrabold text-app-primary mt-1.5 tracking-wider uppercase">
-          {currentDate || "Memuat tanggal..."}
-        </p>
-      </div>
+      
     </div>
   );
 }

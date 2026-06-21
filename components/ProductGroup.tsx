@@ -28,14 +28,14 @@ export default function ProductGroup({
   };
 
   return (
-    <div className="col-span-2 bg-app-card rounded-3xl p-5 shadow-md border border-app-border relative overflow-hidden transition-all duration-300 hover:shadow-lg">
+    <div className="col-span-2 bg-white/[0.08] backdrop-blur-md rounded-3xl p-5 shadow-md border border-white/12 relative overflow-hidden transition-all duration-300 hover:shadow-lg">
       {/* Top Banner Indicator */}
-      <div className="absolute top-0 left-0 right-0 h-1.5 bg-amber-400 dark:bg-amber-500" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500" />
 
       {/* Header Info */}
-      <div className="flex items-start justify-between mt-1 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mt-1 mb-4">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 bg-app-bg rounded-xl p-2.5 flex items-center justify-center border border-app-border flex-shrink-0">
+          <div className="w-12 h-12 bg-white/5 rounded-2xl p-2 flex items-center justify-center border border-white/10 flex-shrink-0 shadow-inner">
             <img
               src={getProviderLogo(group.category)}
               alt={group.category}
@@ -43,21 +43,18 @@ export default function ProductGroup({
             />
           </div>
           <div>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span
-                className="text-[9px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider"
-                style={{ backgroundColor: typeColor.bg, color: typeColor.text }}
-              >
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 uppercase tracking-wider">
                 AKRAB
               </span>
-              <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded-full bg-app-warning-light text-app-warning-dark border border-app-warning/25 uppercase tracking-wide">
+              <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wide">
                 Keluarga
               </span>
             </div>
-            <h3 className="text-sm font-black text-app-text">
+            <h3 className="text-sm font-black text-white">
               {group.name}
             </h3>
-            <p className="text-[10px] font-semibold text-app-text-secondary mt-0.5">
+            <p className="text-[10px] font-semibold text-slate-400 mt-0.5">
               {group.desc}
             </p>
           </div>
@@ -68,7 +65,7 @@ export default function ProductGroup({
           href="https://gress-cell.github.io/GRESS-CELL-CEK-AREA/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-shrink-0 bg-app-warning-light text-app-warning-dark text-[9px] font-black px-3 py-2 rounded-xl border border-app-warning/25 hover:bg-app-warning-hover hover:text-app-header-text flex items-center gap-1 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm"
+          className="flex-shrink-0 bg-amber-500/25 text-amber-300 text-[9px] font-black px-3 py-2 rounded-xl border border-amber-500/35 hover:bg-amber-500 hover:text-white flex items-center gap-1 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm"
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
             <path
@@ -77,24 +74,24 @@ export default function ProductGroup({
               d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          Cek Area & Estimasi Kuota AKRAB
+          Cek Area XL AKRAB
         </a>
       </div>
 
       {/* Variant Selector Dropdown */}
-      <div className="border-t border-app-border pt-4">
+      <div className="border-t border-white/10 pt-4">
         <div className="flex justify-between items-center mb-1.5 px-1">
-          <label className="text-[10px] font-black text-app-text-secondary uppercase tracking-wider block">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
             Pilih Varian Paket:
           </label>
           {onToggleFavorite && (
             <button
               onClick={() => onToggleFavorite(selectedVariant.id)}
-              className="text-[10px] font-extrabold text-app-text-secondary hover:text-app-danger flex items-center gap-1 transition-all duration-300"
+              className="text-[10px] font-extrabold text-slate-400 hover:text-rose-400 flex items-center gap-1 transition-all duration-300"
             >
               <svg
                 className={`w-3.5 h-3.5 ${
-                  isFavorite ? "fill-red-500 stroke-red-500 scale-110" : "stroke-app-text-secondary fill-none"
+                  isFavorite ? "fill-rose-500 stroke-rose-500 scale-110" : "stroke-slate-400 fill-none"
                 }`}
                 viewBox="0 0 24 24"
                 strokeWidth="2.5"
@@ -113,31 +110,31 @@ export default function ProductGroup({
         <select
           value={selectedVariantId}
           onChange={handleVariantChange}
-          className="w-full p-3 border border-app-border rounded-2xl text-xs bg-app-bg font-bold text-app-text outline-none focus:ring-4 focus:ring-app-primary/10 focus:border-app-primary transition-all duration-300"
+          className="w-full p-3 border border-white/10 rounded-2xl text-xs bg-[#081225] font-bold text-white outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all duration-300 cursor-pointer"
         >
           {group.variants.map((v) => (
-            <option key={v.id} value={v.id}>
+            <option key={v.id} value={v.id} className="bg-[#081225]">
               {v.name} — {v.desc} — {formatRupiah(v.price)}
             </option>
           ))}
         </select>
         
         {/* Warning Text for AKRAB Area Estimates */}
-        <div className="mt-3.5 bg-app-warning-light border border-app-warning/25 px-3.5 py-2.5 rounded-xl flex items-start gap-2">
+        <div className="mt-3.5 bg-amber-500/10 border border-amber-500/20 px-3.5 py-2.5 rounded-xl flex items-start gap-2">
           <span className="text-xs">⚠️</span>
-          <p className="text-[10px] text-app-warning-dark font-semibold leading-normal">
+          <p className="text-[10px] text-amber-300 font-semibold leading-normal">
             Kuota yang didapat dapat berbeda pada setiap area. Silakan cek estimasi area terlebih dahulu.
           </p>
         </div>
       </div>
 
       {/* Pricing and WhatsApp Buy action */}
-      <div className="mt-4 flex justify-between items-center bg-app-bg p-4 rounded-2xl border border-app-border">
+      <div className="mt-4 flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/8">
         <div>
-          <p className="text-[9px] font-black text-app-text-secondary uppercase tracking-widest">
+          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
             Harga Varian
           </p>
-          <p className="text-lg font-black text-app-primary mt-0.5">
+          <p className="text-base font-black text-[#3B82F6] mt-0.5">
             {formatRupiah(selectedVariant.price)}
           </p>
         </div>
@@ -146,12 +143,12 @@ export default function ProductGroup({
           href={getWaLink(selectedVariant.name, selectedVariant.price)}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-app-primary hover:bg-app-primary-hover text-app-header-text px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider hover:-translate-y-0.5 transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-1.5"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider hover:-translate-y-0.5 transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-1.5 active:scale-95"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
-          Pesan Sekarang
+          Pesan
         </a>
       </div>
     </div>
