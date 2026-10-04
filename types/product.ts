@@ -1,9 +1,14 @@
 export interface Product {
   id: number;
+  code?: string;
   category: string;
   name: string;
   desc: string;
   price: number; // Numeric price
+  originalPrice?: number;
+  stock?: number;
+  isAvailable?: boolean;
+  provider?: string;
   isFavorite?: boolean;
   isNew?: boolean;
 }
@@ -30,4 +35,24 @@ export type ActiveCategory =
   | "Indosat"
   | "XL & Axis"
   | "Tri"
-  | "Smartfren";
+  | "Smartfren"
+  | "PLN"
+  | "DANA";
+
+export interface PurchaseRequest {
+  productcode: string;
+  phonenumber: string;
+  refid: string;
+}
+
+export interface PurchaseResponse {
+  success: boolean;
+  refid?: string;
+  trxuuid?: string;
+  status?: string; // "00" = Sukses, "01" = Gagal Saldo, "02" = Gagal Stok
+  productcode?: string;
+  phonenumber?: string;
+  price?: number;
+  message?: string;
+  time?: string;
+}

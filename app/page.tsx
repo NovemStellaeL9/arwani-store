@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter as useAppRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
+import CheckoutModal from "@/components/CheckoutModal";
 import { getProviderLogo, formatRupiah } from "@/utils/helpers";
 import { Product } from "@/types/product";
 import { getDbProvider } from "@/utils/db";
@@ -15,6 +16,7 @@ export default function Home() {
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
   const [latestProducts, setLatestProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -189,14 +191,14 @@ export default function Home() {
               ))
             ) : (
               latestProducts.map((p) => (
-                <Link
+                <div
                   key={p.id}
-                  href={`/semua-produk?category=${encodeURIComponent(p.category)}&type=Circel+Reguler+28+Hari`}
-                  className="bg-white/[0.08] rounded-2xl p-4 border border-white/12 hover:border-blue-500/40 hover:bg-white/[0.12] shadow-md transition-all duration-300 flex flex-col justify-between group"
+                  onClick={() => setSelectedProduct(p)}
+                  className="bg-white/[0.08] rounded-2xl p-4 border border-white/12 hover:border-blue-500/40 hover:bg-white/[0.12] shadow-md transition-all duration-300 flex flex-col justify-between group cursor-pointer"
                 >
                   <div>
                     <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 uppercase tracking-widest mb-2 inline-block">
-                      🔥 Circel
+                      🔥 {p.category}
                     </span>
                     <h3 className="text-[11px] font-black text-white leading-tight group-hover:text-blue-400 transition-colors">
                       {p.name}
@@ -205,16 +207,27 @@ export default function Home() {
                       {p.desc}
                     </p>
                   </div>
-                  <p className="text-xs font-black text-[#3B82F6] mt-3.5">
-                    {formatRupiah(p.price)}
-                  </p>
-                </Link>
+                  <div className="flex items-center justify-between mt-3.5">
+                    <p className="text-xs font-black text-[#3B82F6]">
+                      {formatRupiah(p.price)}
+                    </p>
+                    <span className="text-[9px] font-bold text-blue-400 group-hover:translate-x-0.5 transition-transform">
+                      Beli &rarr;
+                    </span>
+                  </div>
+                </div>
               ))
             )}
           </div>
         </div>
 
       </div>
+
+      {/* ── MODAL CHECKOUT PEMBELIAN API ── */}
+      <CheckoutModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </div>
   );
 }

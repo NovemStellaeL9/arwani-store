@@ -16,12 +16,14 @@ interface ProductCardProps {
   product: Product;
   isFavorite: boolean;
   onToggleFavorite: (id: number) => void;
+  onSelectProduct?: (product: Product) => void;
 }
 
 export default function ProductCard({
   product,
   isFavorite,
   onToggleFavorite,
+  onSelectProduct,
 }: ProductCardProps) {
   const isMasaAktif = product.category === "MasaAktif";
   const pkgType = isMasaAktif ? "Masa Aktif" : getPackageType(product.name);
@@ -134,18 +136,31 @@ export default function ProductCard({
           {formatRupiah(product.price)}
         </p>
         
-        <a
-          href={getWaLink(product.name, product.price)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full text-center py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 active:scale-95"
-        >
-          {/* Cart Icon */}
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
-          Beli Sekarang
-        </a>
+        {onSelectProduct ? (
+          <button
+            type="button"
+            onClick={() => onSelectProduct(product)}
+            className="w-full text-center py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 active:scale-95 cursor-pointer"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Beli Instan
+          </button>
+        ) : (
+          <a
+            href={getWaLink(product.name, product.price)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full text-center py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 active:scale-95"
+          >
+            {/* Cart Icon */}
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            Beli Sekarang
+          </a>
+        )}
       </div>
     </div>
   );

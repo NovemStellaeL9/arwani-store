@@ -9,6 +9,7 @@ import { getPackageType, getProviderLogo, getTypeColor } from "@/utils/helpers";
 import SearchBar from "@/components/SearchBar";
 import ProductCard from "@/components/ProductCard";
 import ProductGroup from "@/components/ProductGroup";
+import CheckoutModal from "@/components/CheckoutModal";
  
 // Shimmer skeleton component matching product cards
 function ProductCardSkeleton() {
@@ -73,6 +74,7 @@ function CatalogContent() {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [visibleCount, setVisibleCount] = useState(20);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
  
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
  
@@ -385,6 +387,7 @@ function CatalogContent() {
                 product={prod}
                 isFavorite={favorites.includes(prod.id)}
                 onToggleFavorite={handleToggleFavorite}
+                onSelectProduct={setSelectedProduct}
               />
             );
           })}
@@ -410,6 +413,12 @@ function CatalogContent() {
           </div>
         )}
       </div>
+
+      {/* ── MODAL CHECKOUT PEMBELIAN API ── */}
+      <CheckoutModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </div>
   );
 }

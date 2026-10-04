@@ -34,6 +34,8 @@ const PROVIDER_LOGOS: Record<string, string> = {
   "XL & Axis": "/xl.png",
   "Tri":       "/tri.png",
   "Smartfren": "/smartfren.png",
+  "PLN":       "/pln.svg",
+  "DANA":      "/dana.svg",
 };
 
 const MASA_AKTIF_LOGOS: Record<string, string> = {
@@ -84,5 +86,60 @@ export const getProductBadge = (name: string, price: number, category: string, i
   if (id % 13 === 0 && category !== "MasaAktif") return "PROMO";
   if (id % 19 === 0 && category !== "MasaAktif") return "BARU";
   
+  return null;
+};
+
+/**
+ * Deteksi operator provider dari nama dan kategori produk API
+ */
+export const detectProvider = (name: string = "", category: string = ""): string => {
+  const text = `${name} ${category}`.toLowerCase();
+
+  if (category.includes("MASA_AKTIF") || name.toLowerCase().includes("masa aktif")) {
+    return "MasaAktif";
+  }
+  if (text.includes("telkomsel") || text.includes("mat") || text.includes("tsel") || text.includes("halo") || text.includes("simpati")) {
+    return "Telkomsel";
+  }
+  if (text.includes("byu") || text.includes("by.u")) {
+    return "by.U";
+  }
+  if (text.includes("indosat") || text.includes("im3") || text.includes("mai") || text.includes("freedom") || text.includes("ooredoo")) {
+    return "Indosat";
+  }
+  if (text.includes("axis") || text.includes("aigo") || text.includes("maa") || text.includes("xl") || text.includes("flex") || text.includes("akrab") || text.includes("max") || text.includes("xda") || text.includes("xla") || text.includes("xltp")) {
+    return "XL & Axis";
+  }
+  if (text.includes("tri") || text.includes("three") || text.includes("mar") || text.includes("happy")) {
+    return "Tri";
+  }
+  if (text.includes("smartfren") || text.includes("sf")) {
+    return "Smartfren";
+  }
+  if (text.includes("pln")) {
+    return "PLN";
+  }
+  if (text.includes("dana")) {
+    return "DANA";
+  }
+
+  return "XL & Axis";
+};
+
+/**
+ * Deteksi nama operator dari awalan nomor telepon HP
+ */
+export const detectOperatorFromPhone = (phone: string): string | null => {
+  const clean = phone.replace(/[^0-9]/g, "");
+  const prefix = clean.startsWith("62") ? "0" + clean.slice(2, 5) : clean.slice(0, 4);
+
+  if (/^(0811|0812|0813|0821|0822|0823|0852|0853)/.test(prefix)) return "Telkomsel";
+  if (/^(0851)/.test(prefix)) return "by.U";
+  if (/^(0814|0815|0816|0855|0856|0857|0858)/.test(prefix)) return "Indosat";
+  if (/^(0817|0818|0819|0859|0877|0878)/.test(prefix)) return "XL & Axis";
+  if (/^(0831|0832|0833|0838)/.test(prefix)) return "XL & Axis";
+  if (/^(0895|0896|0897|0898|0899)/.test(prefix)) return "Tri";
+  if (/^(0881|0882|0883|0884|0885|0886|0887|0888|0889)/.test(prefix)) return "Smartfren";
+
   return null;
 };
