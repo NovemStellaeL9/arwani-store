@@ -1,77 +1,89 @@
-import { NextRequest, NextResponse } from "next/server";
-import { PurchaseResponse } from "@/types/product";
+import { NextResponse } from "next/server";
+import { executePurchase } from "@/lib/ruangkuota";
+import { saveTransaction } from "@/lib/transactionStore";
 
-const RUANG_KUOTA_KEY = process.env.RUANG_KUOTA_API_KEY || "78e19cdde458c8ace3ac0baaefea005f8ff5a5d579488ea582c2ef9cd8e903173d4ef3c0ddd58996654e65aa6cb9b8729562c52be518877d92cff80ce1671b2651b56a07b3d21f1a922371";
-const BASE_URL = process.env.RUANG_KUOTA_BASE_URL || "https://service.ruang-kuota.my.id";
+export const dynamic = "force-dynamic";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { productcode, phonenumber } = body;
+    const { productcode, phonenumber, productName, category } = body;
+    let { refid } = body;
 
     if (!productcode || !phonenumber) {
       return NextResponse.json(
-        { success: false, message: "Kode produk dan nomor HP wajib diisi" },
+        {
+          success: false,
+          message: "Kode produk dan nomor tujuan wajib diisi.",
+        },
         { status: 400 }
       );
     }
 
-    // Normalisasi format nomor HP (08xxx)
-    let cleanPhone = phonenumber.replace(/[^0-9]/g, "");
-    if (cleanPhone.startsWith("62")) {
-      cleanPhone = "0" + cleanPhone.slice(2);
+    // Clean phone number format
+    const cleanPhone = String(phonenumber).replace(/[^0-9]/g, "");
+    if (cleanPhone.length < 4 || cleanPhone.length > 50) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Format nomor tujuan tidak valid. Masukkan 4 sampai 50 digit angka.",
+        },
+        { status: 400 }
+      );
     }
 
-    // RefID unik untuk transaksi ini
-    const refid = `TRX-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    if (!refid || String(refid).trim() === "") {
+      const now = new Date();
+      const dateStr = now.toISOString().slice(2, 10).replace(/-/g, "");
+      const rand = Math.floor(10000 + Math.random() * 90000);
+      refid = `ARW-${dateStr}-${rand}`;
+    }
 
-    const queryParams = new URLSearchParams({
-      apikey: RUANG_KUOTA_KEY,
-      productcode: productcode,
+    const purchaseRes = await executePurchase({
+      productcode: String(productcode).trim(),
       phonenumber: cleanPhone,
-      refid: refid,
+      refid: String(refid).trim(),
     });
 
-    const targetUrl = `${BASE_URL}/user/purchase?${queryParams.toString()}`;
-    const res = await fetch(targetUrl, { method: "GET" });
-    const responseText = await res.text();
-
-    let parsedParams: URLSearchParams;
-    if (responseText.includes("?")) {
-      parsedParams = new URLSearchParams(responseText.split("?")[1]);
-    } else {
-      parsedParams = new URLSearchParams(responseText);
+    let statusLabel: "Sukses" | "Diproses" | "Gagal" = "Gagal";
+    if (purchaseRes.status === "00") {
+      statusLabel = "Sukses";
+    } else if (
+      purchaseRes.status === "02" &&
+      purchaseRes.message.toLowerCase().includes("sedang diproses")
+    ) {
+      statusLabel = "Diproses";
     }
 
-    const status = parsedParams.get("status") || "unknown";
-    const message = parsedParams.get("message") || "Transaksi telah dikirim";
-    const trxuuid = parsedParams.get("trxuuid") || "";
-    const returnedRefId = parsedParams.get("refid") || refid;
-    const price = Number(parsedParams.get("price")) || 0;
-
-    const isSuccess = status === "00";
-
-    const result: PurchaseResponse = {
-      success: isSuccess,
-      refid: returnedRefId,
-      trxuuid: trxuuid,
-      status: status,
-      productcode: productcode,
+    saveTransaction({
+      refid: purchaseRes.refid || refid,
+      trxuuid: purchaseRes.trxuuid,
+      productcode: purchaseRes.productcode || productcode,
+      productName: productName || productcode,
+      category: category || "",
       phonenumber: cleanPhone,
-      price: price,
-      message: message,
-      time: parsedParams.get("time") || new Date().toISOString(),
-    };
+      price: purchaseRes.price,
+      status: purchaseRes.status,
+      statusLabel,
+      message: purchaseRes.message,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      source: "API_DIRECT",
+    });
 
-    return NextResponse.json(result);
+    return NextResponse.json({
+      success: purchaseRes.status === "00",
+      data: purchaseRes,
+    });
   } catch (error: any) {
-    console.error("Error eksekusi pembelian:", error);
+    console.error("API /api/purchase error:", error);
     return NextResponse.json(
       {
         success: false,
-        message: error.message || "Gagal menghubungkan ke server Ruang Kuota",
+        message: error?.message || "Terjadi kendala saat memproses pembelian.",
       },
       { status: 500 }
     );
   }
 }
+

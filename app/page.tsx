@@ -1,232 +1,241 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter as useAppRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
-import CheckoutModal from "@/components/CheckoutModal";
-import { getProviderLogo, formatRupiah } from "@/utils/helpers";
+import { getProviderLogo } from "@/utils/helpers";
 import { Product } from "@/types/product";
-import { getDbProvider } from "@/utils/db";
+import ProductCard from "@/components/ProductCard";
+import CheckoutModal from "@/components/CheckoutModal";
 
-const categories = ["Telkomsel", "by.U", "Indosat", "XL & Axis", "Tri", "Smartfren"] as const;
+const operatorShortcuts = [
+  { name: "XL & Axis", category: "XL & Axis", logo: "/xl.png" },
+  { name: "Telkomsel", category: "Telkomsel", logo: "/telkomsel.png" },
+  { name: "Indosat", category: "Indosat", logo: "/indosat.png" },
+  { name: "Tri", category: "Tri", logo: "/tri.png" },
+  { name: "Token PLN", category: "PLN", isIcon: true, icon: "⚡" },
+  { name: "Saldo DANA", category: "E-Wallet", isIcon: true, icon: "💳" },
+  { name: "Pulsa Transfer", category: "Pulsa", isIcon: true, icon: "📱" },
+  { name: "Masa Aktif", category: "Masa Aktif", isIcon: true, icon: "⏳" },
+  { name: "Semua Paket", category: "Semua", isIcon: true, icon: "📦" },
+];
 
 export default function Home() {
-  const router = useAppRouter();
+  const router = useRouter();
+  const [popularProducts, setPopularProducts] = useState<Product[]>([]);
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
-  const [latestProducts, setLatestProducts] = useState<Product[]>([]);
+  const [favorites, setFavorites] = useState<(string | number)[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const loadProducts = async () => {
+    const loadData = async () => {
       try {
-        const db = getDbProvider();
-        const allProducts = await db.getProducts();
-        
-        // 1. Get Latest Products (new Circel products and some flash packages)
-        const latest = allProducts.filter(p => p.name.toLowerCase().includes("circel")).slice(0, 4);
-        setLatestProducts(latest.length > 0 ? latest : allProducts.slice(0, 4));
+        const res = await fetch("/api/products");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.products)) {
+          const list: Product[] = json.products;
+          // Pick highlight packages (Akrab V4, Flex, Freedom, Tri Happy, PLN, DANA)
+          const picks = list.filter((p) => {
+            const n = p.name.toLowerCase();
+            return (
+              n.includes("v4") ||
+              n.includes("flex max 7gb") ||
+              n.includes("freedom internet 8gb") ||
+              n.includes("tri data happy 7gb") ||
+              n.includes("pln 20.000") ||
+              n.includes("dana 10 ribu")
+            );
+          }).slice(0, 6);
 
-        // 2. Get Favorites from localStorage
-        const storedFavs = localStorage.getItem("favorites");
-        if (storedFavs) {
-          const favIds: number[] = JSON.parse(storedFavs);
-          const favs = allProducts.filter((p) => favIds.includes(p.id));
-          setFavoriteProducts(favs);
+          setPopularProducts(picks.length > 0 ? picks : list.slice(0, 6));
+
+          // Load favorites
+          if (typeof window !== "undefined") {
+            const stored = localStorage.getItem("favorites");
+            if (stored) {
+              const favIds: (string | number)[] = JSON.parse(stored);
+              setFavorites(favIds);
+              const matched = list.filter((p) => favIds.includes(p.id));
+              setFavoriteProducts(matched);
+            }
+          }
         }
-      } catch (error) {
-        console.error("Failed to load products for dashboard:", error);
+      } catch (err) {
+        console.error("Gagal memuat produk beranda:", err);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadProducts();
+    loadData();
   }, []);
 
-  const handleCategoryClick = (cat: string) => {
-    router.push(`/semua-produk?category=${encodeURIComponent(cat)}`);
+  const handleCategoryClick = (category: string) => {
+    router.push(`/semua-produk?category=${encodeURIComponent(category)}`);
+  };
+
+  const handleToggleFavorite = (id: string | number) => {
+    setFavorites((prev) => {
+      const updated = prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id];
+      if (typeof window !== "undefined") {
+        localStorage.setItem("favorites", JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const handleSelectProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#081225] pb-8">
-      {/* ── HEADER ── */}
+    <div className="flex flex-col min-h-screen bg-[#081225] pb-28 text-white">
+      {/* Header Bar */}
       <Header />
 
-      {/* ── CONTENT ── */}
-      <div className="px-5 mt-6 space-y-6">
-        
-        {/* ── PROMO BANNER ── */}
-        <Link href="/semua-produk?category=XL+%26+Axis&type=Circel+Reguler+28+Hari" className="block">
-          <div className="bg-gradient-to-r from-rose-500/80 to-amber-500/80 border border-white/10 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden group hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-            {/* Background decorative elements */}
-            <div className="absolute right-0 bottom-0 translate-y-4 translate-x-2 w-32 h-32 bg-white/10 rounded-full blur-xl group-hover:scale-125 transition-transform duration-500" />
-            <div className="absolute -left-4 -top-4 w-16 h-16 bg-amber-400/20 rounded-full blur-md" />
-            
-            <span className="inline-block px-2.5 py-1 bg-amber-400 text-rose-900 text-[9px] font-black rounded-lg uppercase tracking-wider mb-2.5">
-              Promo Terbatas 🔥
+      {/* Main Container */}
+      <div className="px-5 mt-5 space-y-6">
+        {/* PROMO HERO BANNER */}
+        <Link href="/semua-produk?category=XL+%26+Axis" className="block focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-3xl">
+          <div className="bg-gradient-to-r from-blue-700 to-indigo-800 border border-white/15 rounded-3xl p-5 shadow-xl relative overflow-hidden group hover:border-white/30 transition-all">
+            <span className="inline-block px-2.5 py-1 bg-amber-400 text-slate-950 text-[9px] font-black rounded-lg uppercase tracking-wider mb-2">
+              Paket Rekomendasi
             </span>
             <h2 className="text-base font-black leading-snug tracking-wide text-white">
-              Paket XL & Axis Circel Reguler 28 Hari
+              Paket XL Akrab & Flex Kuota Besar
             </h2>
-            <p className="text-[10px] text-rose-100 font-semibold mt-1 max-w-[80%]">
-              Internet full 24 jam mulai dari 10 GB hingga 69 GB. Proses instan langsung aktif!
+            <p className="text-xs text-blue-100 font-medium mt-1 max-w-[85%] leading-relaxed">
+              Mulai dari 10 GB hingga 600 GB, tersedia stok real-time langsung aktif 24 jam.
             </p>
-            <div className="flex items-center gap-1 mt-4 text-[10px] font-bold text-white">
-              <span>Beli Sekarang</span>
-              <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+            <div className="flex items-center gap-1.5 mt-3.5 text-xs font-bold text-amber-300">
+              <span>Buka Katalog XL & Axis</span>
+              <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </div>
           </div>
         </Link>
 
-        {/* ── CHOOSE OPERATOR GRID ── */}
+        {/* TRANSAKSI QUICK SHORTCUT BANNER */}
+        <div className="bg-[#0e1a34] rounded-2xl p-4 border border-white/10 flex items-center justify-between gap-3 shadow-md">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg border border-blue-500/30">
+              🔍
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white">Sudah Melakukan Pemesanan?</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">Periksa status transaksi Anda dengan ID Referensi</p>
+            </div>
+          </div>
+          <Link
+            href="/transaksi"
+            className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider flex-shrink-0 transition-colors"
+          >
+            Lacak
+          </Link>
+        </div>
+
+        {/* CHOOSE OPERATOR & SERVICE GRID */}
         <div>
-          <p className="text-[11px] font-bold text-[#cbd5e1] uppercase tracking-widest mb-3.5">
-            Pilih Provider Paket
-          </p>
-          <div className="grid grid-cols-3 gap-3">
-            {categories.map((cat) => (
+          <div className="flex justify-between items-center mb-3">
+            <p className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+              Pilih Layanan & Operator
+            </p>
+            <Link href="/semua-produk" className="text-[11px] font-bold text-blue-400 hover:text-blue-300">
+              Lihat Semua
+            </Link>
+          </div>
+          <div className="grid grid-cols-3 gap-2.5">
+            {operatorShortcuts.map((item) => (
               <button
-                key={cat}
-                onClick={() => handleCategoryClick(cat)}
-                className="group bg-white/[0.08] backdrop-blur-md rounded-2xl p-4 flex flex-col items-center justify-center border border-white/12 shadow-[0_4px_20px_0_rgba(0,0,0,0.15)] hover:scale-[1.03] hover:bg-white/[0.12] hover:border-blue-500/30 active:scale-95 transition-all duration-300"
+                key={item.name}
+                onClick={() => handleCategoryClick(item.category)}
+                className="bg-[#0e1a34] hover:bg-[#132244] border border-white/10 hover:border-blue-500/30 rounded-2xl p-3 flex flex-col items-center justify-center text-center transition-all focus:ring-2 focus:ring-blue-400 focus:outline-none"
               >
-                <div className="h-14 w-14 bg-white/5 rounded-xl p-2 flex items-center justify-center mb-2.5 transition-transform duration-300 group-hover:scale-110 shadow-inner border border-white/10">
-                  <img src={getProviderLogo(cat)} alt={cat} className="max-h-full max-w-full object-contain filter drop-shadow-sm" />
+                <div className="h-11 w-11 rounded-xl bg-white/5 p-1.5 flex items-center justify-center mb-2 border border-white/10">
+                  {item.isIcon ? (
+                    <span className="text-xl">{item.icon}</span>
+                  ) : (
+                    <img src={item.logo} alt={item.name} className="max-h-full max-w-full object-contain" />
+                  )}
                 </div>
-                <span className="text-[10px] font-black text-white tracking-wide uppercase leading-none text-center">
-                  {cat}
+                <span className="text-[10px] font-bold text-white leading-tight">
+                  {item.name}
                 </span>
               </button>
             ))}
           </div>
         </div>
 
-        {/* ── MASA AKTIF BANNER SHORTCUT ── */}
+        {/* POPULAR PACKAGES (LIVE STOCK) */}
         <div>
-          <p className="text-[11px] font-bold text-[#cbd5e1] uppercase tracking-widest mb-3">
-            Perpanjangan Kartu
-          </p>
-          <Link href="/semua-produk?category=MasaAktif">
-            <div className="bg-white/[0.08] backdrop-blur-md rounded-2xl p-4 flex items-center gap-3.5 border border-white/12 hover:border-blue-500/40 hover:bg-white/[0.12] shadow-md transition-all duration-300 active:scale-[0.99] group">
-              <div className="w-11 h-11 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-blue-500/30">
-                <svg className="w-5.5 h-5.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div className="flex-1 text-left">
-                <p className="text-xs font-black text-white uppercase tracking-wider">
-                  Masa Aktif Ekstra
-                </p>
-                <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5 tracking-wide">
-                  Tambah masa aktif tanpa beli kuota utama
-                </p>
-              </div>
-              <svg className="w-4 h-4 text-slate-400 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
+          <div className="flex justify-between items-center mb-3">
+            <div>
+              <p className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                Paket Pilihan Terpopuler
+              </p>
+              <p className="text-[11px] text-slate-400">Langsung terhubung dengan stok server</p>
             </div>
-          </Link>
+            <Link href="/semua-produk" className="text-xs font-bold text-blue-400 hover:text-blue-300">
+              Semua Paket
+            </Link>
+          </div>
+
+          {isLoading ? (
+            <div className="grid grid-cols-2 gap-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="bg-[#0e1a34] rounded-2xl p-4 border border-white/10 space-y-3 h-44 animate-pulse">
+                  <div className="h-4 bg-white/10 rounded w-1/3" />
+                  <div className="h-4 bg-white/10 rounded w-3/4" />
+                  <div className="h-6 bg-white/10 rounded-xl w-full mt-4" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {popularProducts.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  isFavorite={favorites.includes(p.id)}
+                  onToggleFavorite={handleToggleFavorite}
+                  onSelectProduct={handleSelectProduct}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* ── FAVORITE PRODUCTS ── */}
+        {/* FAVORITES (IF ANY) */}
         {favoriteProducts.length > 0 && (
           <div>
-            <div className="flex justify-between items-center mb-3">
-              <p className="text-[11px] font-bold text-[#cbd5e1] uppercase tracking-widest">
-                Paket Favorit Anda ({favoriteProducts.length})
-              </p>
-              <Link href="/semua-produk" className="text-[9px] font-black text-blue-400 uppercase tracking-wider hover:text-blue-300">
-                Lihat Semua
-              </Link>
-            </div>
-            
-            <div className="flex overflow-x-auto pb-2 gap-3 -mx-5 px-5 scrollbar-hide">
-              {favoriteProducts.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/semua-produk?category=${encodeURIComponent(p.category)}&query=${encodeURIComponent(p.name)}`}
-                  className="flex-shrink-0 w-36 bg-white/[0.08] border border-white/12 rounded-2xl p-3 shadow-md hover:bg-white/[0.12] transition-all duration-300 flex flex-col justify-between"
-                >
-                  <div>
-                    <span className="text-[8px] font-extrabold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30 uppercase tracking-wider mb-2 inline-block">
-                      {p.category}
-                    </span>
-                    <h3 className="text-[10px] font-black text-white leading-tight line-clamp-2">
-                      {p.name}
-                    </h3>
-                  </div>
-                  <p className="text-xs font-black text-[#3B82F6] mt-2">
-                    {formatRupiah(p.price)}
-                  </p>
-                </Link>
+            <p className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
+              Paket Tersimpan ({favoriteProducts.length})
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {favoriteProducts.slice(0, 4).map((p) => (
+                <ProductCard
+                  key={`fav-${p.id}`}
+                  product={p}
+                  isFavorite={true}
+                  onToggleFavorite={handleToggleFavorite}
+                  onSelectProduct={handleSelectProduct}
+                />
               ))}
             </div>
           </div>
         )}
-
-        {/* ── LATEST / NEW PRODUCTS ── */}
-        <div>
-          <div className="flex justify-between items-center mb-3.5">
-            <p className="text-[11px] font-bold text-[#cbd5e1] uppercase tracking-widest">
-              Promo & Paket Terbaru
-            </p>
-            <Link href="/semua-produk?category=XL+%26+Axis&type=Circel+Reguler+28+Hari" className="text-[9px] font-black text-blue-400 uppercase tracking-wider hover:text-blue-300">
-              Lihat Promo
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-3">
-            {isLoading ? (
-              // Loading skeletons
-              Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-white/[0.08] rounded-2xl p-4 border border-white/12 shadow-sm space-y-3">
-                  <div className="h-4 bg-white/5 rounded w-12 animate-pulse" />
-                  <div className="h-6 bg-white/5 rounded w-3/4 animate-pulse" />
-                  <div className="h-4 bg-white/5 rounded w-1/2 animate-pulse" />
-                </div>
-              ))
-            ) : (
-              latestProducts.map((p) => (
-                <div
-                  key={p.id}
-                  onClick={() => setSelectedProduct(p)}
-                  className="bg-white/[0.08] rounded-2xl p-4 border border-white/12 hover:border-blue-500/40 hover:bg-white/[0.12] shadow-md transition-all duration-300 flex flex-col justify-between group cursor-pointer"
-                >
-                  <div>
-                    <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 uppercase tracking-widest mb-2 inline-block">
-                      🔥 {p.category}
-                    </span>
-                    <h3 className="text-[11px] font-black text-white leading-tight group-hover:text-blue-400 transition-colors">
-                      {p.name}
-                    </h3>
-                    <p className="text-[9px] text-slate-400 mt-1 uppercase tracking-wide">
-                      {p.desc}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between mt-3.5">
-                    <p className="text-xs font-black text-[#3B82F6]">
-                      {formatRupiah(p.price)}
-                    </p>
-                    <span className="text-[9px] font-bold text-blue-400 group-hover:translate-x-0.5 transition-transform">
-                      Beli &rarr;
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
       </div>
 
-      {/* ── MODAL CHECKOUT PEMBELIAN API ── */}
+      {/* Checkout Modal */}
       <CheckoutModal
         product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </div>
   );

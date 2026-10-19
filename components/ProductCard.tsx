@@ -8,14 +8,12 @@ import {
   getTypeColor,
   getProviderLogo,
   getMasaAktifLogo,
-  getWaLink,
-  getProductBadge,
 } from "@/utils/helpers";
 
 interface ProductCardProps {
   product: Product;
   isFavorite: boolean;
-  onToggleFavorite: (id: number) => void;
+  onToggleFavorite: (id: string | number) => void;
   onSelectProduct?: (product: Product) => void;
 }
 
@@ -25,55 +23,66 @@ export default function ProductCard({
   onToggleFavorite,
   onSelectProduct,
 }: ProductCardProps) {
-  const isMasaAktif = product.category === "MasaAktif";
+  const isMasaAktif = product.category.includes("MASA_AKTIF") || product.category === "MasaAktif";
   const pkgType = isMasaAktif ? "Masa Aktif" : getPackageType(product.name);
   const typeColor = getTypeColor(pkgType);
   const logo = isMasaAktif
-    ? getMasaAktifLogo(product.desc)
-    : getProviderLogo(product.category);
+    ? getMasaAktifLogo(product.operator || product.desc || "")
+    : getProviderLogo(product.operator || product.category);
 
-  const badge = getProductBadge(product.name, product.price, product.category, product.id);
+  const isStockEmpty = product.stock === 0;
 
   return (
-    <div className="bg-white/[0.08] backdrop-blur-md rounded-2xl p-4 shadow-md hover:shadow-xl hover:-translate-y-1 hover:bg-white/[0.12] transition-all duration-300 border border-white/12 flex flex-col justify-between group overflow-hidden relative">
-      {/* Top Accent Line */}
-      <div
-        className="absolute top-0 left-0 right-0 h-1 opacity-80"
-        style={{ backgroundColor: typeColor.text }}
-      />
-
+    <div className="bg-[#0e1a34] rounded-2xl p-4 shadow-md hover:shadow-xl hover:border-blue-500/40 transition-all duration-200 border border-white/10 flex flex-col justify-between group overflow-hidden relative">
       <div>
-        {/* Card Header (Logo & Favorite) */}
-        <div className="flex items-start justify-between mb-3 mt-1">
-          <div className="w-12 h-12 flex items-center justify-center bg-white/5 p-2 rounded-2xl border border-white/10 flex-shrink-0 shadow-inner">
+        {/* Card Header (Logo, Category, Favorite) */}
+        <div className="flex items-start justify-between mb-3">
+          <div className="w-11 h-11 flex items-center justify-center bg-white/5 p-1.5 rounded-xl border border-white/10 flex-shrink-0">
             {logo ? (
               <img
                 src={logo}
-                alt={product.category}
-                className="max-h-full max-w-full object-contain filter drop-shadow-sm"
+                alt={product.operator || product.category}
+                className="max-h-full max-w-full object-contain"
               />
             ) : (
               <div
-                className="w-full h-full rounded-xl flex items-center justify-center text-[10px] font-black"
+                className="w-full h-full rounded-lg flex items-center justify-center text-[10px] font-black"
                 style={{ backgroundColor: typeColor.bg, color: typeColor.text }}
               >
-                {product.desc.slice(0, 2).toUpperCase()}
+                {(product.operator || product.category).slice(0, 3).toUpperCase()}
               </div>
             )}
           </div>
 
-          <div className="flex items-center">
+          <div className="flex items-center gap-1.5">
+            {/* Live Stock Badge */}
+            {product.stock !== undefined && (
+              <span
+                className={`text-[9px] font-bold px-2 py-0.5 rounded-md border ${
+                  isStockEmpty
+                    ? "bg-rose-500/20 text-rose-300 border-rose-500/30"
+                    : product.stock === 999 || product.stock === 9999
+                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+                    : "bg-blue-500/20 text-blue-300 border-blue-500/30"
+                }`}
+              >
+                {isStockEmpty
+                  ? "Habis"
+                  : product.stock === 999 || product.stock === 9999
+                  ? "Tersedia"
+                  : `${product.stock} Stok`}
+              </span>
+            )}
+
             {/* Favorite button */}
             <button
               onClick={() => onToggleFavorite(product.id)}
-              aria-label={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-              className="p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-rose-500/10 group/fav hover:scale-110 active:scale-90 transition-all duration-300"
+              aria-label={isFavorite ? "Hapus dari Favorit" : "Simpan ke Favorit"}
+              className="p-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-rose-500/20 transition-colors focus:ring-2 focus:ring-rose-400 focus:outline-none"
             >
               <svg
-                className={`w-4 h-4 transition-all duration-300 ${
-                  isFavorite
-                    ? "fill-rose-500 stroke-rose-500 scale-110"
-                    : "stroke-slate-400 fill-none group-hover/fav:stroke-rose-400"
+                className={`w-3.5 h-3.5 transition-colors ${
+                  isFavorite ? "fill-rose-500 stroke-rose-500" : "stroke-slate-400 fill-none"
                 }`}
                 viewBox="0 0 24 24"
                 strokeWidth="2.5"
@@ -87,80 +96,45 @@ export default function ProductCard({
             </button>
           </div>
         </div>
- 
-        {/* Dynamic Badges */}
-        {badge && (
-          <div className="mb-2">
-            {badge === "🔥 PROMO CIRCEL 🔥" ? (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[8px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/30 uppercase tracking-widest animate-pulse">
-                🔥 PROMO CIRCEL 🔥
-              </span>
-            ) : badge === "BEST SELLER" ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
-                ⭐ BEST SELLER
-              </span>
-            ) : badge === "PROMO" ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-blue-500/20 text-blue-300 border border-blue-500/30 uppercase tracking-wider">
-                🏷️ PROMO
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[8.5px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">
-                ✨ BARU
-              </span>
-            )}
-          </div>
-        )}
 
         {/* Type Badge */}
         <div className="mb-2">
           <span
-            className="text-[9px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider"
-            style={{ backgroundColor: "rgba(255, 255, 255, 0.05)", color: typeColor.text }}
+            className="text-[9px] font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider inline-block"
+            style={{ backgroundColor: typeColor.bg, color: typeColor.text }}
           >
             {pkgType}
           </span>
         </div>
 
-        {/* Product Title & Description */}
+        {/* Product Title & Subtitle */}
         <h3 className="text-xs font-black text-white leading-snug line-clamp-2 min-h-[2rem]">
           {product.name}
         </h3>
-        <p className="text-[10px] font-semibold text-slate-400 mt-1 uppercase tracking-wide">
-          {product.desc}
+        <p className="text-[10px] font-medium text-slate-300 mt-1 uppercase tracking-wider font-mono">
+          Kode: {product.code || product.name}
         </p>
       </div>
 
-      {/* Pricing & Call to Action */}
-      <div className="mt-4 pt-2.5 border-t border-white/10 w-full flex flex-col gap-2">
-        <p className="text-sm font-black text-[#3B82F6]">
+      {/* Pricing & Checkout Action */}
+      <div className="mt-4 pt-3 border-t border-white/10 w-full flex flex-col gap-2">
+        <p className="text-sm font-black text-blue-400">
           {formatRupiah(product.price)}
         </p>
-        
-        {onSelectProduct ? (
-          <button
-            type="button"
-            onClick={() => onSelectProduct(product)}
-            className="w-full text-center py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 active:scale-95 cursor-pointer"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            Beli Instan
-          </button>
-        ) : (
-          <a
-            href={getWaLink(product.name, product.price)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full text-center py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 active:scale-95"
-          >
-            {/* Cart Icon */}
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-            Beli Sekarang
-          </a>
-        )}
+
+        <button
+          onClick={() => onSelectProduct && onSelectProduct(product)}
+          className={`w-full py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors focus:ring-2 focus:ring-blue-400 focus:outline-none ${
+            isStockEmpty
+              ? "bg-slate-700 text-slate-300 hover:bg-slate-600 cursor-pointer"
+              : "bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/20"
+          }`}
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          {isStockEmpty ? "Cek Ketersediaan" : "Beli Sekarang"}
+        </button>
       </div>
     </div>
   );

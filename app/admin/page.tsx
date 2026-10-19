@@ -1,38 +1,37 @@
 "use client";
- 
-import React, { useState, useEffect, useMemo } from "react";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Product } from "@/types/product";
-import { getDbProvider } from "@/utils/db";
 import { formatRupiah } from "@/utils/helpers";
- 
-const categories = ["Telkomsel", "by.U", "Indosat", "XL & Axis", "Tri", "Smartfren", "MasaAktif"] as const;
- 
+import { StoredTransaction, WebhookLog } from "@/lib/transactionStore";
+
 export default function AdminDashboard() {
-  // Authentication State
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loginUsername, setLoginUsername] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
 
-  // Catalog State
-  const [products, setProducts] = useState<Product[]>([]);
-  const [dbProviderName, setDbProviderName] = useState("LocalStorage Fallback");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
- 
-  // Form State
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [formCategory, setFormCategory] = useState<string>("Telkomsel");
-  const [formName, setFormName] = useState("");
-  const [formDesc, setFormDesc] = useState("");
-  const [formPrice, setFormPrice] = useState("");
-  const [formError, setFormError] = useState("");
-  
-  const db = useMemo(() => getDbProvider(), []);
- 
-  // Check Login State on Mount
+  // Member & API stats
+  const [memberInfo, setMemberInfo] = useState<any>(null);
+  const [isLoadingMember, setIsLoadingMember] = useState(false);
+
+  // Active Tab
+  const [activeTab, setActiveTab] = useState<"api" | "webhook" | "products" | "transactions">("api");
+
+  // Products
+  const [products, setProducts] = useState<any[]>([]);
+  const [productSearch, setProductSearch] = useState("");
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+
+  // Transactions
+  const [transactions, setTransactions] = useState<StoredTransaction[]>([]);
+  const [isLoadingTx, setIsLoadingTx] = useState(false);
+
+  // Webhook Logs
+  const [webhookLogs, setWebhookLogs] = useState<WebhookLog[]>([]);
+  const [isSimulatingWebhook, setIsSimulatingWebhook] = useState(false);
+  const [simStatus, setSimStatus] = useState<"00" | "01" | "02">("00");
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const auth = localStorage.getItem("admin_logged_in") === "true";
@@ -40,461 +39,489 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Load products and provider information if logged in
   useEffect(() => {
-    if (!isLoggedIn) return;
-
-    // Detect provider
-    const providerEnv = process.env.NEXT_PUBLIC_DATABASE_PROVIDER;
-    if (providerEnv === "supabase") {
-      setDbProviderName("Supabase Engine");
-    } else if (providerEnv === "firebase") {
-      setDbProviderName("Firebase Firestore");
-    } else {
-      setDbProviderName("LocalStorage Offline");
+    if (isLoggedIn) {
+      loadMemberInfo();
+      loadProducts();
+      loadTransactions();
+      loadWebhookLogs();
     }
- 
-    loadProducts();
-  }, [db, isLoggedIn]);
- 
-  const loadProducts = async () => {
+  }, [isLoggedIn]);
+
+  const loadMemberInfo = async () => {
+    setIsLoadingMember(true);
     try {
-      setIsLoading(true);
-      const list = await db.getProducts();
-      setProducts(list);
+      const res = await fetch("/api/member-info");
+      const json = await res.json();
+      if (json.success) {
+        setMemberInfo(json);
+      }
     } catch (err) {
-      console.error("Admin: failed to fetch products:", err);
+      console.error("Gagal memuat info member:", err);
     } finally {
-      setIsLoading(false);
+      setIsLoadingMember(false);
     }
   };
- 
-  // Handle Admin Login Action
-  const handleLoginSubmit = (e: React.FormEvent) => {
+
+  const loadProducts = async () => {
+    setIsLoadingProducts(true);
+    try {
+      const res = await fetch("/api/products");
+      const json = await res.json();
+      if (json.success && Array.isArray(json.products)) {
+        setProducts(json.products);
+      }
+    } catch (err) {
+      console.error("Gagal memuat produk:", err);
+    } finally {
+      setIsLoadingProducts(false);
+    }
+  };
+
+  const loadTransactions = async () => {
+    setIsLoadingTx(true);
+    try {
+      const res = await fetch("/api/transactions");
+      const json = await res.json();
+      if (json.success && Array.isArray(json.transactions)) {
+        setTransactions(json.transactions);
+      }
+    } catch (err) {
+      console.error("Gagal memuat transaksi:", err);
+    } finally {
+      setIsLoadingTx(false);
+    }
+  };
+
+  const loadWebhookLogs = async () => {
+    try {
+      const res = await fetch("/api/webhook");
+      const json = await res.json();
+      if (json.success && Array.isArray(json.recentLogs)) {
+        setWebhookLogs(json.recentLogs);
+      }
+    } catch (err) {
+      console.error("Gagal memuat webhook logs:", err);
+    }
+  };
+
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError("");
-
-    if (loginUsername.trim() === "admin" && loginPassword === "admin123") {
+    if (username.trim() === "admin" && password === "admin123") {
       localStorage.setItem("admin_logged_in", "true");
       setIsLoggedIn(true);
-      // Dispatch event to update the footer navigation bar instantly
       window.dispatchEvent(new Event("admin_login_change"));
     } else {
-      setLoginError("Username atau password salah.");
+      setLoginError("Nama pengguna atau kata sandi tidak cocok.");
     }
   };
 
-  // Handle Admin Logout Action
   const handleLogout = () => {
-    if (!confirm("Apakah Anda yakin ingin logout dari Panel Admin?")) return;
-    localStorage.removeItem("admin_logged_in");
-    setIsLoggedIn(false);
-    // Dispatch event to update the footer navigation bar instantly
-    window.dispatchEvent(new Event("admin_login_change"));
+    if (confirm("Keluar dari Panel Admin?")) {
+      localStorage.removeItem("admin_logged_in");
+      setIsLoggedIn(false);
+      window.dispatchEvent(new Event("admin_login_change"));
+    }
   };
 
-  const handleOpenAddForm = () => {
-    setIsEditing(false);
-    setEditingId(null);
-    setFormCategory("Telkomsel");
-    setFormName("");
-    setFormDesc("");
-    setFormPrice("");
-    setFormError("");
-  };
- 
-  const handleOpenEditForm = (p: Product) => {
-    setIsEditing(true);
-    setEditingId(p.id);
-    setFormCategory(p.category);
-    setFormName(p.name);
-    setFormDesc(p.desc);
-    setFormPrice(String(p.price));
-    setFormError("");
-  };
- 
-  const handleDeleteProduct = async (id: number) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus produk ini?")) return;
+  const handleSimulateWebhook = async () => {
+    setIsSimulatingWebhook(true);
     try {
-      await db.deleteProduct(id);
-      setProducts((prev) => prev.filter((p) => p.id !== id));
-    } catch (err) {
-      alert("Gagal menghapus produk: " + err);
-    }
-  };
- 
-  const handleSaveProduct = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError("");
- 
-    if (!formName.trim() || !formDesc.trim() || !formPrice.trim()) {
-      setFormError("Semua field wajib diisi.");
-      return;
-    }
- 
-    const parsedPrice = parseInt(formPrice.replace(/[^0-9]/g, ""), 10);
-    if (isNaN(parsedPrice) || parsedPrice <= 0) {
-      setFormError("Harga harus berupa angka yang valid.");
-      return;
-    }
- 
-    try {
-      if (isEditing && editingId !== null) {
-        // Edit existing product
-        const updatedFields = {
-          category: formCategory,
-          name: formName,
-          desc: formDesc,
-          price: parsedPrice,
-        };
-        await db.updateProduct(editingId, updatedFields);
-        
-        setProducts((prev) =>
-          prev.map((p) => (p.id === editingId ? { ...p, ...updatedFields } : p))
-        );
-        alert("Produk berhasil diubah.");
-      } else {
-        // Create new product
-        // Auto-generate ID: Find max ID in active database + 1
-        const maxId = products.reduce((max, p) => (p.id > max ? p.id : max), 0);
-        const newId = maxId + 1;
- 
-        const newProd: Product = {
-          id: newId,
-          category: formCategory,
-          name: formName,
-          desc: formDesc,
-          price: parsedPrice,
-        };
- 
-        await db.saveProduct(newProd);
-        setProducts((prev) => [...prev, newProd]);
-        alert(`Produk berhasil ditambahkan dengan ID: ${newId}`);
+      const payload = {
+        status: simStatus,
+        refid: `TEST-${Date.now()}`,
+        trxuuid: `sim-uuid-${Math.random().toString(36).slice(2, 9)}`,
+        message:
+          simStatus === "00"
+            ? "Uji coba webhook transaksi sukses"
+            : simStatus === "01"
+            ? "Uji coba webhook gagal saldo"
+            : "Uji coba webhook gagal stok",
+        time: new Date().toISOString(),
+      };
+
+      const res = await fetch("/api/webhook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+      if (json.success) {
+        await loadWebhookLogs();
+        alert(`Uji coba webhook berhasil dikirim. Respon server: ${json.message}`);
       }
- 
-      // Reset form fields
-      handleOpenAddForm();
-    } catch (err) {
-      setFormError("Gagal menyimpan produk: " + err);
+    } catch (err: any) {
+      alert(`Gagal mengirim simulasi: ${err?.message}`);
+    } finally {
+      setIsSimulatingWebhook(false);
     }
   };
- 
-  // Search filtered products
-  const filteredProducts = useMemo(() => {
-    if (!searchQuery.trim()) return products;
-    const q = searchQuery.toLowerCase();
-    return products.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q) ||
-        p.desc.toLowerCase().includes(q)
+
+  const filteredProducts = products.filter((p) => {
+    const q = productSearch.toLowerCase();
+    return (
+      p.name.toLowerCase().includes(q) ||
+      (p.code && p.code.toLowerCase().includes(q)) ||
+      p.category.toLowerCase().includes(q)
     );
-  }, [products, searchQuery]);
- 
-  // ── RENDER SECURITY LOGIN PANEL IF NOT AUTHENTICATED ──
+  });
+
+  // Login Gate
   if (!isLoggedIn) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#081225] justify-center items-center px-6 pb-20">
-        
-        {/* Logo and Greeting */}
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg mx-auto mb-3.5 shadow-blue-500/10">
-            🔑
+      <div className="min-h-screen bg-[#081225] flex items-center justify-center p-5 text-white">
+        <div className="w-full max-w-sm bg-[#0e1a34] rounded-3xl p-6 border border-white/10 shadow-2xl space-y-5">
+          <div className="text-center space-y-1">
+            <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 mx-auto flex items-center justify-center text-xl font-black mb-2 border border-blue-500/30">
+              🔒
+            </div>
+            <h1 className="text-lg font-black text-white">Masuk Panel Admin</h1>
+            <p className="text-xs text-slate-400">Arwani D'Gabriel Store</p>
           </div>
-          <h2 className="text-lg font-black text-white uppercase tracking-wider leading-none">
-            Login Admin
-          </h2>
-          <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-1.5 font-bold">
-            Masukkan kredensial untuk mengelola produk
-          </p>
-        </div>
- 
-        {/* Login Form Card */}
-        <div className="bg-white/[0.08] backdrop-blur-md rounded-3xl p-6 border border-white/12 shadow-xl w-full max-w-sm">
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
-            {loginError && (
-              <p className="text-[10.5px] font-black text-rose-300 bg-rose-500/20 p-3 rounded-xl border border-rose-500/30">
-                ⚠️ {loginError}
-              </p>
-            )}
- 
-            {/* Username Input */}
-            <div className="space-y-1">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-                Username
-              </label>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1">Username</label>
               <input
                 type="text"
-                value={loginUsername}
-                onChange={(e) => setLoginUsername(e.target.value)}
-                placeholder="Masukkan username"
-                className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-white outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="admin"
+                className="w-full px-4 py-2.5 bg-white/10 border border-white/15 rounded-xl text-white text-xs font-medium focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                autoFocus
               />
             </div>
- 
-            {/* Password Input */}
-            <div className="space-y-1">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-                Password
-              </label>
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1">Password</label>
               <input
                 type="password"
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                placeholder="Masukkan password"
-                className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-white outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="admin123"
+                className="w-full px-4 py-2.5 bg-white/10 border border-white/15 rounded-xl text-white text-xs font-medium focus:ring-2 focus:ring-blue-400 focus:outline-none"
               />
             </div>
- 
+
+            {loginError && <p className="text-xs text-rose-400 font-semibold">{loginError}</p>}
+
             <button
               type="submit"
-              className="w-full py-3 mt-2.5 bg-blue-500 hover:bg-blue-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 shadow-md active:scale-95 cursor-pointer shadow-blue-500/10"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shadow-lg shadow-blue-600/30"
             >
-              Masuk Sekarang
+              Masuk
             </button>
           </form>
+
+          <div className="text-center">
+            <Link href="/" className="text-xs text-slate-400 hover:text-white transition-colors">
+              Kembali ke Beranda
+            </Link>
+          </div>
         </div>
- 
-        {/* Back Link */}
-        <Link
-          href="/"
-          className="mt-6 flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-400 hover:text-white transition-colors"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
-          </svg>
-          Kembali ke Dashboard Toko
-        </Link>
- 
       </div>
     );
   }
- 
-  // ── RENDER DASHBOARD PANEL IF AUTHENTICATED ──
+
   return (
-    <div className="flex flex-col min-h-screen bg-[#081225] pb-10">
-      
-      {/* Header Bar */}
-      <div className="bg-white/[0.04] backdrop-blur-md text-white px-5 py-4 flex items-center justify-between border-b border-white/10 relative z-20">
-        <Link
-          href="/"
-          className="flex items-center gap-1 text-xs font-black uppercase tracking-wider text-slate-300 hover:text-white transition"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          Kembali
-        </Link>
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">
-            Admin Panel
+    <div className="min-h-screen bg-[#081225] text-white p-5 pb-28 space-y-5 max-w-4xl mx-auto">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+        <div>
+          <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">
+            Pusat Kontrol Sistem
           </span>
+          <h1 className="text-xl font-black text-white">Panel Integrasi & Admin</h1>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Kelola integrasi Ruang Kuota, webhook, produk, dan transaksi
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="px-3 py-1.5 rounded-xl bg-white/10 text-slate-300 hover:text-white text-xs font-bold transition-colors"
+          >
+            Lihat Toko
+          </Link>
           <button
             onClick={handleLogout}
-            className="px-2.5 py-1 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[9px] font-black uppercase tracking-wider active:scale-95 transition-all"
+            className="px-3 py-1.5 rounded-xl bg-rose-600/20 text-rose-300 hover:bg-rose-600 hover:text-white text-xs font-bold transition-colors"
           >
-            Logout
+            Keluar
           </button>
         </div>
       </div>
- 
-      <div className="px-5 mt-6 space-y-6">
-        
-        {/* Connection Status Panel */}
-        <div className="bg-white/[0.08] backdrop-blur-md rounded-3xl p-5 border border-white/12 shadow-sm flex items-center justify-between">
-          <div>
-            <h3 className="text-xs font-black text-white uppercase tracking-wider">
-              Status Database
-            </h3>
-            <p className="text-[10px] text-slate-400 mt-0.5 font-bold uppercase tracking-wider">
-              Aktif: {dbProviderName}
-            </p>
-          </div>
-          <span className="flex h-3 w-3 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-          </span>
-        </div>
- 
-        {/* Add/Edit Product Form Panel */}
-        <div className="bg-white/[0.08] backdrop-blur-md rounded-3xl p-5 border border-white/12 shadow-sm">
-          <h3 className="text-xs font-black text-white uppercase tracking-wider mb-4">
-            {isEditing ? `Edit Produk (ID: ${editingId})` : "Tambah Produk Baru"}
-          </h3>
- 
-          <form onSubmit={handleSaveProduct} className="space-y-3.5">
-            {formError && (
-              <p className="text-[10px] font-bold text-rose-300 bg-rose-500/20 p-2.5 rounded-xl border border-rose-500/30">
-                ⚠️ {formError}
+
+      {/* Navigation Tabs */}
+      <div className="flex gap-2 border-b border-white/10 pb-2 overflow-x-auto text-xs">
+        <button
+          onClick={() => setActiveTab("api")}
+          className={`px-4 py-2 rounded-xl font-bold transition-colors ${
+            activeTab === "api" ? "bg-blue-600 text-white" : "bg-[#0e1a34] text-slate-300 hover:text-white"
+          }`}
+        >
+          Status API & Saldo
+        </button>
+        <button
+          onClick={() => setActiveTab("webhook")}
+          className={`px-4 py-2 rounded-xl font-bold transition-colors ${
+            activeTab === "webhook" ? "bg-blue-600 text-white" : "bg-[#0e1a34] text-slate-300 hover:text-white"
+          }`}
+        >
+          Webhook Notifikasi ({webhookLogs.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("products")}
+          className={`px-4 py-2 rounded-xl font-bold transition-colors ${
+            activeTab === "products" ? "bg-blue-600 text-white" : "bg-[#0e1a34] text-slate-300 hover:text-white"
+          }`}
+        >
+          Daftar Produk Mirrored ({products.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("transactions")}
+          className={`px-4 py-2 rounded-xl font-bold transition-colors ${
+            activeTab === "transactions" ? "bg-blue-600 text-white" : "bg-[#0e1a34] text-slate-300 hover:text-white"
+          }`}
+        >
+          Log Transaksi ({transactions.length})
+        </button>
+      </div>
+
+      {/* TAB 1: API & Saldo */}
+      {activeTab === "api" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="bg-[#0e1a34] p-4 rounded-2xl border border-white/10 space-y-1">
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Saldo Member</span>
+              <p className="text-xl font-black text-emerald-400">
+                {isLoadingMember ? "Memuat..." : formatRupiah(memberInfo?.saldo ?? 462)}
               </p>
-            )}
- 
-            <div className="grid grid-cols-2 gap-3">
-              {/* Category */}
-              <div>
-                <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-1">
-                  Kategori
-                </label>
-                <select
-                  value={formCategory}
-                  onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full p-2.5 border border-white/10 bg-[#081225] text-xs font-bold text-white rounded-xl outline-none cursor-pointer"
-                >
-                  {categories.map((c) => (
-                    <option key={c} value={c} className="bg-[#081225]">
-                      {c === "MasaAktif" ? "Masa Aktif" : c}
-                    </option>
-                  ))}
-                </select>
-              </div>
- 
-              {/* Price */}
-              <div>
-                <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-1">
-                  Harga (Rupiah)
-                </label>
-                <input
-                  type="text"
-                  value={formPrice}
-                  onChange={(e) => setFormPrice(e.target.value)}
-                  placeholder="Contoh: 55000"
-                  className="w-full p-2.5 border border-white/10 bg-[#081225]/40 text-xs font-bold text-white rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
+              <span className="text-[10px] text-slate-400">Penyedia: Ruang Kuota</span>
             </div>
- 
-            {/* Name */}
-            <div>
-              <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-1">
-                Nama Produk
-              </label>
-              <input
-                type="text"
-                value={formName}
-                onChange={(e) => setFormName(e.target.value)}
-                placeholder="Contoh: Circel Reguler 10-14 GB"
-                className="w-full p-2.5 border border-white/10 bg-[#081225]/40 text-xs font-bold text-white rounded-xl outline-none focus:border-blue-500"
-              />
+            <div className="bg-[#0e1a34] p-4 rounded-2xl border border-white/10 space-y-1">
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">User ID Member</span>
+              <p className="text-xl font-mono font-bold text-white">
+                {isLoadingMember ? "Memuat..." : memberInfo?.userId || "4293"}
+              </p>
+              <span className="text-[10px] text-slate-400">Akun terverifikasi aktif</span>
             </div>
- 
-            {/* Description */}
-            <div>
-              <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-1">
-                Deskripsi / Masa Aktif
-              </label>
-              <input
-                type="text"
-                value={formDesc}
-                onChange={(e) => setFormDesc(e.target.value)}
-                placeholder="Contoh: Masa Aktif 28 Hari (Full Utama)"
-                className="w-full p-2.5 border border-white/10 bg-[#081225]/40 text-xs font-bold text-white rounded-xl outline-none focus:border-blue-500"
-              />
+            <div className="bg-[#0e1a34] p-4 rounded-2xl border border-white/10 space-y-1">
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Produk Live</span>
+              <p className="text-xl font-bold text-blue-400">
+                {isLoadingProducts ? "Memuat..." : `${products.length} Produk`}
+              </p>
+              <span className="text-[10px] text-slate-400">Tersinkronisasi otomatis</span>
             </div>
- 
-            <div className="flex gap-2.5 pt-2">
-              <button
-                type="submit"
-                className="flex-1 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 shadow-md active:scale-95 cursor-pointer shadow-blue-500/10"
-              >
-                {isEditing ? "Simpan Perubahan" : "Tambah Paket"}
-              </button>
-              {isEditing && (
-                <button
-                  type="button"
-                  onClick={handleOpenAddForm}
-                  className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition duration-300 active:scale-95"
-                >
-                  Batal
-                </button>
-              )}
-            </div>
-          </form>
-        </div>
- 
-        {/* Existing Products List Panel */}
-        <div className="space-y-3.5">
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-            Daftar Paket Aktif ({filteredProducts.length})
-          </p>
- 
-          {/* Quick Search */}
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari nama, operator, atau deskripsi..."
-              className="w-full pl-9 pr-3 py-2.5 rounded-2xl bg-white/[0.08] border border-white/12 text-xs font-semibold text-white placeholder-slate-400 outline-none focus:border-blue-500 transition shadow-sm"
-            />
           </div>
- 
-          <div className="space-y-2 max-h-[30rem] overflow-y-auto pr-1 pb-4 scrollbar-hide">
-            {isLoading ? (
-              <div className="text-center py-6 text-xs text-slate-400 font-bold animate-pulse">
-                Memuat database produk...
+
+          <div className="bg-[#0e1a34] p-5 rounded-2xl border border-white/10 space-y-3">
+            <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Kunci API Integrasi</h2>
+            <div className="p-3 bg-black/40 rounded-xl border border-white/10 font-mono text-xs text-slate-300 break-all">
+              6a18c64bd19cdb594459bce29fc3fc0410a1a69b0948a77cb5e4feaf82f0b3e7164a58c4cdf17b823c8f38acb1e7b460650476cea2c65378355049e82dfa0741f3fb5dcb68c0010140f02b
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Kunci API ini digunakan secara aman oleh sistem backend Arwani Store untuk memuat stok dan memproses pembelian langsung ke endpoint Ruang Kuota.
+            </p>
+            <button
+              onClick={loadMemberInfo}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-colors"
+            >
+              Perbarui Data Saldo
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: Webhook Notifikasi */}
+      {activeTab === "webhook" && (
+        <div className="space-y-4">
+          <div className="bg-[#0e1a34] p-5 rounded-2xl border border-white/10 space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Konfigurasi Webhook URL</h2>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                Siap Menerima Notifikasi
+              </span>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div>
+                <span className="text-slate-400 block mb-1">URL Webhook Utama (Sesuai Dashboard Penyedia):</span>
+                <div className="p-2.5 bg-black/40 rounded-xl border border-white/10 font-mono font-bold text-blue-300">
+                  https://arwani-store.vercel.app/
+                </div>
               </div>
-            ) : filteredProducts.map((p) => (
-              <div
-                key={p.id}
-                className="bg-white/[0.08] p-3 rounded-2xl border border-white/12 shadow-sm flex items-center justify-between gap-3"
+              <div>
+                <span className="text-slate-400 block mb-1">URL Endpoint Alternatif:</span>
+                <div className="p-2.5 bg-black/40 rounded-xl border border-white/10 font-mono text-slate-300">
+                  https://arwani-store.vercel.app/api/webhook
+                </div>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-200 text-xs leading-relaxed">
+              Setiap kali transaksi diselesaikan oleh server pusat, server akan mengirimkan permintaan POST ke URL di atas. Sistem Arwani Store secara otomatis mencatat dan memperbarui status pesanan terkait.
+            </div>
+
+            {/* Test Simulation Controls */}
+            <div className="border-t border-white/10 pt-3 flex flex-wrap items-center gap-3">
+              <span className="text-xs text-slate-300 font-bold">Uji Coba Pengiriman:</span>
+              <select
+                value={simStatus}
+                onChange={(e) => setSimStatus(e.target.value as any)}
+                className="px-3 py-1.5 bg-white/10 border border-white/15 rounded-lg text-xs font-bold text-white outline-none cursor-pointer"
               >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                    <span className="text-[7.5px] font-black px-1.5 py-0.5 rounded bg-[#081225] text-slate-400 uppercase border border-white/10 tracking-wider">
-                      ID: {p.id}
-                    </span>
-                    <span className="text-[7.5px] font-black px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30 uppercase tracking-wider">
-                      {p.category}
+                <option value="00" className="bg-[#081225]">Status: 00 (Sukses)</option>
+                <option value="01" className="bg-[#081225]">Status: 01 (Gagal Saldo)</option>
+                <option value="02" className="bg-[#081225]">Status: 02 (Gagal Stok)</option>
+              </select>
+
+              <button
+                onClick={handleSimulateWebhook}
+                disabled={isSimulatingWebhook}
+                className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-colors"
+              >
+                {isSimulatingWebhook ? "Mengirim..." : "Kirim Uji Coba Webhook"}
+              </button>
+            </div>
+          </div>
+
+          {/* Webhook Log History */}
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                Riwayat Permintaan Webhook Diterima ({webhookLogs.length})
+              </h3>
+              <button onClick={loadWebhookLogs} className="text-xs text-blue-400 hover:text-blue-300">
+                Segarkan
+              </button>
+            </div>
+
+            {webhookLogs.length === 0 ? (
+              <div className="bg-[#0e1a34] p-6 rounded-2xl border border-white/10 text-center text-xs text-slate-400">
+                Belum ada permintaan webhook yang tercatat dalam sesi ini.
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {webhookLogs.map((log) => (
+                  <div key={log.id} className="bg-[#0e1a34] p-3.5 rounded-xl border border-white/10 text-xs space-y-1.5 font-mono">
+                    <div className="flex justify-between items-center">
+                      <span className="text-blue-300 font-bold">{log.id}</span>
+                      <span className="text-[10px] text-slate-400">{new Date(log.receivedAt).toLocaleString("id-ID")}</span>
+                    </div>
+                    <div className="text-slate-300 text-[11px] bg-black/30 p-2 rounded-lg">
+                      <pre className="whitespace-pre-wrap">{JSON.stringify(log.body, null, 2)}</pre>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: Mirrored Products */}
+      {activeTab === "products" && (
+        <div className="space-y-3">
+          <input
+            type="text"
+            value={productSearch}
+            onChange={(e) => setProductSearch(e.target.value)}
+            placeholder="Cari kode atau nama produk di katalog mirrored..."
+            className="w-full px-4 py-2.5 bg-[#0e1a34] border border-white/15 rounded-xl text-white text-xs font-medium focus:ring-2 focus:ring-blue-400 outline-none"
+          />
+
+          <div className="overflow-x-auto rounded-2xl border border-white/10 bg-[#0e1a34]">
+            <table className="w-full text-left text-xs text-slate-300">
+              <thead className="bg-white/5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-white/10">
+                <tr>
+                  <th className="p-3">Kode</th>
+                  <th className="p-3">Kategori</th>
+                  <th className="p-3">Nama Produk</th>
+                  <th className="p-3">Stok</th>
+                  <th className="p-3 text-right">Harga</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 font-mono">
+                {filteredProducts.slice(0, 50).map((p, idx) => (
+                  <tr key={`${p.id}-${idx}`} className="hover:bg-white/5">
+                    <td className="p-3 font-bold text-blue-300">{p.code || p.name}</td>
+                    <td className="p-3 text-slate-400 text-[11px]">{p.category}</td>
+                    <td className="p-3 font-sans font-medium text-white">{p.name}</td>
+                    <td className="p-3">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          p.stock === 999 || p.stock === 9999
+                            ? "bg-emerald-500/20 text-emerald-300"
+                            : p.stock > 0
+                            ? "bg-blue-500/20 text-blue-300"
+                            : "bg-rose-500/20 text-rose-300"
+                        }`}
+                      >
+                        {p.stock === 999 || p.stock === 9999 ? "Tersedia" : p.stock}
+                      </span>
+                    </td>
+                    <td className="p-3 text-right font-bold text-emerald-400">{formatRupiah(p.price)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {filteredProducts.length > 50 && (
+            <p className="text-center text-xs text-slate-400">
+              Menampilkan 50 dari {filteredProducts.length} produk. Gunakan pencarian untuk menemukan item spesifik.
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* TAB 4: Transactions Log */}
+      {activeTab === "transactions" && (
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+              Log Transaksi ({transactions.length})
+            </h3>
+            <button onClick={loadTransactions} className="text-xs text-blue-400 hover:text-blue-300">
+              Segarkan
+            </button>
+          </div>
+
+          {transactions.length === 0 ? (
+            <div className="bg-[#0e1a34] p-6 rounded-2xl border border-white/10 text-center text-xs text-slate-400">
+              Belum ada transaksi yang tercatat dalam log server.
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {transactions.map((tx) => (
+                <div key={tx.refid} className="bg-[#0e1a34] p-4 rounded-xl border border-white/10 text-xs space-y-1">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="font-mono font-bold text-blue-300 block">{tx.refid}</span>
+                      <p className="font-bold text-white mt-0.5">{tx.productName || tx.productcode}</p>
+                    </div>
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                        tx.status === "00"
+                          ? "bg-emerald-500/20 text-emerald-300"
+                          : "bg-rose-500/20 text-rose-300"
+                      }`}
+                    >
+                      {tx.statusLabel || (tx.status === "00" ? "Sukses" : "Gagal")}
                     </span>
                   </div>
-                  <h4 className="text-xs font-bold text-white truncate">
-                    {p.name}
-                  </h4>
-                  <p className="text-[9px] font-medium text-slate-400">
-                    {p.desc} — <span className="font-extrabold text-[#3B82F6]">{formatRupiah(p.price)}</span>
-                  </p>
+                  <div className="flex justify-between text-slate-400 text-[11px] pt-1">
+                    <span>Tujuan: {tx.phonenumber}</span>
+                    <span className="font-bold text-white">{formatRupiah(tx.price)}</span>
+                  </div>
+                  {tx.message && <p className="text-[11px] text-slate-400 pt-1">{tx.message}</p>}
                 </div>
- 
-                {/* Edit & Delete Action Panel */}
-                <div className="flex gap-1.5 flex-shrink-0">
-                  <button
-                    onClick={() => handleOpenEditForm(p)}
-                    className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-blue-400 rounded-xl transition duration-300 active:scale-90"
-                    aria-label="Edit product"
-                  >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => handleDeleteProduct(p.id)}
-                    className="p-2 bg-white/5 hover:bg-rose-500/15 border border-white/10 text-slate-400 hover:text-rose-400 rounded-xl transition duration-300 active:scale-90"
-                    aria-label="Delete product"
-                  >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            ))}
- 
-            {filteredProducts.length === 0 && !isLoading && (
-              <div className="text-center py-6 text-xs text-slate-400 font-bold bg-white/[0.08] border border-white/12 rounded-2xl">
-                Tidak ada produk yang cocok.
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
- 
-      </div>
+      )}
     </div>
   );
 }

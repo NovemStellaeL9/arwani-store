@@ -44,19 +44,6 @@ class LocalStorageProvider implements DatabaseProvider {
   }
 
   async getProducts(): Promise<Product[]> {
-    if (typeof window !== "undefined") {
-      try {
-        const res = await fetch("/api/products");
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && Array.isArray(json.products) && json.products.length > 0) {
-            return json.products;
-          }
-        }
-      } catch (err) {
-        console.warn("Gagal fetch dari /api/products, menggunakan data lokal:", err);
-      }
-    }
     return this.getLocal();
   }
 
