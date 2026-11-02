@@ -4,14 +4,16 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
-import { getProviderLogo } from "@/utils/helpers";
 import { Product } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
 import CheckoutModal from "@/components/CheckoutModal";
+import { getActiveProviders } from "@/lib/providers";
 
 const operatorShortcuts = [
   { name: "XL & Axis", category: "XL & Axis", logo: "/xl.png" },
   { name: "Telkomsel", category: "Telkomsel", logo: "/telkomsel.png" },
+  { name: "by.U", category: "by.U", logo: "/byu.png" },
+  { name: "Smartfren", category: "Smartfren", logo: "/smartfren.png" },
   { name: "Indosat", category: "Indosat", logo: "/indosat.png" },
   { name: "Tri", category: "Tri", logo: "/tri.png" },
   { name: "Token PLN", category: "PLN", isIcon: true, icon: "⚡" },
@@ -26,6 +28,8 @@ export default function Home() {
   const [popularProducts, setPopularProducts] = useState<Product[]>([]);
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
   const [favorites, setFavorites] = useState<(string | number)[]>([]);
+  const [activeProviders, setActiveProviders] = useState<string[]>([]);
+  const [activeGroups, setActiveGroups] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,6 +41,14 @@ export default function Home() {
         const json = await res.json();
         if (json.success && Array.isArray(json.products)) {
           const list: Product[] = json.products;
+          const availableProducts = list.filter((product) =>
+            product.isAvailable ?? ((product.stock ?? 0) > 0)
+          );
+          setActiveProviders(getActiveProviders(list));
+          setActiveGroups(Array.from(new Set(
+            availableProducts.map((product) => product.group || product.category)
+          )));
+
           // Pick highlight packages (Akrab V4, Flex, Freedom, Tri Happy, PLN, DANA)
           const picks = list.filter((p) => {
             const n = p.name.toLowerCase();
@@ -92,6 +104,15 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
+  const providerCategories = ["XL & Axis", "Telkomsel", "by.U", "Smartfren", "Indosat", "Tri"];
+  const visibleShortcuts = operatorShortcuts.filter((item) =>
+    item.category === "Semua"
+      ? true
+      : providerCategories.includes(item.category)
+      ? activeProviders.includes(item.category)
+      : activeGroups.includes(item.category)
+  );
+
   return (
     <div className="flex flex-col min-h-screen bg-[#081225] pb-28 text-white">
       {/* Header Bar */}
@@ -100,6 +121,7 @@ export default function Home() {
       {/* Main Container */}
       <div className="px-5 mt-5 space-y-6">
         {/* PROMO HERO BANNER */}
+        {activeProviders.includes("XL & Axis") && (
         <Link href="/semua-produk?category=XL+%26+Axis" className="block focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-3xl">
           <div className="bg-gradient-to-r from-blue-700 to-indigo-800 border border-white/15 rounded-3xl p-5 shadow-xl relative overflow-hidden group hover:border-white/30 transition-all">
             <span className="inline-block px-2.5 py-1 bg-amber-400 text-slate-950 text-[9px] font-black rounded-lg uppercase tracking-wider mb-2">
@@ -119,6 +141,7 @@ export default function Home() {
             </div>
           </div>
         </Link>
+        )}
 
         {/* TRANSAKSI QUICK SHORTCUT BANNER */}
         <div className="bg-[#0e1a34] rounded-2xl p-4 border border-white/10 flex items-center justify-between gap-3 shadow-md">
@@ -150,7 +173,7 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-3 gap-2.5">
-            {operatorShortcuts.map((item) => (
+            {visibleShortcuts.map((item) => (
               <button
                 key={item.name}
                 onClick={() => handleCategoryClick(item.category)}

@@ -74,13 +74,15 @@ export default function CheckoutModal({
           refid,
           productName: product.name,
           category: product.category,
+          price: product.price,
         }),
       });
 
       const json = await res.json();
 
       if (json.success) {
-        setOrderResult(json.data);
+        const statusLabel = json.data.statusLabel || "Diproses";
+        setOrderResult({ ...json.data, statusLabel });
         saveLocalOrder({
           refid: json.data.refid || refid,
           trxuuid: json.data.trxuuid,
@@ -88,8 +90,8 @@ export default function CheckoutModal({
           productName: product.name,
           phonenumber: phoneNumber,
           price: product.price,
-          status: "00",
-          statusLabel: "Sukses",
+          status: json.data.status,
+          statusLabel,
           message: json.data.message || "Pembelian berhasil diproses.",
           time: json.data.time || new Date().toLocaleString("id-ID"),
         });
@@ -182,14 +184,30 @@ export default function CheckoutModal({
         {/* Success State */}
         {orderResult && !orderResult.failed && (
           <div className="space-y-4 py-2">
-            <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-center space-y-1.5">
-              <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center mb-1">
+            <div className={`p-4 rounded-2xl border text-center space-y-1.5 ${
+              orderResult.statusLabel === "Diproses"
+                ? "bg-amber-500/15 border-amber-500/30 text-amber-200"
+                : "bg-emerald-500/15 border-emerald-500/30 text-emerald-200"
+            }`}>
+              <div className={`w-10 h-10 rounded-full mx-auto flex items-center justify-center mb-1 ${
+                orderResult.statusLabel === "Diproses"
+                  ? "bg-amber-500/20 text-amber-300"
+                  : "bg-emerald-500/20 text-emerald-400"
+              }`}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  {orderResult.statusLabel === "Diproses"
+                    ? <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
+                    : <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />}
                 </svg>
               </div>
-              <p className="text-sm font-black text-emerald-300">Transaksi Berhasil Diterima</p>
-              <p className="text-[11px] text-emerald-200/90 leading-relaxed">
+              <p className={`text-sm font-black ${
+                orderResult.statusLabel === "Diproses" ? "text-amber-300" : "text-emerald-300"
+              }`}>
+                {orderResult.statusLabel === "Diproses" ? "Pesanan Sedang Diproses" : "Transaksi Berhasil Diterima"}
+              </p>
+              <p className={`text-[11px] leading-relaxed ${
+                orderResult.statusLabel === "Diproses" ? "text-amber-100/90" : "text-emerald-200/90"
+              }`}>
                 {orderResult.message || "Pesanan telah dikirim ke sistem dan sedang diproses."}
               </p>
             </div>
@@ -379,4 +397,3 @@ export default function CheckoutModal({
     </div>
   );
 }
-

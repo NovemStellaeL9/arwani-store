@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import { fetchLiveStock, mapCategoryToDisplay, RuangKuotaProduct } from "@/lib/ruangkuota";
-import { products as fallbackProducts } from "@/data/products";
+import { fetchLiveStock, mapCategoryToDisplay } from "@/lib/ruangkuota";
+import type { RuangKuotaProduct } from "@/lib/ruangkuota";
+import { calculateSellingPrice } from "@/lib/pricing";
+import { getActiveProviders } from "@/lib/providers";
 
 export const dynamic = "force-dynamic";
 
@@ -22,15 +24,15 @@ export async function GET() {
   try {
     const liveProducts: RuangKuotaProduct[] = await fetchLiveStock();
 
-    const mapped: MappedStoreProduct[] = liveProducts.map((p, index) => {
+    const mapped: MappedStoreProduct[] = liveProducts.map((p) => {
       const display = mapCategoryToDisplay(p.category, p.name);
       return {
-        id: `${p.category}-${p.code}-${index}`,
+        id: `${p.category}:${p.code}`,
         code: p.code,
         name: p.name,
         category: p.category,
         stock: p.stock,
-        price: p.price,
+        price: calculateSellingPrice(p),
         group: display.group,
         subgroup: display.subgroup,
         operator: display.operator,
@@ -43,38 +45,15 @@ export async function GET() {
       success: true,
       total: mapped.length,
       products: mapped,
+      activeProviders: getActiveProviders(mapped),
       isLive: true,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("API /api/products error:", error);
-
-    // Resilient fallback using data/products.ts if external API is unreachable
-    const fallbackMapped: MappedStoreProduct[] = fallbackProducts.map((p) => {
-      const display = mapCategoryToDisplay(p.category, p.name);
-      return {
-        id: `FB-${p.id}`,
-        code: p.desc || `PROD-${p.id}`,
-        name: p.name,
-        category: p.category,
-        stock: 999,
-        price: p.price,
-        group: display.group,
-        subgroup: display.subgroup,
-        operator: p.category === "MasaAktif" ? (p.desc || "Lainnya") : p.category,
-        isAvailable: true,
-        isLive: false,
-      };
-    });
-
     return NextResponse.json({
-      success: true,
-      total: fallbackMapped.length,
-      products: fallbackMapped,
-      isLive: false,
-      warning: "Menggunakan data cadangan karena server penyedia sedang lambat merespon.",
-      timestamp: new Date().toISOString(),
-    });
+      success: false,
+      message: error instanceof Error ? error.message : "Gagal memuat produk dari server penyedia.",
+    }, { status: 503 });
   }
 }
-

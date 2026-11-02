@@ -1,14 +1,32 @@
 import { NextResponse } from "next/server";
-import { executePurchase } from "@/lib/ruangkuota";
+import {
+  executePurchase,
+  fetchLiveStock,
+  mapCategoryToDisplay,
+  resolveStatusLabel,
+  toPublicResult,
+} from "@/lib/ruangkuota";
 import { saveTransaction } from "@/lib/transactionStore";
+import { calculateSellingPrice } from "@/lib/pricing";
 
 export const dynamic = "force-dynamic";
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { productcode, phonenumber, productName, category } = body;
-    let { refid } = body;
+    const body: unknown = await req.json();
+    if (!isRecord(body)) {
+      return NextResponse.json({ success: false, message: "Format permintaan tidak valid." }, { status: 400 });
+    }
+
+    const productcode = typeof body.productcode === "string" ? body.productcode.trim() : "";
+    const phonenumber = typeof body.phonenumber === "string" || typeof body.phonenumber === "number"
+      ? String(body.phonenumber)
+      : "";
+    let refid = typeof body.refid === "string" ? body.refid.trim() : "";
 
     if (!productcode || !phonenumber) {
       return NextResponse.json(
@@ -20,7 +38,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Clean phone number format
     const cleanPhone = String(phonenumber).replace(/[^0-9]/g, "");
     if (cleanPhone.length < 4 || cleanPhone.length > 50) {
       return NextResponse.json(
@@ -32,37 +49,68 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!refid || String(refid).trim() === "") {
+    if (!refid) {
       const now = new Date();
       const dateStr = now.toISOString().slice(2, 10).replace(/-/g, "");
       const rand = Math.floor(10000 + Math.random() * 90000);
       refid = `ARW-${dateStr}-${rand}`;
     }
 
-    const purchaseRes = await executePurchase({
-      productcode: String(productcode).trim(),
-      phonenumber: cleanPhone,
-      refid: String(refid).trim(),
-    });
-
-    let statusLabel: "Sukses" | "Diproses" | "Gagal" = "Gagal";
-    if (purchaseRes.status === "00") {
-      statusLabel = "Sukses";
-    } else if (
-      purchaseRes.status === "02" &&
-      purchaseRes.message.toLowerCase().includes("sedang diproses")
-    ) {
-      statusLabel = "Diproses";
+    const liveProducts = await fetchLiveStock();
+    const product = liveProducts.find((item) => item.code === productcode);
+    if (!product) {
+      return NextResponse.json(
+        { success: false, message: "Produk tidak ditemukan atau sudah tidak tersedia." },
+        { status: 404 }
+      );
+    }
+    if (product.stock <= 0) {
+      return NextResponse.json(
+        { success: false, message: "Stok produk sedang habis." },
+        { status: 409 }
+      );
     }
 
-    saveTransaction({
-      refid: purchaseRes.refid || refid,
-      trxuuid: purchaseRes.trxuuid,
-      productcode: purchaseRes.productcode || productcode,
-      productName: productName || productcode,
-      category: category || "",
+    const sellingPrice = calculateSellingPrice(product);
+    if (
+      body.price !== undefined &&
+      (typeof body.price !== "number" || !Number.isFinite(body.price) || body.price !== sellingPrice)
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Harga produk berubah. Muat ulang katalog sebelum memesan.",
+          price: sellingPrice,
+        },
+        { status: 409 }
+      );
+    }
+
+    const purchaseRes = await executePurchase({
+      productcode: product.code,
       phonenumber: cleanPhone,
-      price: purchaseRes.price,
+      refid,
+    });
+
+    const statusLabel = resolveStatusLabel(purchaseRes.status, purchaseRes.message);
+    const publicResult = toPublicResult({
+      ...purchaseRes,
+      refid: purchaseRes.refid || refid,
+      productcode: product.code,
+      phonenumber: cleanPhone,
+      price: sellingPrice,
+    });
+    const display = mapCategoryToDisplay(product.category, product.name);
+
+    saveTransaction({
+      refid: publicResult.refid,
+      trxuuid: purchaseRes.trxuuid,
+      productcode: product.code,
+      productName: product.name,
+      category: display.group,
+      phonenumber: cleanPhone,
+      price: sellingPrice,
+      costPrice: purchaseRes.price || product.price,
       status: purchaseRes.status,
       statusLabel,
       message: purchaseRes.message,
@@ -72,18 +120,17 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({
-      success: purchaseRes.status === "00",
-      data: purchaseRes,
+      success: statusLabel !== "Gagal",
+      data: publicResult,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("API /api/purchase error:", error);
     return NextResponse.json(
       {
         success: false,
-        message: error?.message || "Terjadi kendala saat memproses pembelian.",
+        message: error instanceof Error ? error.message : "Terjadi kendala saat memproses pembelian.",
       },
       { status: 500 }
     );
   }
 }
-
