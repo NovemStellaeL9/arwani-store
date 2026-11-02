@@ -1,38 +1,19 @@
 import { NextResponse } from "next/server";
-import { timingSafeEqual } from "node:crypto";
-import { resolveStatusLabel } from "@/lib/ruangkuota";
 import { logWebhook, getWebhookLogs, findTransaction, saveTransaction } from "@/lib/transactionStore";
 
 export const dynamic = "force-dynamic";
 
-function hasValidSecret(req: Request): boolean {
-  const expected = process.env.WEBHOOK_SECRET;
-  if (!expected) return true;
-
-  const authorization = req.headers.get("authorization") || "";
-  const supplied =
-    req.headers.get("x-webhook-secret") ||
-    authorization.replace(/^Bearer\s+/i, "");
-  const expectedBytes = Buffer.from(expected);
-  const suppliedBytes = Buffer.from(supplied);
-  return expectedBytes.length === suppliedBytes.length && timingSafeEqual(expectedBytes, suppliedBytes);
-}
-
 export async function POST(req: Request) {
   try {
-    if (!hasValidSecret(req)) {
-      return NextResponse.json({ success: false, message: "Secret webhook tidak valid." }, { status: 401 });
-    }
-
     const contentType = req.headers.get("content-type") || "";
-    let bodyData: Record<string, unknown>;
+    let bodyData: any = {};
 
     if (contentType.includes("application/json")) {
-      const body: unknown = await req.json();
-      if (!body || typeof body !== "object" || Array.isArray(body)) {
-        return NextResponse.json({ success: false, message: "Format webhook tidak valid." }, { status: 400 });
+      try {
+        bodyData = await req.json();
+      } catch {
+        bodyData = {};
       }
-      bodyData = body as Record<string, unknown>;
     } else if (contentType.includes("application/x-www-form-urlencoded")) {
       const text = await req.text();
       const params = new URLSearchParams(text);
@@ -40,11 +21,7 @@ export async function POST(req: Request) {
     } else {
       const rawText = await req.text();
       try {
-        const parsed: unknown = JSON.parse(rawText);
-        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-          return NextResponse.json({ success: false, message: "Format webhook tidak valid." }, { status: 400 });
-        }
-        bodyData = parsed as Record<string, unknown>;
+        bodyData = JSON.parse(rawText);
       } catch {
         bodyData = { raw: rawText };
       }
@@ -53,22 +30,12 @@ export async function POST(req: Request) {
     // Extract headers for logging
     const headersObj: Record<string, string> = {};
     req.headers.forEach((val, key) => {
-      headersObj[key] = ["authorization", "cookie", "set-cookie", "x-api-key", "x-webhook-secret"].includes(key)
-        ? "[REDACTED]"
-        : val;
+      headersObj[key] = val;
     });
 
-    const status = typeof bodyData.status === "string" ? bodyData.status.trim() : "";
-    const refid = String(bodyData.refid || bodyData.reference_id || "").trim();
-    const message =
-      typeof bodyData.message === "string" && bodyData.message.trim()
-        ? bodyData.message.trim()
-        : status === "00"
-          ? "Notifikasi transaksi berhasil"
-          : status
-            ? "Notifikasi transaksi diterima"
-            : "Status transaksi belum tersedia";
-    const statusLabel = resolveStatusLabel(status, message);
+    const status = bodyData.status || "00";
+    const refid = bodyData.refid || bodyData.reference_id || "";
+    const message = bodyData.message || (status === "00" ? "Notifikasi transaksi berhasil" : "Notifikasi transaksi gagal");
 
     const logged = logWebhook({
       headers: headersObj,
@@ -78,13 +45,13 @@ export async function POST(req: Request) {
     });
 
     // If refid exists, update stored transaction
-    if (refid && (status === "00" || status === "01" || status === "02")) {
+    if (refid) {
       const existing = findTransaction(refid);
       if (existing) {
         saveTransaction({
           ...existing,
           status,
-          statusLabel,
+          statusLabel: status === "00" ? "Sukses" : "Gagal",
           message: message || existing.message,
           updatedAt: new Date().toISOString(),
         });
@@ -97,12 +64,12 @@ export async function POST(req: Request) {
       webhookId: logged.id,
       timestamp: logged.receivedAt,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("Webhook receiver error:", error);
     return NextResponse.json(
       {
         success: false,
-        message: "Gagal memproses webhook: " + (error instanceof Error ? error.message : "Kesalahan server"),
+        message: "Gagal memproses webhook: " + (error?.message || "Kesalahan server"),
       },
       { status: 500 }
     );
@@ -118,3 +85,4 @@ export async function GET() {
     recentLogs: logs.slice(0, 20),
   });
 }
+

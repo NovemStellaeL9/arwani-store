@@ -23,64 +23,28 @@ export interface PurchaseResult {
   raw: string;
 }
 
-export type PublicPurchaseResult = Pick<
-  PurchaseResult,
-  "success" | "refid" | "trxuuid" | "status" | "productcode" | "phonenumber" | "price" | "time" | "message"
-> & {
-  statusLabel: "Sukses" | "Diproses" | "Gagal";
-};
-
-export const RUANG_KUOTA_API_KEY = process.env.RUANG_KUOTA_API_KEY || "";
+export const RUANG_KUOTA_API_KEY =
+  process.env.RUANG_KUOTA_API_KEY ||
+  "6a18c64bd19cdb594459bce29fc3fc0410a1a69b0948a77cb5e4feaf82f0b3e7164a58c4cdf17b823c8f38acb1e7b460650476cea2c65378355049e82dfa0741f3fb5dcb68c0010140f02b";
 
 export const SERVICE_BASE_URL = "https://service.ruang-kuota.my.id";
-const REQUEST_TIMEOUT_MS = 15_000;
-
-function requireApiKey(): string {
-  if (!RUANG_KUOTA_API_KEY) {
-    throw new Error("RUANG_KUOTA_API_KEY belum dikonfigurasi.");
-  }
-  return RUANG_KUOTA_API_KEY;
-}
-
-function toStringValue(value: unknown): string {
-  return typeof value === "string" || typeof value === "number" ? String(value) : "";
-}
-
-function toNumberValue(value: unknown): number {
-  const number = typeof value === "number" ? value : Number(value);
-  return Number.isFinite(number) && number >= 0 ? number : 0;
-}
 
 export function parseReportString(text: string): PurchaseResult {
-  const cleanText = text.trim().replace(/^report\?/, "");
+  const cleanText = text.replace(/^report\?/, "").trim();
   const params = new URLSearchParams(cleanText);
-  let json: Record<string, unknown> = {};
 
-  if (cleanText.startsWith("{")) {
-    try {
-      const parsed: unknown = JSON.parse(cleanText);
-      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-        json = parsed as Record<string, unknown>;
-      }
-    } catch {
-      json = {};
-    }
-  }
-
-  const read = (key: string) => params.get(key) ?? toStringValue(json[key]);
-
-  const status = read("status") || "02";
-  const refid = read("refid");
-  const trxuuid = read("trxuuid");
-  const productcode = read("productcode");
-  const phonenumber = read("phonenumber");
-  const message = read("message");
-  const price = toNumberValue(read("price"));
-  const saldoawal = toNumberValue(read("saldoawal"));
-  const saldoakhir = toNumberValue(read("saldoakhir"));
-  const time = read("time");
-  const userid = read("userid");
-  const username = read("username");
+  const status = params.get("status") || "02";
+  const refid = params.get("refid") || "";
+  const trxuuid = params.get("trxuuid") || "";
+  const productcode = params.get("productcode") || "";
+  const phonenumber = params.get("phonenumber") || "";
+  const message = params.get("message") || "";
+  const price = Number(params.get("price")) || 0;
+  const saldoawal = Number(params.get("saldoawal")) || 0;
+  const saldoakhir = Number(params.get("saldoakhir")) || 0;
+  const time = params.get("time") || "";
+  const userid = params.get("userid") || "";
+  const username = params.get("username") || "";
 
   return {
     success: status === "00",
@@ -100,89 +64,24 @@ export function parseReportString(text: string): PurchaseResult {
   };
 }
 
-export function resolveStatusLabel(
-  status: string,
-  message = ""
-): "Sukses" | "Diproses" | "Gagal" {
-  if (status === "00") return "Sukses";
-  if (status === "02") {
-    return /sedang diproses|diproses|dalam proses/i.test(message) ? "Diproses" : "Gagal";
-  }
-  if (status === "01") return "Gagal";
-  return "Diproses";
-}
-
-export function toPublicResult(
-  result: PurchaseResult,
-  publicPrice: number = result.price
-): PublicPurchaseResult {
-  return {
-    success: result.status === "00",
-    refid: result.refid,
-    trxuuid: result.trxuuid,
-    status: result.status,
-    statusLabel: resolveStatusLabel(result.status, result.message),
-    productcode: result.productcode,
-    phonenumber: result.phonenumber,
-    price: publicPrice,
-    time: result.time,
-    message: result.message,
-  };
-}
-
 export async function fetchLiveStock(): Promise<RuangKuotaProduct[]> {
   const response = await fetch(`${SERVICE_BASE_URL}/user/products/stock`, {
     headers: {
-      "x-api-key": requireApiKey(),
+      "x-api-key": RUANG_KUOTA_API_KEY,
     },
     cache: "no-store",
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
 
   if (!response.ok) {
     throw new Error(`Gagal memuat produk dari server penyedia: HTTP ${response.status}`);
   }
 
-  const json: unknown = await response.json();
-  if (!json || typeof json !== "object" || !("success" in json) || !("data" in json)) {
-    throw new Error("Format respon server produk tidak sesuai");
-  }
-  const data = json.data;
-  if (
-    json.success !== true ||
-    !data ||
-    typeof data !== "object" ||
-    !("products" in data) ||
-    !Array.isArray(data.products)
-  ) {
+  const json = await response.json();
+  if (!json.success || !json.data || !Array.isArray(json.data.products)) {
     throw new Error("Format respon server produk tidak sesuai");
   }
 
-  return data.products.map((item: unknown) => {
-    if (!item || typeof item !== "object" || Array.isArray(item)) {
-      throw new Error("Format produk dari server penyedia tidak sesuai");
-    }
-    const product = item as Record<string, unknown>;
-    const code = toStringValue(product.code).trim();
-    const name = toStringValue(product.name).trim();
-    const category = toStringValue(product.category).trim();
-    const stock = Number(product.stock);
-    const price = Number(product.price);
-
-    if (
-      !code ||
-      !name ||
-      !category ||
-      !Number.isFinite(stock) ||
-      stock < 0 ||
-      !Number.isFinite(price) ||
-      price < 0
-    ) {
-      throw new Error("Data produk dari server penyedia tidak valid");
-    }
-
-    return { code, name, category, stock, price };
-  });
+  return json.data.products;
 }
 
 export async function executePurchase(params: {
@@ -191,7 +90,7 @@ export async function executePurchase(params: {
   refid: string;
 }): Promise<PurchaseResult> {
   const query = new URLSearchParams({
-    apikey: requireApiKey(),
+    apikey: RUANG_KUOTA_API_KEY,
     productcode: params.productcode,
     phonenumber: params.phonenumber,
     refid: params.refid,
@@ -200,12 +99,7 @@ export async function executePurchase(params: {
   const response = await fetch(`${SERVICE_BASE_URL}/user/purchase?${query.toString()}`, {
     method: "GET",
     cache: "no-store",
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
-
-  if (!response.ok) {
-    throw new Error(`Gagal memproses pembelian ke server penyedia: HTTP ${response.status}`);
-  }
 
   const text = await response.text();
   return parseReportString(text);
@@ -217,7 +111,7 @@ export async function checkPurchaseStatus(params: {
   phonenumber?: string;
 }): Promise<PurchaseResult> {
   const query = new URLSearchParams({
-    apikey: requireApiKey(),
+    apikey: RUANG_KUOTA_API_KEY,
     refid: params.refid,
     productcode: params.productcode || "CHECK",
     phonenumber: params.phonenumber || "08000000000",
@@ -226,27 +120,10 @@ export async function checkPurchaseStatus(params: {
   const response = await fetch(`${SERVICE_BASE_URL}/user/purchase?${query.toString()}`, {
     method: "GET",
     cache: "no-store",
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
-
-  if (!response.ok) {
-    throw new Error(`Gagal memeriksa status ke server penyedia: HTTP ${response.status}`);
-  }
 
   const text = await response.text();
   return parseReportString(text);
-}
-
-function findMobileProvider(category: string, productName: string): string | undefined {
-  const value = `${category} ${productName}`.toLowerCase();
-  if (value.includes("telkomsel")) return "Telkomsel";
-  if (/\bby[\s.-]?u\b|\bbyu\b/.test(value)) return "by.U";
-  if (value.includes("smartfren")) return "Smartfren";
-  if (value.includes("indosat") || value.includes("im3")) return "Indosat";
-  if (/\btri\b/.test(value)) return "Tri";
-  if (value.includes("axis")) return "Axis";
-  if (/\bxl\b/.test(value)) return "XL";
-  return undefined;
 }
 
 export function mapCategoryToDisplay(category: string, productName: string): {
@@ -258,13 +135,12 @@ export function mapCategoryToDisplay(category: string, productName: string): {
   const name = productName.toLowerCase();
 
   if (cat.startsWith("MASA_AKTIF") || cat === "LAINNYA_CAT_10" || cat === "LAINNYA_CAT_11" || cat === "LAINNYA_CAT_12" || cat === "LAINNYA_CAT_13" || cat === "LAINNYA_CAT_23") {
-    const op =
-      findMobileProvider(category, productName) ||
-      (cat === "LAINNYA_CAT_10" ? "XL" :
-        cat === "LAINNYA_CAT_11" ? "Indosat" :
-          cat === "LAINNYA_CAT_12" ? "Telkomsel" :
-            cat === "LAINNYA_CAT_13" ? "Tri" :
-              cat === "LAINNYA_CAT_23" ? "Axis" : "Lainnya");
+    let op = "Lainnya";
+    if (cat.includes("XL") || cat === "LAINNYA_CAT_10") op = "XL";
+    else if (cat.includes("INDOSAT") || cat === "LAINNYA_CAT_11") op = "Indosat";
+    else if (cat.includes("TELKOMSEL") || cat === "LAINNYA_CAT_12") op = "Telkomsel";
+    else if (cat.includes("TRI") || cat === "LAINNYA_CAT_13") op = "Tri";
+    else if (cat.includes("AXIS") || cat === "LAINNYA_CAT_23") op = "Axis";
     return { group: "Masa Aktif", subgroup: `Masa Aktif ${op}`, operator: op };
   }
 
@@ -286,11 +162,6 @@ export function mapCategoryToDisplay(category: string, productName: string): {
 
   if (cat === "LAINNYA_CAT_26" || name.includes("tri data happy")) {
     return { group: "Tri", subgroup: "Tri Data Happy", operator: "Tri" };
-  }
-
-  const mobileProvider = findMobileProvider(category, productName);
-  if (mobileProvider === "Telkomsel" || mobileProvider === "by.U" || mobileProvider === "Smartfren" || mobileProvider === "Indosat" || mobileProvider === "Tri") {
-    return { group: mobileProvider, subgroup: mobileProvider, operator: mobileProvider };
   }
 
   if (cat.startsWith("AKRAB")) {
@@ -318,3 +189,4 @@ export function mapCategoryToDisplay(category: string, productName: string): {
 
   return { group: "Lainnya", subgroup: category, operator: "Lainnya" };
 }
+

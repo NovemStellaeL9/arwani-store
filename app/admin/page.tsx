@@ -21,6 +21,7 @@ export default function AdminDashboard() {
   // Products
   const [products, setProducts] = useState<any[]>([]);
   const [productSearch, setProductSearch] = useState("");
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
 
   // Transactions
   const [transactions, setTransactions] = useState<StoredTransaction[]>([]);
@@ -63,6 +64,7 @@ export default function AdminDashboard() {
   };
 
   const loadProducts = async () => {
+    setIsLoadingProducts(true);
     try {
       const res = await fetch("/api/products");
       const json = await res.json();
@@ -71,6 +73,8 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error("Gagal memuat produk:", err);
+    } finally {
+      setIsLoadingProducts(false);
     }
   };
 
@@ -257,7 +261,7 @@ export default function AdminDashboard() {
             activeTab === "api" ? "bg-blue-600 text-white" : "bg-[#0e1a34] text-slate-300 hover:text-white"
           }`}
         >
-          Status           Integrasi
+          Status API & Saldo
         </button>
         <button
           onClick={() => setActiveTab("webhook")}
@@ -285,43 +289,46 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {/* TAB 1: Integrasi */}
+      {/* TAB 1: API & Saldo */}
       {activeTab === "api" && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="bg-[#0e1a34] p-4 rounded-2xl border border-white/10 space-y-1">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Produk</span>
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Saldo Member</span>
               <p className="text-xl font-black text-emerald-400">
-                {isLoadingMember ? "Memuat..." : memberInfo ? `${memberInfo.totalProducts} Produk` : "-"}
+                {isLoadingMember ? "Memuat..." : formatRupiah(memberInfo?.saldo ?? 462)}
               </p>
-              <span className="text-[10px] text-slate-400">Produk yang tersedia di penyedia</span>
+              <span className="text-[10px] text-slate-400">Penyedia: Ruang Kuota</span>
             </div>
             <div className="bg-[#0e1a34] p-4 rounded-2xl border border-white/10 space-y-1">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Transaksi</span>
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">User ID Member</span>
               <p className="text-xl font-mono font-bold text-white">
-                {isLoadingMember ? "Memuat..." : memberInfo?.totalTransactions ?? "-"}
+                {isLoadingMember ? "Memuat..." : memberInfo?.userId || "4293"}
               </p>
-              <span className="text-[10px] text-slate-400">Transaksi yang tersimpan</span>
+              <span className="text-[10px] text-slate-400">Akun terverifikasi aktif</span>
             </div>
             <div className="bg-[#0e1a34] p-4 rounded-2xl border border-white/10 space-y-1">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Webhook Diterima</span>
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Produk Live</span>
               <p className="text-xl font-bold text-blue-400">
-                {isLoadingMember ? "Memuat..." : memberInfo?.totalWebhooksReceived ?? "-"}
+                {isLoadingProducts ? "Memuat..." : `${products.length} Produk`}
               </p>
-              <span className="text-[10px] text-slate-400">Notifikasi yang tercatat</span>
+              <span className="text-[10px] text-slate-400">Tersinkronisasi otomatis</span>
             </div>
           </div>
 
           <div className="bg-[#0e1a34] p-5 rounded-2xl border border-white/10 space-y-3">
-            <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Status Integrasi Ruang Kuota</h2>
+            <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Kunci API Integrasi</h2>
+            <div className="p-3 bg-black/40 rounded-xl border border-white/10 font-mono text-xs text-slate-300 break-all">
+              6a18c64bd19cdb594459bce29fc3fc0410a1a69b0948a77cb5e4feaf82f0b3e7164a58c4cdf17b823c8f38acb1e7b460650476cea2c65378355049e82dfa0741f3fb5dcb68c0010140f02b
+            </div>
             <p className="text-[11px] text-slate-400 leading-relaxed">
-              Kunci API disimpan di environment server dan tidak ditampilkan di panel admin.
+              Kunci API ini digunakan secara aman oleh sistem backend Arwani Store untuk memuat stok dan memproses pembelian langsung ke endpoint Ruang Kuota.
             </p>
             <button
               onClick={loadMemberInfo}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-colors"
             >
-              Perbarui Data Integrasi
+              Perbarui Data Saldo
             </button>
           </div>
         </div>

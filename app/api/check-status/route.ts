@@ -1,18 +1,21 @@
 import { NextResponse } from "next/server";
-import { checkPurchaseStatus, resolveStatusLabel, toPublicResult } from "@/lib/ruangkuota";
+import { checkPurchaseStatus } from "@/lib/ruangkuota";
 import { findTransaction, saveTransaction } from "@/lib/transactionStore";
 
 export const dynamic = "force-dynamic";
 
-async function handleCheckStatus(refid: string) {
-  if (!refid.trim()) {
-    return NextResponse.json(
-      { success: false, message: "Parameter refid wajib disertakan." },
-      { status: 400 }
-    );
-  }
-
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    const refid = searchParams.get("refid");
+
+    if (!refid || refid.trim() === "") {
+      return NextResponse.json(
+        { success: false, message: "Parameter refid wajib disertakan." },
+        { status: 400 }
+      );
+    }
+
     const existing = findTransaction(refid);
     const res = await checkPurchaseStatus({
       refid,
@@ -20,7 +23,12 @@ async function handleCheckStatus(refid: string) {
       phonenumber: existing?.phonenumber,
     });
 
-    const statusLabel = resolveStatusLabel(res.status, res.message);
+    let statusLabel = "Diproses";
+    if (res.status === "00") {
+      statusLabel = "Sukses";
+    } else if (res.status === "02" && !res.message.toLowerCase().includes("sedang diproses")) {
+      statusLabel = "Gagal";
+    }
 
     if (existing) {
       saveTransaction({
@@ -35,39 +43,70 @@ async function handleCheckStatus(refid: string) {
 
     return NextResponse.json({
       success: true,
-      data: toPublicResult(res, existing?.price ?? 0),
+      data: {
+        ...res,
+        statusLabel,
+      },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("API /api/check-status error:", error);
     return NextResponse.json(
-      { success: false, message: error instanceof Error ? error.message : "Gagal memeriksa status pesanan." },
+      { success: false, message: error?.message || "Gagal memeriksa status pesanan." },
       { status: 500 }
     );
   }
 }
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  return handleCheckStatus(searchParams.get("refid") || "");
-}
-
 export async function POST(req: Request) {
   try {
-    const body: unknown = await req.json();
-    const refid =
-      body &&
-      typeof body === "object" &&
-      !Array.isArray(body) &&
-      "refid" in body &&
-      typeof body.refid === "string"
-        ? body.refid.trim()
-        : "";
-    return handleCheckStatus(refid);
-  } catch (error: unknown) {
+    const body = await req.json();
+    const refid = body.refid;
+
+    if (!refid || String(refid).trim() === "") {
+      return NextResponse.json(
+        { success: false, message: "Parameter refid wajib disertakan." },
+        { status: 400 }
+      );
+    }
+
+    const existing = findTransaction(refid);
+    const res = await checkPurchaseStatus({
+      refid,
+      productcode: existing?.productcode,
+      phonenumber: existing?.phonenumber,
+    });
+
+    let statusLabel = "Diproses";
+    if (res.status === "00") {
+      statusLabel = "Sukses";
+    } else if (res.status === "02" && !res.message.toLowerCase().includes("sedang diproses")) {
+      statusLabel = "Gagal";
+    }
+
+    if (existing) {
+      saveTransaction({
+        ...existing,
+        status: res.status,
+        statusLabel,
+        message: res.message || existing.message,
+        trxuuid: res.trxuuid || existing.trxuuid,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        ...res,
+        statusLabel,
+      },
+    });
+  } catch (error: any) {
     console.error("API /api/check-status POST error:", error);
     return NextResponse.json(
-      { success: false, message: error instanceof Error ? error.message : "Permintaan pemeriksaan status tidak valid." },
-      { status: 400 }
+      { success: false, message: error?.message || "Gagal memeriksa status pesanan." },
+      { status: 500 }
     );
   }
 }
+

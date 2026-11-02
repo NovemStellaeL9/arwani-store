@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Product, ActiveCategory } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
 import CheckoutModal from "@/components/CheckoutModal";
-import { getActiveProviders } from "@/lib/providers";
 
 function CatalogSkeleton() {
   return (
@@ -111,26 +110,16 @@ function CatalogContent() {
     setVisibleCount(24);
   }, [activeCategory, activeSubgroup, searchQuery, sortBy, stockOnly]);
 
-  const availableProducts = allProducts.filter((product) =>
-    product.isAvailable ?? ((product.stock ?? 0) > 0)
-  );
-  const activeProviders = getActiveProviders(allProducts);
-  const activeGroups = new Set(
-    availableProducts.map((product) => product.group || product.category)
-  );
-  const providerCategories: ActiveCategory[] = [
-    "XL & Axis",
-    "Telkomsel",
-    "by.U",
-    "Smartfren",
-    "Indosat",
-    "Tri",
-  ];
-  const serviceCategories: ActiveCategory[] = ["PLN", "E-Wallet", "Pulsa", "Masa Aktif"];
   const categoriesList: ActiveCategory[] = [
     "Semua",
-    ...providerCategories.filter((provider) => activeProviders.includes(provider)),
-    ...serviceCategories.filter((category) => activeGroups.has(category)),
+    "XL & Axis",
+    "Telkomsel",
+    "Indosat",
+    "Tri",
+    "PLN",
+    "E-Wallet",
+    "Pulsa",
+    "Masa Aktif",
   ];
 
   // Filter based on selected category

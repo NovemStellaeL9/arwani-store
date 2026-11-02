@@ -6,7 +6,6 @@ export interface StoredTransaction {
   category?: string;
   phonenumber: string;
   price: number;
-  costPrice?: number;
   status: string; // '00' | '01' | '02' | string
   statusLabel: string; // 'Sukses' | 'Diproses' | 'Gagal'
   message: string;
@@ -75,3 +74,4 @@ export function logWebhook(entry: Omit<WebhookLog, "id" | "receivedAt">): Webhoo
 export function getWebhookLogs(): WebhookLog[] {
   return globalStore.__arwani_webhooks || [];
 }
+
