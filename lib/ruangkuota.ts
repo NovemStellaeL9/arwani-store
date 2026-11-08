@@ -1,3 +1,6 @@
+import { Product, OperatorName, PackageCategory } from "@/types/product";
+import { calculateSellingPrice } from "@/utils/helpers";
+
 export interface RuangKuotaProduct {
   code: string;
   name: string;
@@ -25,9 +28,10 @@ export interface PurchaseResult {
 
 export const RUANG_KUOTA_API_KEY =
   process.env.RUANG_KUOTA_API_KEY ||
-  "6a18c64bd19cdb594459bce29fc3fc0410a1a69b0948a77cb5e4feaf82f0b3e7164a58c4cdf17b823c8f38acb1e7b460650476cea2c65378355049e82dfa0741f3fb5dcb68c0010140f02b";
+  "e0c71040fb8a1f3730858c1d9cbb89db5bf1e40bd4088a2e5614c76bbe9a5838cd871a7bc2fe814ffc5146acec445cdf339cf7e906c9b1543557b110c7dc1d88459233f4e5096de6cc51cc";
 
-export const SERVICE_BASE_URL = "https://service.ruang-kuota.my.id";
+export const SERVICE_BASE_URL =
+  process.env.RUANG_KUOTA_BASE_URL || "https://service.ruang-kuota.my.id";
 
 export function parseReportString(text: string): PurchaseResult {
   const cleanText = text.replace(/^report\?/, "").trim();
@@ -65,23 +69,42 @@ export function parseReportString(text: string): PurchaseResult {
 }
 
 export async function fetchLiveStock(): Promise<RuangKuotaProduct[]> {
-  const response = await fetch(`${SERVICE_BASE_URL}/user/products/stock`, {
-    headers: {
-      "x-api-key": RUANG_KUOTA_API_KEY,
-    },
-    cache: "no-store",
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 7000);
 
-  if (!response.ok) {
-    throw new Error(`Gagal memuat produk dari server penyedia: HTTP ${response.status}`);
+  try {
+    const response = await fetch(`${SERVICE_BASE_URL}/user/products/stock`, {
+      headers: {
+        "x-api-key": RUANG_KUOTA_API_KEY,
+      },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`Gagal memuat produk dari server penyedia: HTTP ${response.status}`);
+    }
+
+    const json = (await response.json()) as {
+      success: boolean;
+      data?: { products: RuangKuotaProduct[] };
+    };
+
+    if (!json.success || !json.data || !Array.isArray(json.data.products)) {
+      throw new Error("Format respon server produk tidak sesuai");
+    }
+
+    // Filter KETAT: Hanya produk yang BENAR-BENAR TERSEDIA (stock > 0)
+    // dan bukan produk pengecekan (seperti 'Cek PLN')
+    return json.data.products.filter(
+      (p) => p.stock > 0 && p.name && !p.name.toLowerCase().includes("cek pln")
+    );
+  } catch (err: unknown) {
+    clearTimeout(timeoutId);
+    throw err;
   }
-
-  const json = await response.json();
-  if (!json.success || !json.data || !Array.isArray(json.data.products)) {
-    throw new Error("Format respon server produk tidak sesuai");
-  }
-
-  return json.data.products;
 }
 
 export async function executePurchase(params: {
@@ -126,67 +149,122 @@ export async function checkPurchaseStatus(params: {
   return parseReportString(text);
 }
 
-export function mapCategoryToDisplay(category: string, productName: string): {
-  group: string;
-  subgroup: string;
-  operator: string;
-} {
-  const cat = category.toUpperCase();
-  const name = productName.toLowerCase();
-
-  if (cat.startsWith("MASA_AKTIF") || cat === "LAINNYA_CAT_10" || cat === "LAINNYA_CAT_11" || cat === "LAINNYA_CAT_12" || cat === "LAINNYA_CAT_13" || cat === "LAINNYA_CAT_23") {
-    let op = "Lainnya";
-    if (cat.includes("XL") || cat === "LAINNYA_CAT_10") op = "XL";
-    else if (cat.includes("INDOSAT") || cat === "LAINNYA_CAT_11") op = "Indosat";
-    else if (cat.includes("TELKOMSEL") || cat === "LAINNYA_CAT_12") op = "Telkomsel";
-    else if (cat.includes("TRI") || cat === "LAINNYA_CAT_13") op = "Tri";
-    else if (cat.includes("AXIS") || cat === "LAINNYA_CAT_23") op = "Axis";
-    return { group: "Masa Aktif", subgroup: `Masa Aktif ${op}`, operator: op };
+/**
+ * Memetakan produk live dari provider menjadi format Product aplikasi
+ * dengan kalkulasi harga jual akhir (Selling Price) via calculateSellingPrice(costPrice).
+ */
+export function mapLiveProductToApp(p: RuangKuotaProduct, index: number): Product {
+  let name = (p.name || "").trim();
+  if (p.code === "50gbTri" && !name) {
+    name = "Tri Data Happy 50GB, 28 Hari";
   }
 
-  if (cat === "PLN" || cat === "LAINNYA_CAT_14") {
-    return { group: "PLN", subgroup: "Token Listrik PLN", operator: "PLN" };
+  const nameLower = name.toLowerCase();
+  const catUpper = (p.category || "").toUpperCase();
+
+  let operator: OperatorName = "Lainnya";
+  if (nameLower.includes("telkomsel") || catUpper.includes("TELKOMSEL")) {
+    operator = "Telkomsel";
+  } else if (
+    nameLower.includes("indosat") ||
+    catUpper.includes("INDOSAT") ||
+    nameLower.includes("im3") ||
+    nameLower.includes("freedom")
+  ) {
+    operator = "Indosat";
+  } else if (nameLower.includes("axis") || catUpper.includes("AXIS")) {
+    operator = "Axis";
+  } else if (
+    nameLower.includes("flex") ||
+    nameLower.includes("akrab") ||
+    nameLower.includes("ark") ||
+    catUpper.includes("XL") ||
+    catUpper.startsWith("AKRAB") ||
+    nameLower.includes("pulsa")
+  ) {
+    operator = "XL";
+  } else if (nameLower.includes("tri") || catUpper.includes("TRI")) {
+    operator = "Tri";
+  } else if (nameLower.includes("pln") || catUpper.includes("PLN")) {
+    operator = "PLN";
+  } else if (nameLower.includes("dana")) {
+    operator = "DANA";
   }
 
-  if (cat === "LAINNYA_CAT_3" || name.includes("dana")) {
-    return { group: "E-Wallet", subgroup: "Top Up DANA", operator: "DANA" };
+  let packageCategory: PackageCategory = "Bulanan";
+  if (nameLower.includes("masa aktif")) {
+    packageCategory = "Masa Aktif";
+  } else if (
+    nameLower.includes("1 h") ||
+    nameLower.includes("1 hari") ||
+    nameLower.includes("2 h") ||
+    nameLower.includes("2 hari") ||
+    nameLower.includes("3 h") ||
+    nameLower.includes("3 hari") ||
+    nameLower.includes("5 h") ||
+    nameLower.includes("5 hari")
+  ) {
+    packageCategory = "Harian";
+  } else if (
+    nameLower.includes("7 h") ||
+    nameLower.includes("7 hari") ||
+    nameLower.includes("14 hari")
+  ) {
+    packageCategory = "Mingguan";
+  } else if (
+    nameLower.includes("akrab") ||
+    nameLower.includes("ark") ||
+    catUpper.startsWith("AKRAB") ||
+    nameLower.includes("v4") ||
+    nameLower.includes("v5") ||
+    nameLower.includes("v2")
+  ) {
+    packageCategory = "Combo";
+  } else if (nameLower.includes("unlimited") || nameLower.includes("fup")) {
+    packageCategory = "Unlimited";
   }
 
-  if (cat === "LAINNYA_CAT_1" || name.includes("pulsa")) {
-    return { group: "Pulsa", subgroup: "Pulsa Transfer XL/Axis", operator: "XL & Axis" };
-  }
+  // Quota match
+  const quotaMatch = name.match(/(\d+(\.\d+)?\s*(GB|MB))/i);
+  let quota = quotaMatch ? quotaMatch[0].toUpperCase() : "Kuota Data";
+  if (operator === "PLN") quota = "Token Listrik";
+  else if (operator === "DANA") quota = "Saldo DANA";
+  else if (packageCategory === "Masa Aktif") quota = "Masa Aktif";
+  else if (nameLower.includes("pulsa")) quota = "Pulsa Transfer";
 
-  if (cat === "LAINNYA_CAT_20" || name.includes("im3") || name.includes("freedom")) {
-    return { group: "Indosat", subgroup: "Freedom Internet", operator: "Indosat" };
-  }
+  // Validity match
+  let validity = "28 - 30 Hari";
+  if (nameLower.includes("360 hari")) validity = "360 Hari";
+  else if (nameLower.includes("180 hari")) validity = "180 Hari";
+  else if (nameLower.includes("90 hari")) validity = "90 Hari";
+  else if (nameLower.includes("4 bulan")) validity = "120 Hari";
+  else if (nameLower.includes("28 hari")) validity = "28 Hari";
+  else if (nameLower.includes("30 hari")) validity = "30 Hari";
+  else if (nameLower.includes("7 hari") || nameLower.includes("7 h")) validity = "7 Hari";
+  else if (nameLower.includes("5 hari") || nameLower.includes("5 h")) validity = "5 Hari";
+  else if (nameLower.includes("3 hari") || nameLower.includes("3 h")) validity = "3 Hari";
+  else if (nameLower.includes("2 hari") || nameLower.includes("2 h")) validity = "2 Hari";
+  else if (nameLower.includes("1 hari") || nameLower.includes("1 h")) validity = "1 Hari";
 
-  if (cat === "LAINNYA_CAT_26" || name.includes("tri data happy")) {
-    return { group: "Tri", subgroup: "Tri Data Happy", operator: "Tri" };
-  }
+  const costPrice = p.price;
+  const sellingPrice = calculateSellingPrice(costPrice);
+  const markup = sellingPrice - costPrice;
 
-  if (cat.startsWith("AKRAB")) {
-    return { group: "XL & Axis", subgroup: `XL Akrab (${cat})`, operator: "XL & Axis" };
-  }
-
-  if (cat === "ARK") {
-    return { group: "XL & Axis", subgroup: "XL Paket Ark", operator: "XL & Axis" };
-  }
-
-  if (cat.startsWith("FLEX") || cat === "LAINNYA_CAT_24" || cat === "LAINNYA_CAT_25") {
-    const isMini = cat.includes("MINI") || cat === "LAINNYA_CAT_24";
-    const isMax = cat.includes("MAX") || cat === "LAINNYA_CAT_25";
-    const sub = isMini ? "XL Flex Mini" : isMax ? "XL Flex Max" : "XL Flex Combo";
-    return { group: "XL & Axis", subgroup: sub, operator: "XL & Axis" };
-  }
-
-  if (cat === "AXIS" || cat === "LAINNYA_CAT_4") {
-    return { group: "XL & Axis", subgroup: "Axis Aigo Bronet", operator: "Axis" };
-  }
-
-  if (cat === "LAINNYA_CAT_27") {
-    return { group: "Hiburan", subgroup: "Kuota Aplikasi Harian", operator: "Lainnya" };
-  }
-
-  return { group: "Lainnya", subgroup: category, operator: "Lainnya" };
+  return {
+    id: `LIVE-${p.code}-${index}`,
+    code: p.code,
+    name,
+    operator,
+    packageCategory,
+    category: p.category,
+    costPrice,
+    price: sellingPrice,
+    markup,
+    validity,
+    quota,
+    desc: `${quota} resmi server pusat. Masa aktif ${validity}.`,
+    stock: p.stock,
+    isAvailable: true,
+    isPopular: costPrice >= 35000 && costPrice <= 90000,
+  };
 }
-

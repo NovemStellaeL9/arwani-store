@@ -1,88 +1,135 @@
-import { NextResponse } from "next/server";
-import { logWebhook, getWebhookLogs, findTransaction, saveTransaction } from "@/lib/transactionStore";
+import { NextRequest, NextResponse } from "next/server";
+import {
+  findTransaction,
+  updateTransactionStatus,
+  logWebhook,
+  getWebhookLogs,
+} from "@/lib/transactionStore";
+import { executePurchase } from "@/lib/ruangkuota";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const contentType = req.headers.get("content-type") || "";
-    let bodyData: any = {};
+    const rawBody = await req.text();
+    let body: Record<string, unknown> = {};
 
-    if (contentType.includes("application/json")) {
-      try {
-        bodyData = await req.json();
-      } catch {
-        bodyData = {};
-      }
-    } else if (contentType.includes("application/x-www-form-urlencoded")) {
-      const text = await req.text();
-      const params = new URLSearchParams(text);
-      bodyData = Object.fromEntries(params.entries());
-    } else {
-      const rawText = await req.text();
-      try {
-        bodyData = JSON.parse(rawText);
-      } catch {
-        bodyData = { raw: rawText };
-      }
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      body = { raw: rawBody };
     }
 
-    // Extract headers for logging
-    const headersObj: Record<string, string> = {};
-    req.headers.forEach((val, key) => {
-      headersObj[key] = val;
+    const headersRecord: Record<string, string> = {};
+    req.headers.forEach((value, key) => {
+      headersRecord[key] = value;
     });
 
-    const status = bodyData.status || "00";
-    const refid = bodyData.refid || bodyData.reference_id || "";
-    const message = bodyData.message || (status === "00" ? "Notifikasi transaksi berhasil" : "Notifikasi transaksi gagal");
-
-    const logged = logWebhook({
-      headers: headersObj,
-      body: bodyData,
-      status,
-      message,
+    logWebhook({
+      headers: headersRecord,
+      body,
+      status: "RECEIVED",
+      message: "Webhook pembayaran diterima",
     });
 
-    // If refid exists, update stored transaction
-    if (refid) {
-      const existing = findTransaction(refid);
-      if (existing) {
-        saveTransaction({
-          ...existing,
-          status,
-          statusLabel: status === "00" ? "Sukses" : "Gagal",
-          message: message || existing.message,
-          updatedAt: new Date().toISOString(),
-        });
-      }
+    // Ekstrak referensi transaksi dari payload pembayaran (mendukung format Midtrans, Tripay, atau Direct)
+    const refid =
+      (body.refid as string) ||
+      (body.order_id as string) ||
+      (body.merchant_ref as string) ||
+      (body.reference as string);
+
+    if (!refid) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Parameter refid / order_id tidak ditemukan dalam payload webhook.",
+        },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "Webhook diterima dengan baik oleh Arwani Store.",
-      webhookId: logged.id,
-      timestamp: logged.receivedAt,
-    });
-  } catch (error: any) {
-    console.error("Webhook receiver error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Gagal memproses webhook: " + (error?.message || "Kesalahan server"),
-      },
-      { status: 500 }
-    );
+    const transaction = findTransaction(refid);
+    if (!transaction) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Transaksi dengan RefID ${refid} tidak ditemukan.`,
+        },
+        { status: 404 }
+      );
+    }
+
+    // 1. Update status transaksi menjadi PAID / Menunggu Injeksi
+    updateTransactionStatus(refid, "PAID", "Pembayaran Terverifikasi");
+
+    // 2. Eksekusi Injeksi Kuota ke Provider Serverless
+    try {
+      const purchaseResult = await executePurchase({
+        productcode: transaction.productCode,
+        phonenumber: transaction.phoneNumber,
+        refid: transaction.refid,
+      });
+
+      if (purchaseResult.status === "00") {
+        updateTransactionStatus(
+          refid,
+          "SUCCESS",
+          "Kuota Berhasil Dikirim",
+          purchaseResult.trxuuid || purchaseResult.refid,
+          purchaseResult.message || "Paket data berhasil masuk ke nomor tujuan."
+        );
+      } else if (purchaseResult.status === "02") {
+        updateTransactionStatus(
+          refid,
+          "PROCESSING",
+          "Sedang Diproses Provider",
+          purchaseResult.trxuuid,
+          purchaseResult.message || "Permintaan sedang diproses dalam antrean server provider."
+        );
+      } else {
+        updateTransactionStatus(
+          refid,
+          "FAILED",
+          "Gagal dari Provider",
+          undefined,
+          purchaseResult.message || "Provider menolak transaksi. Saldo Anda aman."
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Webhook berhasil diproses dan kuota telah diinjeksi ke provider.",
+        providerResult: purchaseResult,
+      });
+    } catch (providerError: unknown) {
+      console.error("Provider injection error:", providerError);
+      // Jika server provider down, update status menjadi PROCESSING agar admin bisa re-inject
+      updateTransactionStatus(
+        refid,
+        "PROCESSING",
+        "Menunggu Retry Provider",
+        undefined,
+        "Pembayaran lunas, sistem sedang mengantre pengiriman kuota."
+      );
+
+      return NextResponse.json({
+        success: true,
+        message: "Pembayaran terverifikasi, namun provider sedang delay.",
+      });
+    }
+  } catch (error: unknown) {
+    console.error("API /api/webhook error:", error);
+    const message = error instanceof Error ? error.message : "Terjadi kesalahan internal webhook";
+    return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }
 
 export async function GET() {
-  const logs = getWebhookLogs();
+  const recentLogs = getWebhookLogs();
   return NextResponse.json({
     success: true,
-    endpoint: "https://arwani-store.vercel.app/api/webhook",
-    totalLogs: logs.length,
-    recentLogs: logs.slice(0, 20),
+    totalLogs: recentLogs.length,
+    recentLogs,
   });
 }
-

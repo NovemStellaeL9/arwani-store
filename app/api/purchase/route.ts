@@ -1,10 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { executePurchase } from "@/lib/ruangkuota";
 import { saveTransaction } from "@/lib/transactionStore";
+import { TransactionRecord, TransactionStatus } from "@/types/product";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { productcode, phonenumber, productName, category } = body;
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Clean phone number format
+    // Format nomor HP
     const cleanPhone = String(phonenumber).replace(/[^0-9]/g, "");
     if (cleanPhone.length < 4 || cleanPhone.length > 50) {
       return NextResponse.json(
@@ -45,45 +46,54 @@ export async function POST(req: Request) {
       refid: String(refid).trim(),
     });
 
-    let statusLabel: "Sukses" | "Diproses" | "Gagal" = "Gagal";
+    let status: TransactionStatus = "FAILED";
+    let statusLabel = "Gagal";
+
     if (purchaseRes.status === "00") {
+      status = "SUCCESS";
       statusLabel = "Sukses";
-    } else if (
-      purchaseRes.status === "02" &&
-      purchaseRes.message.toLowerCase().includes("sedang diproses")
-    ) {
+    } else if (purchaseRes.status === "02") {
+      status = "PROCESSING";
       statusLabel = "Diproses";
     }
 
-    saveTransaction({
+    const record: TransactionRecord = {
       refid: purchaseRes.refid || refid,
       trxuuid: purchaseRes.trxuuid,
-      productcode: purchaseRes.productcode || productcode,
+      productCode: purchaseRes.productcode || productcode,
       productName: productName || productcode,
-      category: category || "",
-      phonenumber: cleanPhone,
-      price: purchaseRes.price,
-      status: purchaseRes.status,
+      operator: category || "Umum",
+      packageCategory: "Bulanan",
+      phoneNumber: cleanPhone,
+      costPrice: purchaseRes.price,
+      sellingPrice: purchaseRes.price,
+      fee: 0,
+      totalAmount: purchaseRes.price,
+      paymentMethod: "QRIS",
+      status,
       statusLabel,
+      sn: purchaseRes.trxuuid,
       message: purchaseRes.message,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      source: "API_DIRECT",
-    });
+      expiredAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+    };
+
+    saveTransaction(record);
 
     return NextResponse.json({
       success: purchaseRes.status === "00",
       data: purchaseRes,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("API /api/purchase error:", error);
+    const message = error instanceof Error ? error.message : "Terjadi kendala saat memproses pembelian.";
     return NextResponse.json(
       {
         success: false,
-        message: error?.message || "Terjadi kendala saat memproses pembelian.",
+        message,
       },
       { status: 500 }
     );
   }
 }
-

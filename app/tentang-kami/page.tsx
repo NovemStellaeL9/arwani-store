@@ -30,13 +30,13 @@ export default function TentangKami() {
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl -mr-8 -mt-8" />
           
           <h2 className="text-base font-black text-white uppercase tracking-wider mb-2">
-            Arwani D'Gabriel Store
+            Arwani D&apos;Gabriel Store
           </h2>
           <p className="text-xs text-blue-400 font-extrabold uppercase tracking-widest mb-4">
             Solusi Kebutuhan Digital Anda
           </p>
           <p className="text-xs text-slate-300 leading-relaxed font-medium">
-            Arwani D'Gabriel Store didirikan untuk mempermudah transaksi pembelian paket data internet, pulsa, dan perpanjangan masa aktif kartu seluler dari berbagai operator telekomunikasi terkemuka di Indonesia. Kami berdedikasi tinggi untuk memberikan pelayanan yang super cepat, harga murah yang bersaing, serta transaksi yang aman dan terpercaya bagi semua pelanggan kami.
+            Arwani D&apos;Gabriel Store didirikan untuk mempermudah transaksi pembelian paket data internet, pulsa, dan perpanjangan masa aktif kartu seluler dari berbagai operator telekomunikasi terkemuka di Indonesia. Kami berdedikasi tinggi untuk memberikan pelayanan yang super cepat, harga murah yang bersaing, serta transaksi yang aman dan terpercaya bagi semua pelanggan kami.
           </p>
         </div>
 

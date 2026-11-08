@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { getTypeColor, getMasaAktifLogo } from "@/utils/helpers";
+import Image from "next/image";
+import { getMasaAktifLogo } from "@/utils/helpers";
 
 interface SearchBarProps {
   searchQuery: string;
@@ -92,6 +93,7 @@ export default function SearchBar({
         <select
           value={priceFilter}
           onChange={(e) => onPriceFilterChange(e.target.value)}
+          aria-label="Filter berdasarkan rentang harga"
           className="text-[10px] font-black bg-[#081225] text-white px-3 py-2 rounded-xl border border-white/10 shadow-sm outline-none focus:border-blue-500 transition-colors cursor-pointer"
         >
           <option value="all" className="bg-[#081225]">Semua Harga</option>
@@ -102,30 +104,32 @@ export default function SearchBar({
         </select>
       </div>
 
-      {/* Operator Filter for Masa Aktif */}
-      {isMasaAktif && activeMaOp && onMaOpChange && (
-        <div className="space-y-2">
-          <p className="text-[11px] font-bold text-[#cbd5e1] uppercase tracking-widest">
+      {/* Masa Aktif Operator Pills Filter */}
+      {isMasaAktif && (
+        <div className="space-y-1.5">
+          <span className="text-[10px] font-bold text-[#cbd5e1] uppercase tracking-widest">
             Pilih Operator
-          </p>
+          </span>
           <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-5 px-5">
             {MASA_AKTIF_OPERATORS.map((op) => {
-              const isActive = activeMaOp === op;
+              const isActive = (activeMaOp || "Semua") === op;
               const logo = getMasaAktifLogo(op);
               return (
                 <button
                   key={op}
-                  onClick={() => onMaOpChange(op)}
-                  className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-300 shadow-sm border ${
+                  onClick={() => onMaOpChange && onMaOpChange(op)}
+                  className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-extrabold transition-all duration-300 border shadow-sm uppercase tracking-wide ${
                     isActive
                       ? "bg-blue-500 text-white border-blue-500 shadow-md shadow-blue-500/20"
                       : "bg-white/5 text-[#cbd5e1] border-white/10 hover:border-blue-500"
                   }`}
                 >
                   {logo && (
-                    <img src={logo} alt={op} className="h-4 w-4 object-contain" />
+                    <div className="h-4 w-4 relative flex-shrink-0">
+                      <Image src={logo} alt={op} width={16} height={16} className="object-contain" />
+                    </div>
                   )}
-                  {op}
+                  <span>{op}</span>
                 </button>
               );
             })}
@@ -137,7 +141,6 @@ export default function SearchBar({
       {!isMasaAktif && availableTypes.length > 2 && (
         <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-5 px-5">
           {availableTypes.map((type) => {
-            const col = getTypeColor(type);
             const isActive = activeType === type;
             return (
               <button

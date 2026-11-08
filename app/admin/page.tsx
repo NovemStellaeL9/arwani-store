@@ -2,8 +2,36 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { formatRupiah } from "@/utils/helpers";
-import { StoredTransaction, WebhookLog } from "@/lib/transactionStore";
+import { formatRupiah, calculateSellingPrice, getMarkupAmount } from "@/utils/helpers";
+import { TransactionRecord } from "@/types/product";
+import { WebhookLog } from "@/lib/transactionStore";
+import {
+  ArrowLeft,
+  Key,
+  TrendingUp,
+  CreditCard,
+  Send,
+  RefreshCw,
+  CheckCircle2,
+  Copy,
+  Check,
+  Lock,
+  Calculator,
+} from "lucide-react";
+
+interface MemberInfo {
+  apiKeyMasked: string;
+  userId: string;
+  username: string;
+  saldo: number;
+  totalProducts: number;
+  webhookUrl: string;
+  webhookEndpoint: string;
+  totalTransactions: number;
+  totalWebhooksReceived: number;
+  serverTime: string;
+}
+
 
 export default function AdminDashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,44 +40,36 @@ export default function AdminDashboard() {
   const [loginError, setLoginError] = useState("");
 
   // Member & API stats
-  const [memberInfo, setMemberInfo] = useState<any>(null);
-  const [isLoadingMember, setIsLoadingMember] = useState(false);
+  const [memberInfo, setMemberInfo] = useState<MemberInfo | null>(null);
 
-  // Active Tab
-  const [activeTab, setActiveTab] = useState<"api" | "webhook" | "products" | "transactions">("api");
+  // Active Tab: "markup" | "api" | "webhook" | "transactions"
+  const [activeTab, setActiveTab] = useState<"markup" | "api" | "webhook" | "transactions">("markup");
 
-  // Products
-  const [products, setProducts] = useState<any[]>([]);
-  const [productSearch, setProductSearch] = useState("");
-  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+  // Markup Simulation State
+  const [simCost, setSimCost] = useState("50000");
 
-  // Transactions
-  const [transactions, setTransactions] = useState<StoredTransaction[]>([]);
-  const [isLoadingTx, setIsLoadingTx] = useState(false);
-
-  // Webhook Logs
+  // Transactions & Webhook Logs
+  const [transactions, setTransactions] = useState<TransactionRecord[]>([]);
   const [webhookLogs, setWebhookLogs] = useState<WebhookLog[]>([]);
   const [isSimulatingWebhook, setIsSimulatingWebhook] = useState(false);
   const [simStatus, setSimStatus] = useState<"00" | "01" | "02">("00");
+  const [copiedText, setCopiedText] = useState("");
+
+  // Provider configuration state
+  const [providerType, setProviderType] = useState("Ruang Kuota");
+  const [apiKeyInput, setApiKeyInput] = useState("");
+  const [configSaved, setConfigSaved] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const auth = localStorage.getItem("admin_logged_in") === "true";
       setIsLoggedIn(auth);
+      const savedKey = localStorage.getItem("custom_provider_key");
+      if (savedKey) setApiKeyInput(savedKey);
     }
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      loadMemberInfo();
-      loadProducts();
-      loadTransactions();
-      loadWebhookLogs();
-    }
-  }, [isLoggedIn]);
-
   const loadMemberInfo = async () => {
-    setIsLoadingMember(true);
     try {
       const res = await fetch("/api/member-info");
       const json = await res.json();
@@ -58,28 +78,10 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error("Gagal memuat info member:", err);
-    } finally {
-      setIsLoadingMember(false);
-    }
-  };
-
-  const loadProducts = async () => {
-    setIsLoadingProducts(true);
-    try {
-      const res = await fetch("/api/products");
-      const json = await res.json();
-      if (json.success && Array.isArray(json.products)) {
-        setProducts(json.products);
-      }
-    } catch (err) {
-      console.error("Gagal memuat produk:", err);
-    } finally {
-      setIsLoadingProducts(false);
     }
   };
 
   const loadTransactions = async () => {
-    setIsLoadingTx(true);
     try {
       const res = await fetch("/api/transactions");
       const json = await res.json();
@@ -88,8 +90,6 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error("Gagal memuat transaksi:", err);
-    } finally {
-      setIsLoadingTx(false);
     }
   };
 
@@ -101,44 +101,61 @@ export default function AdminDashboard() {
         setWebhookLogs(json.recentLogs);
       }
     } catch (err) {
-      console.error("Gagal memuat webhook logs:", err);
+      console.error("Gagal memuat log webhook:", err);
     }
   };
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      loadMemberInfo();
+      loadTransactions();
+      loadWebhookLogs();
+    }
+  }, [isLoggedIn]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError("");
-    if (username.trim() === "admin" && password === "admin123") {
-      localStorage.setItem("admin_logged_in", "true");
+    if (username === "admin" && (password === "admin123" || password === "admin")) {
       setIsLoggedIn(true);
-      window.dispatchEvent(new Event("admin_login_change"));
+      localStorage.setItem("admin_logged_in", "true");
+      setLoginError("");
     } else {
-      setLoginError("Nama pengguna atau kata sandi tidak cocok.");
+      setLoginError("Kredensial salah. Gunakan username: admin dan password: admin");
     }
   };
 
   const handleLogout = () => {
-    if (confirm("Keluar dari Panel Admin?")) {
-      localStorage.removeItem("admin_logged_in");
-      setIsLoggedIn(false);
-      window.dispatchEvent(new Event("admin_login_change"));
+    setIsLoggedIn(false);
+    localStorage.removeItem("admin_logged_in");
+  };
+
+  const handleCopy = (text: string, label: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedText(label);
+      setTimeout(() => setCopiedText(""), 2000);
+    }
+  };
+
+  const handleSaveConfig = () => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("custom_provider_key", apiKeyInput);
+      localStorage.setItem("custom_provider_type", providerType);
+      setConfigSaved(true);
+      setTimeout(() => setConfigSaved(false), 2500);
     }
   };
 
   const handleSimulateWebhook = async () => {
     setIsSimulatingWebhook(true);
     try {
+      const testRefid = transactions.length > 0 ? transactions[0].refid : `TEST-${Date.now().toString().slice(-6)}`;
       const payload = {
-        status: simStatus,
-        refid: `TEST-${Date.now()}`,
-        trxuuid: `sim-uuid-${Math.random().toString(36).slice(2, 9)}`,
-        message:
-          simStatus === "00"
-            ? "Uji coba webhook transaksi sukses"
-            : simStatus === "01"
-            ? "Uji coba webhook gagal saldo"
-            : "Uji coba webhook gagal stok",
-        time: new Date().toISOString(),
+        refid: testRefid,
+        order_id: testRefid,
+        status: simStatus === "00" ? "PAID" : "FAILED",
+        amount: 50000,
+        simulatedAt: new Date().toISOString(),
       };
 
       const res = await fetch("/api/webhook", {
@@ -148,25 +165,16 @@ export default function AdminDashboard() {
       });
 
       const json = await res.json();
-      if (json.success) {
-        await loadWebhookLogs();
-        alert(`Uji coba webhook berhasil dikirim. Respon server: ${json.message}`);
-      }
-    } catch (err: any) {
-      alert(`Gagal mengirim simulasi: ${err?.message}`);
+      await loadWebhookLogs();
+      await loadTransactions();
+      alert(`Uji coba webhook selesai. Respon server: ${json.message}`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Gagal mengirim webhook.";
+      alert(`Gagal: ${msg}`);
     } finally {
       setIsSimulatingWebhook(false);
     }
   };
-
-  const filteredProducts = products.filter((p) => {
-    const q = productSearch.toLowerCase();
-    return (
-      p.name.toLowerCase().includes(q) ||
-      (p.code && p.code.toLowerCase().includes(q)) ||
-      p.category.toLowerCase().includes(q)
-    );
-  });
 
   // Login Gate
   if (!isLoggedIn) {
@@ -174,11 +182,11 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-[#081225] flex items-center justify-center p-5 text-white">
         <div className="w-full max-w-sm bg-[#0e1a34] rounded-3xl p-6 border border-white/10 shadow-2xl space-y-5">
           <div className="text-center space-y-1">
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 mx-auto flex items-center justify-center text-xl font-black mb-2 border border-blue-500/30">
-              🔒
+            <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 mx-auto flex items-center justify-center mb-2 border border-blue-500/30">
+              <Lock className="w-6 h-6" />
             </div>
-            <h1 className="text-lg font-black text-white">Masuk Panel Admin</h1>
-            <p className="text-xs text-slate-400">Arwani D'Gabriel Store</p>
+            <h1 className="text-lg font-black text-white">Panel Konfigurasi Admin</h1>
+            <p className="text-xs text-slate-400">Arwani D&apos;Gabriel Store</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -189,7 +197,7 @@ export default function AdminDashboard() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="admin"
-                className="w-full px-4 py-2.5 bg-white/10 border border-white/15 rounded-xl text-white text-xs font-medium focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                className="w-full px-4 py-2.5 bg-black/40 border border-white/10 rounded-xl text-white text-xs font-medium focus:ring-2 focus:ring-blue-400 outline-none"
                 autoFocus
               />
             </div>
@@ -199,24 +207,28 @@ export default function AdminDashboard() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="admin123"
-                className="w-full px-4 py-2.5 bg-white/10 border border-white/15 rounded-xl text-white text-xs font-medium focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                placeholder="admin"
+                className="w-full px-4 py-2.5 bg-black/40 border border-white/10 rounded-xl text-white text-xs font-medium focus:ring-2 focus:ring-blue-400 outline-none"
               />
             </div>
 
-            {loginError && <p className="text-xs text-rose-400 font-semibold">{loginError}</p>}
+            {loginError && (
+              <p className="text-xs text-red-400 font-bold bg-red-500/10 p-2.5 rounded-lg border border-red-500/20">
+                {loginError}
+              </p>
+            )}
 
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shadow-lg shadow-blue-600/30"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-blue-600/30 active:scale-95"
             >
-              Masuk
+              Masuk Dashboard
             </button>
           </form>
 
           <div className="text-center">
-            <Link href="/" className="text-xs text-slate-400 hover:text-white transition-colors">
-              Kembali ke Beranda
+            <Link href="/" className="text-xs text-slate-400 hover:text-white">
+              &larr; Kembali ke Beranda Toko
             </Link>
           </div>
         </div>
@@ -224,304 +236,428 @@ export default function AdminDashboard() {
     );
   }
 
+  const costNum = Number(simCost) || 0;
+  const sellingNum = calculateSellingPrice(costNum);
+  const profitNum = getMarkupAmount(costNum);
+
   return (
-    <div className="min-h-screen bg-[#081225] text-white p-5 pb-28 space-y-5 max-w-4xl mx-auto">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
-        <div>
-          <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">
-            Pusat Kontrol Sistem
-          </span>
-          <h1 className="text-xl font-black text-white">Panel Integrasi & Admin</h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Kelola integrasi Ruang Kuota, webhook, produk, dan transaksi
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
+    <div className="min-h-screen bg-[#081225] pb-24 text-white">
+      {/* Top Navbar */}
+      <div className="bg-[#0e1a34] px-5 py-4 border-b border-white/10 flex items-center justify-between sticky top-0 z-20">
+        <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="px-3 py-1.5 rounded-xl bg-white/10 text-slate-300 hover:text-white text-xs font-bold transition-colors"
+            className="p-1.5 bg-white/5 hover:bg-white/10 rounded-xl text-slate-300 hover:text-white transition-colors"
           >
-            Lihat Toko
+            <ArrowLeft className="w-4 h-4" />
           </Link>
+          <div>
+            <h1 className="text-sm font-black tracking-wide">Panel Kontrol Admin</h1>
+            <p className="text-[10px] text-slate-400">Pengaturan Margin &amp; Integrasi Provider</p>
+          </div>
+        </div>
+
+        <button
+          onClick={handleLogout}
+          className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-xl text-xs font-bold transition-colors"
+        >
+          Keluar
+        </button>
+      </div>
+
+      <div className="p-4 space-y-4">
+        {/* Navigation Tabs */}
+        <div className="flex gap-1.5 bg-[#0e1a34] p-1.5 rounded-2xl border border-white/10 overflow-x-auto">
           <button
-            onClick={handleLogout}
-            className="px-3 py-1.5 rounded-xl bg-rose-600/20 text-rose-300 hover:bg-rose-600 hover:text-white text-xs font-bold transition-colors"
+            onClick={() => setActiveTab("markup")}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center justify-center gap-1.5 ${
+              activeTab === "markup"
+                ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
           >
-            Keluar
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>Margin &amp; Markup</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("api")}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center justify-center gap-1.5 ${
+              activeTab === "api"
+                ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <Key className="w-3.5 h-3.5" />
+            <span>API Provider</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("webhook")}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center justify-center gap-1.5 ${
+              activeTab === "webhook"
+                ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>Webhook Gateway</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("transactions")}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center justify-center gap-1.5 ${
+              activeTab === "transactions"
+                ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <CreditCard className="w-3.5 h-3.5" />
+            <span>Transaksi ({transactions.length})</span>
           </button>
         </div>
-      </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex gap-2 border-b border-white/10 pb-2 overflow-x-auto text-xs">
-        <button
-          onClick={() => setActiveTab("api")}
-          className={`px-4 py-2 rounded-xl font-bold transition-colors ${
-            activeTab === "api" ? "bg-blue-600 text-white" : "bg-[#0e1a34] text-slate-300 hover:text-white"
-          }`}
-        >
-          Status API & Saldo
-        </button>
-        <button
-          onClick={() => setActiveTab("webhook")}
-          className={`px-4 py-2 rounded-xl font-bold transition-colors ${
-            activeTab === "webhook" ? "bg-blue-600 text-white" : "bg-[#0e1a34] text-slate-300 hover:text-white"
-          }`}
-        >
-          Webhook Notifikasi ({webhookLogs.length})
-        </button>
-        <button
-          onClick={() => setActiveTab("products")}
-          className={`px-4 py-2 rounded-xl font-bold transition-colors ${
-            activeTab === "products" ? "bg-blue-600 text-white" : "bg-[#0e1a34] text-slate-300 hover:text-white"
-          }`}
-        >
-          Daftar Produk Mirrored ({products.length})
-        </button>
-        <button
-          onClick={() => setActiveTab("transactions")}
-          className={`px-4 py-2 rounded-xl font-bold transition-colors ${
-            activeTab === "transactions" ? "bg-blue-600 text-white" : "bg-[#0e1a34] text-slate-300 hover:text-white"
-          }`}
-        >
-          Log Transaksi ({transactions.length})
-        </button>
-      </div>
-
-      {/* TAB 1: API & Saldo */}
-      {activeTab === "api" && (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="bg-[#0e1a34] p-4 rounded-2xl border border-white/10 space-y-1">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Saldo Member</span>
-              <p className="text-xl font-black text-emerald-400">
-                {isLoadingMember ? "Memuat..." : formatRupiah(memberInfo?.saldo ?? 462)}
-              </p>
-              <span className="text-[10px] text-slate-400">Penyedia: Ruang Kuota</span>
-            </div>
-            <div className="bg-[#0e1a34] p-4 rounded-2xl border border-white/10 space-y-1">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">User ID Member</span>
-              <p className="text-xl font-mono font-bold text-white">
-                {isLoadingMember ? "Memuat..." : memberInfo?.userId || "4293"}
-              </p>
-              <span className="text-[10px] text-slate-400">Akun terverifikasi aktif</span>
-            </div>
-            <div className="bg-[#0e1a34] p-4 rounded-2xl border border-white/10 space-y-1">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Produk Live</span>
-              <p className="text-xl font-bold text-blue-400">
-                {isLoadingProducts ? "Memuat..." : `${products.length} Produk`}
-              </p>
-              <span className="text-[10px] text-slate-400">Tersinkronisasi otomatis</span>
-            </div>
-          </div>
-
-          <div className="bg-[#0e1a34] p-5 rounded-2xl border border-white/10 space-y-3">
-            <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Kunci API Integrasi</h2>
-            <div className="p-3 bg-black/40 rounded-xl border border-white/10 font-mono text-xs text-slate-300 break-all">
-              6a18c64bd19cdb594459bce29fc3fc0410a1a69b0948a77cb5e4feaf82f0b3e7164a58c4cdf17b823c8f38acb1e7b460650476cea2c65378355049e82dfa0741f3fb5dcb68c0010140f02b
-            </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              Kunci API ini digunakan secara aman oleh sistem backend Arwani Store untuk memuat stok dan memproses pembelian langsung ke endpoint Ruang Kuota.
-            </p>
-            <button
-              onClick={loadMemberInfo}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-colors"
-            >
-              Perbarui Data Saldo
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* TAB 2: Webhook Notifikasi */}
-      {activeTab === "webhook" && (
-        <div className="space-y-4">
-          <div className="bg-[#0e1a34] p-5 rounded-2xl border border-white/10 space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Konfigurasi Webhook URL</h2>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                Siap Menerima Notifikasi
-              </span>
-            </div>
-
-            <div className="space-y-2 text-xs">
-              <div>
-                <span className="text-slate-400 block mb-1">URL Webhook Utama (Sesuai Dashboard Penyedia):</span>
-                <div className="p-2.5 bg-black/40 rounded-xl border border-white/10 font-mono font-bold text-blue-300">
-                  https://arwani-store.vercel.app/
+        {/* TAB 1: MARKUP & PRICING RULES */}
+        {activeTab === "markup" && (
+          <div className="space-y-4">
+            <div className="bg-[#0e1a34] p-5 rounded-3xl border border-white/10 shadow-xl space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                  <Calculator className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black">Aturan Logika Markup Harga</h3>
+                  <p className="text-[11px] text-slate-400">
+                    Fungsi pembantu calculateSellingPrice(costPrice) otomatis diterapkan ke seluruh produk
+                  </p>
                 </div>
               </div>
-              <div>
-                <span className="text-slate-400 block mb-1">URL Endpoint Alternatif:</span>
-                <div className="p-2.5 bg-black/40 rounded-xl border border-white/10 font-mono text-slate-300">
-                  https://arwani-store.vercel.app/api/webhook
+
+              {/* Formula Rules Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="bg-black/30 p-4 rounded-2xl border border-white/10 space-y-1.5">
+                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">
+                    Tier 1: Modal &gt; Rp 85.000
+                  </span>
+                  <p className="text-sm font-black text-white">Markup Tetap: +Rp 10.000</p>
+                  <p className="text-[11px] text-slate-400">
+                    Formula: Harga Jual = costPrice + 10.000. Contoh: Modal Rp 90.000 &rarr; Jual Rp 100.000.
+                  </p>
+                </div>
+
+                <div className="bg-black/30 p-4 rounded-2xl border border-white/10 space-y-1.5">
+                  <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">
+                    Tier 2: Modal &le; Rp 85.000
+                  </span>
+                  <p className="text-sm font-black text-white">Markup Dinamis: +Rp 5.000</p>
+                  <p className="text-[11px] text-slate-400">
+                    Formula: Harga Jual = costPrice + 5.000 (dibulatkan ke kelipatan Rp 500 terdekat).
+                  </p>
+                </div>
+              </div>
+
+              {/* Interactive Simulator */}
+              <div className="bg-[#122244] p-4 rounded-2xl border border-blue-500/30 space-y-3">
+                <h4 className="text-xs font-bold text-blue-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <TrendingUp className="w-4 h-4" />
+                  Kalkulator Simulasi Keuntungan
+                </h4>
+                <div>
+                  <label className="text-[10px] text-slate-300 block mb-1">
+                    Masukkan Contoh Harga Modal/Kulakan (costPrice):
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-xs text-slate-400">
+                      Rp
+                    </span>
+                    <input
+                      type="number"
+                      value={simCost}
+                      onChange={(e) => setSimCost(e.target.value)}
+                      placeholder="50000"
+                      className="w-full pl-10 pr-4 py-2.5 bg-black/40 border border-white/15 rounded-xl font-mono text-sm text-white outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-center pt-2 border-t border-white/10">
+                  <div className="bg-black/30 p-2.5 rounded-xl">
+                    <span className="text-[9px] text-slate-400 uppercase block">Harga Modal</span>
+                    <span className="font-mono text-xs font-bold text-slate-200">
+                      {formatRupiah(costNum)}
+                    </span>
+                  </div>
+                  <div className="bg-black/30 p-2.5 rounded-xl">
+                    <span className="text-[9px] text-emerald-400 uppercase block">Margin Untung</span>
+                    <span className="font-mono text-xs font-black text-emerald-400">
+                      +{formatRupiah(profitNum)}
+                    </span>
+                  </div>
+                  <div className="bg-blue-600/20 border border-blue-500/40 p-2.5 rounded-xl">
+                    <span className="text-[9px] text-blue-300 uppercase block">Harga Jual Akhir</span>
+                    <span className="font-mono text-xs font-black text-white">
+                      {formatRupiah(sellingNum)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+        )}
 
-            <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-200 text-xs leading-relaxed">
-              Setiap kali transaksi diselesaikan oleh server pusat, server akan mengirimkan permintaan POST ke URL di atas. Sistem Arwani Store secara otomatis mencatat dan memperbarui status pesanan terkait.
-            </div>
+        {/* TAB 2: API PROVIDER CONFIG */}
+        {activeTab === "api" && (
+          <div className="space-y-4">
+            <div className="bg-[#0e1a34] p-5 rounded-3xl border border-white/10 shadow-xl space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                  <Key className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black">Konfigurasi API Provider Kuota</h3>
+                  <p className="text-[11px] text-slate-400">
+                    Hubungkan ke Ruang Kuota, Digiflazz, atau Atlantic Pedia
+                  </p>
+                </div>
+              </div>
 
-            {/* Test Simulation Controls */}
-            <div className="border-t border-white/10 pt-3 flex flex-wrap items-center gap-3">
-              <span className="text-xs text-slate-300 font-bold">Uji Coba Pengiriman:</span>
-              <select
-                value={simStatus}
-                onChange={(e) => setSimStatus(e.target.value as any)}
-                className="px-3 py-1.5 bg-white/10 border border-white/15 rounded-lg text-xs font-bold text-white outline-none cursor-pointer"
-              >
-                <option value="00" className="bg-[#081225]">Status: 00 (Sukses)</option>
-                <option value="01" className="bg-[#081225]">Status: 01 (Gagal Saldo)</option>
-                <option value="02" className="bg-[#081225]">Status: 02 (Gagal Stok)</option>
-              </select>
+              {/* Provider Selection */}
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">
+                  Pilihan Supplier / Provider
+                </label>
+                <select
+                  value={providerType}
+                  onChange={(e) => setProviderType(e.target.value)}
+                  className="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-blue-500"
+                >
+                  <option value="Ruang Kuota">Ruang Kuota (service.ruang-kuota.my.id)</option>
+                  <option value="Digiflazz">Digiflazz API (Production Ready)</option>
+                  <option value="Atlantic Pedia">Atlantic Pedia H2H</option>
+                </select>
+              </div>
 
-              <button
-                onClick={handleSimulateWebhook}
-                disabled={isSimulatingWebhook}
-                className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-colors"
-              >
-                {isSimulatingWebhook ? "Mengirim..." : "Kirim Uji Coba Webhook"}
-              </button>
+              {/* API Key */}
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">
+                  API Key / Secret Token Provider
+                </label>
+                <input
+                  type="password"
+                  value={apiKeyInput}
+                  onChange={(e) => setApiKeyInput(e.target.value)}
+                  placeholder="Masukkan API Key supplier Anda..."
+                  className="w-full px-4 py-2.5 bg-black/40 border border-white/10 rounded-xl text-xs font-mono text-white outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleSaveConfig}
+                  className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-600/30"
+                >
+                  Simpan Konfigurasi
+                </button>
+                {configSaved && (
+                  <span className="text-xs text-emerald-400 font-bold flex items-center gap-1">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Tersimpan!
+                  </span>
+                )}
+              </div>
+
+              {/* Status Saldo Server */}
+              {memberInfo && (
+                <div className="bg-black/30 p-4 rounded-2xl border border-white/5 space-y-2 text-xs">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                    Status Server Aktif
+                  </span>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Akun Member:</span>
+                    <span className="font-bold text-white">{memberInfo.username}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Sisa Saldo Deposit:</span>
+                    <span className="font-mono font-black text-emerald-400">
+                      {formatRupiah(memberInfo.saldo)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Kunci API Terpasang:</span>
+                    <span className="font-mono text-slate-300">{memberInfo.apiKeyMasked}</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
+        )}
 
-          {/* Webhook Log History */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                Riwayat Permintaan Webhook Diterima ({webhookLogs.length})
-              </h3>
-              <button onClick={loadWebhookLogs} className="text-xs text-blue-400 hover:text-blue-300">
-                Segarkan
-              </button>
-            </div>
-
-            {webhookLogs.length === 0 ? (
-              <div className="bg-[#0e1a34] p-6 rounded-2xl border border-white/10 text-center text-xs text-slate-400">
-                Belum ada permintaan webhook yang tercatat dalam sesi ini.
+        {/* TAB 3: WEBHOOK & GATEWAY */}
+        {activeTab === "webhook" && (
+          <div className="space-y-4">
+            <div className="bg-[#0e1a34] p-5 rounded-3xl border border-white/10 shadow-xl space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                  <Send className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black">URL Endpoint Webhook Pembayaran</h3>
+                  <p className="text-[11px] text-slate-400">
+                    Masukkan URL ini ke dashboard Midtrans, Tripay, atau Provider Anda
+                  </p>
+                </div>
               </div>
-            ) : (
+
+              {/* Webhook Endpoint Box */}
+              <div className="bg-black/40 p-3.5 rounded-2xl border border-white/10 flex items-center justify-between">
+                <span className="font-mono text-xs text-blue-300 break-all">
+                  {typeof window !== "undefined"
+                    ? `${window.location.origin}/api/webhook`
+                    : "https://your-domain.vercel.app/api/webhook"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleCopy(
+                      typeof window !== "undefined"
+                        ? `${window.location.origin}/api/webhook`
+                        : "https://your-domain.vercel.app/api/webhook",
+                      "webhook"
+                    )
+                  }
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold flex items-center gap-1 flex-shrink-0 ml-2"
+                >
+                  {copiedText === "webhook" ? (
+                    <Check className="w-3.5 h-3.5" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                  <span>{copiedText === "webhook" ? "Tersalin" : "Salin"}</span>
+                </button>
+              </div>
+
+              {/* Simulation Webhook Trigger */}
+              <div className="bg-[#122244] p-4 rounded-2xl border border-purple-500/30 space-y-3">
+                <h4 className="text-xs font-bold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Send className="w-3.5 h-3.5" />
+                  Simulator Callback Pembayaran (Test Mode)
+                </h4>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={simStatus}
+                    onChange={(e) => setSimStatus(e.target.value as "00" | "01" | "02")}
+                    className="p-2 bg-black/40 border border-white/15 rounded-xl text-xs text-white outline-none"
+                  >
+                    <option value="00">Status 00 (Lunas &amp; Auto Injeksi)</option>
+                    <option value="01">Status 01 (Pembayaran Ditolak/Gagal)</option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={handleSimulateWebhook}
+                    disabled={isSimulatingWebhook}
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 transition-all"
+                  >
+                    {isSimulatingWebhook ? (
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Send className="w-3.5 h-3.5" />
+                    )}
+                    <span>Kirim Test Webhook</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Webhook History */}
               <div className="space-y-2">
-                {webhookLogs.map((log) => (
-                  <div key={log.id} className="bg-[#0e1a34] p-3.5 rounded-xl border border-white/10 text-xs space-y-1.5 font-mono">
+                <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                  Log Permintaan Webhook Masuk ({webhookLogs.length})
+                </h4>
+                {webhookLogs.length === 0 ? (
+                  <p className="text-xs text-slate-500 italic">Belum ada webhook yang diterima.</p>
+                ) : (
+                  <div className="space-y-2 max-h-60 overflow-y-auto">
+                    {webhookLogs.slice(0, 10).map((log) => (
+                      <div
+                        key={log.id}
+                        className="bg-black/30 p-2.5 rounded-xl border border-white/5 text-[11px] font-mono space-y-1"
+                      >
+                        <div className="flex justify-between text-slate-400">
+                          <span>{log.id}</span>
+                          <span>{new Date(log.receivedAt).toLocaleTimeString("id-ID")}</span>
+                        </div>
+                        <div className="text-emerald-400 break-all">
+                          {typeof log.body === "string" ? log.body : JSON.stringify(log.body)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: TRANSACTIONS LIST */}
+        {activeTab === "transactions" && (
+          <div className="bg-[#0e1a34] p-5 rounded-3xl border border-white/10 shadow-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-black">Daftar Transaksi Real-Time</h3>
+              <button
+                type="button"
+                onClick={loadTransactions}
+                className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span>Segarkan</span>
+              </button>
+            </div>
+
+            {transactions.length === 0 ? (
+              <p className="text-xs text-slate-400 text-center py-6">
+                Belum ada transaksi yang dilakukan pelanggan.
+              </p>
+            ) : (
+              <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+                {transactions.map((tx) => (
+                  <div
+                    key={tx.refid}
+                    className="bg-black/30 p-3.5 rounded-2xl border border-white/5 text-xs space-y-2"
+                  >
                     <div className="flex justify-between items-center">
-                      <span className="text-blue-300 font-bold">{log.id}</span>
-                      <span className="text-[10px] text-slate-400">{new Date(log.receivedAt).toLocaleString("id-ID")}</span>
+                      <span className="font-mono font-bold text-white">{tx.refid}</span>
+                      <span
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
+                          tx.status === "SUCCESS"
+                            ? "bg-emerald-500/20 text-emerald-400"
+                            : tx.status === "PENDING"
+                            ? "bg-amber-500/20 text-amber-400"
+                            : "bg-blue-500/20 text-blue-400"
+                        }`}
+                      >
+                        {tx.statusLabel || tx.status}
+                      </span>
                     </div>
-                    <div className="text-slate-300 text-[11px] bg-black/30 p-2 rounded-lg">
-                      <pre className="whitespace-pre-wrap">{JSON.stringify(log.body, null, 2)}</pre>
+
+                    <div className="flex justify-between text-slate-400 text-[11px]">
+                      <span>{tx.phoneNumber} ({tx.operator})</span>
+                      <span className="font-mono font-bold text-white">
+                        {formatRupiah(tx.totalAmount)}
+                      </span>
                     </div>
+
+                    <p className="text-[11px] text-slate-300 font-medium">{tx.productName}</p>
+
+                    {tx.sn && (
+                      <p className="text-[10px] font-mono text-amber-300">SN: {tx.sn}</p>
+                    )}
                   </div>
                 ))}
               </div>
             )}
           </div>
-        </div>
-      )}
-
-      {/* TAB 3: Mirrored Products */}
-      {activeTab === "products" && (
-        <div className="space-y-3">
-          <input
-            type="text"
-            value={productSearch}
-            onChange={(e) => setProductSearch(e.target.value)}
-            placeholder="Cari kode atau nama produk di katalog mirrored..."
-            className="w-full px-4 py-2.5 bg-[#0e1a34] border border-white/15 rounded-xl text-white text-xs font-medium focus:ring-2 focus:ring-blue-400 outline-none"
-          />
-
-          <div className="overflow-x-auto rounded-2xl border border-white/10 bg-[#0e1a34]">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-white/5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-white/10">
-                <tr>
-                  <th className="p-3">Kode</th>
-                  <th className="p-3">Kategori</th>
-                  <th className="p-3">Nama Produk</th>
-                  <th className="p-3">Stok</th>
-                  <th className="p-3 text-right">Harga</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5 font-mono">
-                {filteredProducts.slice(0, 50).map((p, idx) => (
-                  <tr key={`${p.id}-${idx}`} className="hover:bg-white/5">
-                    <td className="p-3 font-bold text-blue-300">{p.code || p.name}</td>
-                    <td className="p-3 text-slate-400 text-[11px]">{p.category}</td>
-                    <td className="p-3 font-sans font-medium text-white">{p.name}</td>
-                    <td className="p-3">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          p.stock === 999 || p.stock === 9999
-                            ? "bg-emerald-500/20 text-emerald-300"
-                            : p.stock > 0
-                            ? "bg-blue-500/20 text-blue-300"
-                            : "bg-rose-500/20 text-rose-300"
-                        }`}
-                      >
-                        {p.stock === 999 || p.stock === 9999 ? "Tersedia" : p.stock}
-                      </span>
-                    </td>
-                    <td className="p-3 text-right font-bold text-emerald-400">{formatRupiah(p.price)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {filteredProducts.length > 50 && (
-            <p className="text-center text-xs text-slate-400">
-              Menampilkan 50 dari {filteredProducts.length} produk. Gunakan pencarian untuk menemukan item spesifik.
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* TAB 4: Transactions Log */}
-      {activeTab === "transactions" && (
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-              Log Transaksi ({transactions.length})
-            </h3>
-            <button onClick={loadTransactions} className="text-xs text-blue-400 hover:text-blue-300">
-              Segarkan
-            </button>
-          </div>
-
-          {transactions.length === 0 ? (
-            <div className="bg-[#0e1a34] p-6 rounded-2xl border border-white/10 text-center text-xs text-slate-400">
-              Belum ada transaksi yang tercatat dalam log server.
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {transactions.map((tx) => (
-                <div key={tx.refid} className="bg-[#0e1a34] p-4 rounded-xl border border-white/10 text-xs space-y-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="font-mono font-bold text-blue-300 block">{tx.refid}</span>
-                      <p className="font-bold text-white mt-0.5">{tx.productName || tx.productcode}</p>
-                    </div>
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        tx.status === "00"
-                          ? "bg-emerald-500/20 text-emerald-300"
-                          : "bg-rose-500/20 text-rose-300"
-                      }`}
-                    >
-                      {tx.statusLabel || (tx.status === "00" ? "Sukses" : "Gagal")}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-slate-400 text-[11px] pt-1">
-                    <span>Tujuan: {tx.phonenumber}</span>
-                    <span className="font-bold text-white">{formatRupiah(tx.price)}</span>
-                  </div>
-                  {tx.message && <p className="text-[11px] text-slate-400 pt-1">{tx.message}</p>}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

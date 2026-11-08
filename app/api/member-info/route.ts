@@ -28,14 +28,14 @@ export async function GET() {
       totalWebhooksReceived: getWebhookLogs().length,
       serverTime: checkRes.time || new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Gagal memuat informasi akun member.";
     return NextResponse.json(
       {
         success: false,
-        message: error?.message || "Gagal memuat informasi akun member.",
+        message,
       },
       { status: 500 }
     );
   }
 }
-

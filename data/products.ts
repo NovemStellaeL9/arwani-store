@@ -1,2118 +1,2527 @@
-import { Product } from "@/types/product";
+import { Product, OperatorName, PackageCategory } from "@/types/product";
+import { calculateSellingPrice } from "@/utils/helpers";
 
-export const products: Product[] = [
-  {
-    id: 1,
-    category: "Telkomsel",
-    name: "Data Flash 50 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 109618
-  },
-  {
-    id: 2,
-    category: "Telkomsel",
-    name: "Data Flash 49 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 113595
-  },
-  {
-    id: 3,
-    category: "Telkomsel",
-    name: "Data Flash 40 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 98613
-  },
-  {
-    id: 4,
-    category: "Telkomsel",
-    name: "Data Flash 35 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 93610
-  },
-  {
-    id: 5,
-    category: "Telkomsel",
-    name: "Data Flash 30 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 92610
-  },
-  {
-    id: 6,
-    category: "Telkomsel",
-    name: "Data Flash 28 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 69098
-  },
-  {
-    id: 7,
-    category: "Telkomsel",
-    name: "Data Flash 27 GB (Revamp)",
-    desc: "Masa Aktif 30 Hari",
-    price: 93485
-  },
-  {
-    id: 8,
-    category: "Telkomsel",
-    name: "Data Flash 25 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 118623
-  },
-  {
-    id: 9,
-    category: "Telkomsel",
-    name: "Data Flash 22 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 64846
-  },
-  {
-    id: 10,
-    category: "Telkomsel",
-    name: "Data Flash 22 GB (Revamp)",
-    desc: "Masa Aktif 30 Hari",
-    price: 83480
-  },
-  {
-    id: 11,
-    category: "Telkomsel",
-    name: "Data Flash 21 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 81104
-  },
-  {
-    id: 12,
-    category: "Telkomsel",
-    name: "Data Flash 20 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 59593
-  },
-  {
-    id: 13,
-    category: "Telkomsel",
-    name: "Data Flash 18 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 53565
-  },
-  {
-    id: 14,
-    category: "Telkomsel",
-    name: "Data Flash 18 GB (Revamp)",
-    desc: "Masa Aktif 30 Hari",
-    price: 60068
-  },
-  {
-    id: 15,
-    category: "Telkomsel",
-    name: "Data Flash 17 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 50589
-  },
-  {
-    id: 16,
-    category: "Telkomsel",
-    name: "Data Flash 16 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 51889
-  },
-  {
-    id: 17,
-    category: "Telkomsel",
-    name: "Data Flash 15 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 53090
-  },
-  {
-    id: 18,
-    category: "Telkomsel",
-    name: "Data Flash 14 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 51439
-  },
-  {
-    id: 19,
-    category: "Telkomsel",
-    name: "Data Flash 12 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 52289
-  },
-  {
-    id: 20,
-    category: "Telkomsel",
-    name: "Data Flash 11 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 41059
-  },
-  {
-    id: 21,
-    category: "Telkomsel",
-    name: "Data Flash 10 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 50488
-  },
-  {
-    id: 22,
-    category: "Telkomsel",
-    name: "Data Flash 7 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 39283
-  },
-  {
-    id: 23,
-    category: "Telkomsel",
-    name: "Paket Data 12.5 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 43000
-  },
-  {
-    id: 24,
-    category: "Telkomsel",
-    name: "Paket Data 25 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 62500
-  },
-  {
-    id: 25,
-    category: "Telkomsel",
-    name: "Paket Data 45 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 88000
-  },
-  {
-    id: 26,
-    category: "XL & Axis",
-    name: "Circel Reguler 10–14 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 22000
-  },
-  {
-    id: 27,
-    category: "XL & Axis",
-    name: "Circel Reguler 15–19 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 28000
-  },
-  {
-    id: 28,
-    category: "XL & Axis",
-    name: "Circel Reguler 20–24 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 37000
-  },
-  {
-    id: 29,
-    category: "XL & Axis",
-    name: "Circel Reguler 25–29 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 45000
-  },
-  {
-    id: 30,
-    category: "XL & Axis",
-    name: "Circel Reguler 30–34 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 50000
-  },
-  {
-    id: 31,
-    category: "XL & Axis",
-    name: "Circel Reguler 35–39 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 55000
-  },
-  {
-    id: 32,
-    category: "XL & Axis",
-    name: "Circel Reguler 40–44 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 60000
-  },
-  {
-    id: 33,
-    category: "XL & Axis",
-    name: "Circel Reguler 45–49 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 65000
-  },
-  {
-    id: 34,
-    category: "XL & Axis",
-    name: "Circel Reguler 50–54 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 70000
-  },
-  {
-    id: 35,
-    category: "XL & Axis",
-    name: "Circel Reguler 55–59 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 75000
-  },
-  {
-    id: 36,
-    category: "XL & Axis",
-    name: "Circel Reguler 60–64 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 80000
-  },
-  {
-    id: 37,
-    category: "XL & Axis",
-    name: "Circel Reguler 65–69 GB",
-    desc: "Masa Aktif Paket 28 Hari",
-    price: 85000
-  },
-  {
-    id: 101,
-    category: "by.U",
-    name: "by.U Kuota 7 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 25000
-  },
-  {
-    id: 102,
-    category: "by.U",
-    name: "by.U Kuota 3 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 39000
-  },
-  {
-    id: 103,
-    category: "by.U",
-    name: "by.U Kuota 1 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 40000
-  },
-  {
-    id: 104,
-    category: "by.U",
-    name: "by.U Kuota 7 GB All",
-    desc: "Masa Aktif 20 Hari",
-    price: 42000
-  },
-  {
-    id: 105,
-    category: "by.U",
-    name: "by.U Kuota 4 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 42500
-  },
-  {
-    id: 106,
-    category: "by.U",
-    name: "by.U Kuota 6 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 43000
-  },
-  {
-    id: 107,
-    category: "by.U",
-    name: "by.U Kuota 2 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 44000
-  },
-  {
-    id: 108,
-    category: "by.U",
-    name: "by.U Kuota 5 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 45000
-  },
-  {
-    id: 109,
-    category: "by.U",
-    name: "by.U Kuota 9 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 50000
-  },
-  {
-    id: 110,
-    category: "by.U",
-    name: "by.U Kuota 10 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 50000
-  },
-  {
-    id: 111,
-    category: "by.U",
-    name: "by.U Kuota 12 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 50000
-  },
-  {
-    id: 112,
-    category: "by.U",
-    name: "by.U Kuota 11 GB All",
-    desc: "Masa Aktif 20 Hari",
-    price: 51000
-  },
-  {
-    id: 113,
-    category: "by.U",
-    name: "by.U Kuota 14 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 51000
-  },
-  {
-    id: 114,
-    category: "by.U",
-    name: "by.U Kuota 20 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 65000
-  },
-  {
-    id: 115,
-    category: "by.U",
-    name: "by.U Kuota 18 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 80000
-  },
-  {
-    id: 116,
-    category: "by.U",
-    name: "by.U Kuota 6 GB All (All Zona)",
-    desc: "Masa Aktif 30 Hari",
-    price: 81000
-  },
-  {
-    id: 117,
-    category: "by.U",
-    name: "by.U Kuota 42 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 104000
-  },
-  {
-    id: 118,
-    category: "by.U",
-    name: "by.U Kuota 50 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 104000
-  },
-  {
-    id: 119,
-    category: "by.U",
-    name: "by.U Kuota 65 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 104000
-  },
-  {
-    id: 120,
-    category: "by.U",
-    name: "by.U Kuota 37 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 107000
-  },
-  {
-    id: 121,
-    category: "by.U",
-    name: "by.U Kuota 9 GB All (All Zona)",
-    desc: "Masa Aktif 30 Hari",
-    price: 108000
-  },
-  {
-    id: 122,
-    category: "by.U",
-    name: "by.U Kuota 12 GB All (All Zona)",
-    desc: "Masa Aktif 30 Hari",
-    price: 126000
-  },
-  {
-    id: 123,
-    category: "by.U",
-    name: "by.U Kuota 20 GB All (All Zona)",
-    desc: "Masa Aktif 30 Hari",
-    price: 157000
-  },
-  {
-    id: 124,
-    category: "by.U",
-    name: "by.U Kuota 125 GB All",
-    desc: "Masa Aktif 30 Hari",
-    price: 216000
-  },
-  {
-    id: 201,
-    category: "Tri",
-    name: "Data AlwaysOn 1.5 GB",
-    desc: "Masa Aktif -",
-    price: 27000
-  },
-  {
-    id: 202,
-    category: "Tri",
-    name: "Data AlwaysOn 2 GB",
-    desc: "Masa Aktif -",
-    price: 21000
-  },
-  {
-    id: 203,
-    category: "Tri",
-    name: "Data AlwaysOn 2.5 GB",
-    desc: "Masa Aktif -",
-    price: 27000
-  },
-  {
-    id: 204,
-    category: "Tri",
-    name: "Data AlwaysOn 3 GB",
-    desc: "Masa Aktif -",
-    price: 27000
-  },
-  {
-    id: 205,
-    category: "Tri",
-    name: "Data AlwaysOn 3.5 GB",
-    desc: "Masa Aktif -",
-    price: 28000
-  },
-  {
-    id: 206,
-    category: "Tri",
-    name: "Data AlwaysOn 4 GB",
-    desc: "Masa Aktif -",
-    price: 29000
-  },
-  {
-    id: 207,
-    category: "Tri",
-    name: "Data AlwaysOn 5 GB",
-    desc: "Masa Aktif -",
-    price: 32000
-  },
-  {
-    id: 208,
-    category: "Tri",
-    name: "Data AlwaysOn 6 GB",
-    desc: "Masa Aktif -",
-    price: 35000
-  },
-  {
-    id: 209,
-    category: "Tri",
-    name: "Data AlwaysOn 7 GB",
-    desc: "Masa Aktif -",
-    price: 48000
-  },
-  {
-    id: 210,
-    category: "Tri",
-    name: "Data AlwaysOn 8 GB",
-    desc: "Masa Aktif -",
-    price: 48000
-  },
-  {
-    id: 211,
-    category: "Tri",
-    name: "Data AlwaysOn 9 GB",
-    desc: "Masa Aktif -",
-    price: 50000
-  },
-  {
-    id: 212,
-    category: "Tri",
-    name: "Data AlwaysOn 10 GB",
-    desc: "Masa Aktif -",
-    price: 60000
-  },
-  {
-    id: 213,
-    category: "Tri",
-    name: "Data AlwaysOn 12 GB",
-    desc: "Masa Aktif -",
-    price: 62000
-  },
-  {
-    id: 214,
-    category: "Tri",
-    name: "Data AlwaysOn 14 GB",
-    desc: "Masa Aktif -",
-    price: 68000
-  },
-  {
-    id: 215,
-    category: "Tri",
-    name: "Data AlwaysOn 16 GB",
-    desc: "Masa Aktif -",
-    price: 109000
-  },
-  {
-    id: 216,
-    category: "Tri",
-    name: "Data AlwaysOn 16 GB + Unlimited",
-    desc: "Masa Aktif -",
-    price: 109000
-  },
-  {
-    id: 217,
-    category: "Tri",
-    name: "Data AlwaysOn 26 GB",
-    desc: "Masa Aktif -",
-    price: 84000
-  },
-  {
-    id: 218,
-    category: "Tri",
-    name: "Data AlwaysOn 40 GB",
-    desc: "Masa Aktif -",
-    price: 113000
-  },
-  {
-    id: 219,
-    category: "Tri",
-    name: "Data AlwaysOn Unlimited 26 GB",
-    desc: "Masa Aktif -",
-    price: 76000
-  },
-  {
-    id: 220,
-    category: "Tri",
-    name: "Data AlwaysOn 10 GB + Unlimited",
-    desc: "Masa Aktif -",
-    price: 83000
-  },
-  {
-    id: 221,
-    category: "Tri",
-    name: "Data Happy 4 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 24000
-  },
-  {
-    id: 222,
-    category: "Tri",
-    name: "Data Happy 6 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 29000
-  },
-  {
-    id: 223,
-    category: "Tri",
-    name: "Data Happy 12 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 44000
-  },
-  {
-    id: 224,
-    category: "Tri",
-    name: "Data Happy 18 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 54000
-  },
-  {
-    id: 225,
-    category: "Tri",
-    name: "Data Happy 30 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 66000
-  },
-  {
-    id: 226,
-    category: "Tri",
-    name: "Data Happy 45 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 92000
-  },
-  {
-    id: 227,
-    category: "Tri",
-    name: "Data Happy 75 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 118000
-  },
-  {
-    id: 228,
-    category: "Tri",
-    name: "Data Happy 100 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 144000
-  },
-  {
-    id: 301,
-    category: "Indosat",
-    name: "Freedom Internet 9 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 51000
-  },
-  {
-    id: 302,
-    category: "Indosat",
-    name: "Freedom Internet 10 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 44000
-  },
-  {
-    id: 303,
-    category: "Indosat",
-    name: "Freedom Internet 11 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 50000
-  },
-  {
-    id: 304,
-    category: "Indosat",
-    name: "Freedom Internet 12 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 47000
-  },
-  {
-    id: 305,
-    category: "Indosat",
-    name: "Freedom Internet 13 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 48000
-  },
-  {
-    id: 306,
-    category: "Indosat",
-    name: "Freedom Internet 14 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 48000
-  },
-  {
-    id: 307,
-    category: "Indosat",
-    name: "Freedom Internet 15 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 48000
-  },
-  {
-    id: 308,
-    category: "Indosat",
-    name: "Freedom Internet 16 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 48000
-  },
-  {
-    id: 309,
-    category: "Indosat",
-    name: "Freedom Internet 18 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 52000
-  },
-  {
-    id: 310,
-    category: "Indosat",
-    name: "Freedom Internet 20 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 57000
-  },
-  {
-    id: 311,
-    category: "Indosat",
-    name: "Freedom Internet 21 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 76000
-  },
-  {
-    id: 312,
-    category: "Indosat",
-    name: "Freedom Internet 22 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 57000
-  },
-  {
-    id: 313,
-    category: "Indosat",
-    name: "Freedom Internet 23 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 77000
-  },
-  {
-    id: 314,
-    category: "Indosat",
-    name: "Freedom Internet 24 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 64000
-  },
-  {
-    id: 315,
-    category: "Indosat",
-    name: "Freedom Internet 25 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 74000
-  },
-  {
-    id: 316,
-    category: "Indosat",
-    name: "Freedom Internet 28 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 67000
-  },
-  {
-    id: 317,
-    category: "Indosat",
-    name: "Freedom Internet 30 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 63000
-  },
-  {
-    id: 318,
-    category: "Indosat",
-    name: "Freedom Internet 32 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 93000
-  },
-  {
-    id: 319,
-    category: "Indosat",
-    name: "Freedom Internet 33 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 93000
-  },
-  {
-    id: 320,
-    category: "Indosat",
-    name: "Freedom Internet 35 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 74000
-  },
-  {
-    id: 321,
-    category: "Indosat",
-    name: "Freedom Internet 40 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 74000
-  },
-  {
-    id: 322,
-    category: "Indosat",
-    name: "Freedom Internet 42 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 90000
-  },
-  {
-    id: 323,
-    category: "Indosat",
-    name: "Freedom Internet 43 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 92000
-  },
-  {
-    id: 324,
-    category: "Indosat",
-    name: "Freedom Internet 44 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 91000
-  },
-  {
-    id: 325,
-    category: "Indosat",
-    name: "Freedom Internet 45 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 92000
-  },
-  {
-    id: 326,
-    category: "Indosat",
-    name: "Freedom Internet Sensasi 50 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 91000
-  },
-  {
-    id: 327,
-    category: "Indosat",
-    name: "Freedom Internet 52 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 97000
-  },
-  {
-    id: 328,
-    category: "Indosat",
-    name: "Freedom Internet 55 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 92000
-  },
-  {
-    id: 329,
-    category: "Indosat",
-    name: "Freedom Internet 60 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 94000
-  },
-  {
-    id: 330,
-    category: "Indosat",
-    name: "Freedom Internet 62 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 95000
-  },
-  {
-    id: 331,
-    category: "Indosat",
-    name: "Freedom Internet 65 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 92000
-  },
-  {
-    id: 332,
-    category: "Indosat",
-    name: "Freedom Internet 70 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 116000
-  },
-  {
-    id: 333,
-    category: "Indosat",
-    name: "Freedom Internet 80 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 121000
-  },
-  {
-    id: 334,
-    category: "Indosat",
-    name: "Freedom Internet 90 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 141000
-  },
-  {
-    id: 335,
-    category: "Indosat",
-    name: "Freedom Internet Sensasi 100 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 110000
-  },
-  {
-    id: 336,
-    category: "Indosat",
-    name: "Freedom Internet 100 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 121000
-  },
-  {
-    id: 337,
-    category: "Indosat",
-    name: "Freedom Internet 100 GB",
-    desc: "Masa Aktif 90 Hari",
-    price: 247000
-  },
-  {
-    id: 338,
-    category: "Indosat",
-    name: "Freedom Internet 120 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 143000
-  },
-  {
-    id: 339,
-    category: "Indosat",
-    name: "Freedom Internet 125 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 130000
-  },
-  {
-    id: 340,
-    category: "Indosat",
-    name: "Freedom Internet Sensasi 150 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 128000
-  },
-  {
-    id: 341,
-    category: "Indosat",
-    name: "Freedom Internet 150 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 134000
-  },
-  {
-    id: 342,
-    category: "Indosat",
-    name: "Freedom Internet 160 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 177000
-  },
-  {
-    id: 343,
-    category: "Indosat",
-    name: "Freedom Internet 165 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 198000
-  },
-  {
-    id: 344,
-    category: "Indosat",
-    name: "Freedom Internet Sensasi 200 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 174000
-  },
-  {
-    id: 345,
-    category: "Indosat",
-    name: "Freedom Internet 250 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 176000
-  },
-  {
-    id: 346,
-    category: "Indosat",
-    name: "Freedom Internet 300 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 154000
-  },
-  {
-    id: 347,
-    category: "Indosat",
-    name: "Freedom Internet 350 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 204000
-  },
-  {
-    id: 348,
-    category: "Indosat",
-    name: "Freedom Internet 365 GB",
-    desc: "Masa Aktif 360 Hari",
-    price: 622000
-  },
-  {
-    id: 349,
-    category: "Indosat",
-    name: "Freedom Internet 1024 GB",
-    desc: "Masa Aktif 360 Hari",
-    price: 896000
-  },
-  {
-    id: 350,
-    category: "Indosat",
-    name: "Freedom Combo 6 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 33000
-  },
-  {
-    id: 351,
-    category: "Indosat",
-    name: "Freedom Combo 10 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 52000
-  },
-  {
-    id: 352,
-    category: "Indosat",
-    name: "Freedom Combo 16 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 57000
-  },
-  {
-    id: 353,
-    category: "Indosat",
-    name: "Freedom Combo 20 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 76000
-  },
-  {
-    id: 354,
-    category: "Indosat",
-    name: "Freedom Combo 30 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 91000
-  },
-  {
-    id: 401,
-    category: "XL & Axis",
-    name: "Data 1 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 10000
-  },
-  {
-    id: 402,
-    category: "XL & Axis",
-    name: "Data 1.5 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 18000
-  },
-  {
-    id: 403,
-    category: "XL & Axis",
-    name: "Data 2 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 18000
-  },
-  {
-    id: 404,
-    category: "XL & Axis",
-    name: "Data 3 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 24000
-  },
-  {
-    id: 405,
-    category: "XL & Axis",
-    name: "Data 5 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 40000
-  },
-  {
-    id: 406,
-    category: "XL & Axis",
-    name: "Data 7 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 55000
-  },
-  {
-    id: 407,
-    category: "XL & Axis",
-    name: "Data 8 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 62000
-  },
-  {
-    id: 408,
-    category: "XL & Axis",
-    name: "Data 9 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 70000
-  },
-  {
-    id: 409,
-    category: "XL & Axis",
-    name: "Data 10 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 77000
-  },
-  {
-    id: 410,
-    category: "XL & Axis",
-    name: "Data 12 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 55000
-  },
-  {
-    id: 411,
-    category: "XL & Axis",
-    name: "Data 140 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 145000
-  },
-  {
-    id: 412,
-    category: "XL & Axis",
-    name: "OWSEM 1 GB + 1 GB 4G",
-    desc: "Masa Aktif 30 Hari",
-    price: 21000
-  },
-  {
-    id: 413,
-    category: "XL & Axis",
-    name: "OWSEM 1 GB + 3 GB 4G",
-    desc: "Masa Aktif 30 Hari",
-    price: 33000
-  },
-  {
-    id: 414,
-    category: "XL & Axis",
-    name: "OWSEM 2 GB + 6 GB 4G",
-    desc: "Masa Aktif 30 Hari",
-    price: 50000
-  },
-  {
-    id: 415,
-    category: "XL & Axis",
-    name: "OWSEM 3 GB + 9 GB 4G",
-    desc: "Masa Aktif 30 Hari",
-    price: 66000
-  },
-  {
-    id: 416,
-    category: "XL & Axis",
-    name: "OWSEM 16 GB + Unlimited Game",
-    desc: "Masa Aktif 30 Hari",
-    price: 44000
-  },
-  {
-    id: 417,
-    category: "XL & Axis",
-    name: "OWSEM 24 GB + Unlimited Game",
-    desc: "Masa Aktif 30 Hari",
-    price: 45000
-  },
-  {
-    id: 418,
-    category: "XL & Axis",
-    name: "OWSEM 32 GB + Unlimited Game",
-    desc: "Masa Aktif 30 Hari",
-    price: 52000
-  },
-  {
-    id: 419,
-    category: "XL & Axis",
-    name: "OWSEM 40 GB + Unlimited Game",
-    desc: "Masa Aktif 30 Hari",
-    price: 64000
-  },
-  {
-    id: 420,
-    category: "XL & Axis",
-    name: "OWSEM 48 GB + Unlimited Game",
-    desc: "Masa Aktif 30 Hari",
-    price: 65000
-  },
-  {
-    id: 421,
-    category: "XL & Axis",
-    name: "OWSEM 64 GB + Unlimited Game",
-    desc: "Masa Aktif 30 Hari",
-    price: 79000
-  },
-  {
-    id: 422,
-    category: "XL & Axis",
-    name: "OWSEM 80 GB + Unlimited Game",
-    desc: "Masa Aktif 30 Hari",
-    price: 100000
-  },
-  {
-    id: 423,
-    category: "XL & Axis",
-    name: "OWSEM 120 GB + Unlimited Game",
-    desc: "Masa Aktif 30 Hari",
-    price: 97000
-  },
-  {
-    id: 424,
-    category: "XL & Axis",
-    name: "Data BRONET 10 GB",
-    desc: "Masa Aktif 60 Hari",
-    price: 88000
-  },
-  {
-    id: 425,
-    category: "XL & Axis",
-    name: "Data BRONET 12 GB",
-    desc: "Masa Aktif 60 Hari",
-    price: 97000
-  },
-  {
-    id: 426,
-    category: "XL & Axis",
-    name: "Data BRONET 16 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 64000
-  },
-  {
-    id: 427,
-    category: "XL & Axis",
-    name: "Data BRONET 18 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 66000
-  },
-  {
-    id: 428,
-    category: "XL & Axis",
-    name: "Data BRONET 20 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 62000
-  },
-  {
-    id: 429,
-    category: "XL & Axis",
-    name: "Data BRONET 20 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 62000
-  },
-  {
-    id: 430,
-    category: "XL & Axis",
-    name: "Data BRONET 21 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 61000
-  },
-  {
-    id: 431,
-    category: "XL & Axis",
-    name: "Data BRONET 22 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 62000
-  },
-  {
-    id: 432,
-    category: "XL & Axis",
-    name: "Data BRONET 24 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 67000
-  },
-  {
-    id: 433,
-    category: "XL & Axis",
-    name: "Data BRONET 26 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 62000
-  },
-  {
-    id: 434,
-    category: "XL & Axis",
-    name: "Data BRONET 30 GB",
-    desc: "Masa Aktif 14 Hari",
-    price: 65000
-  },
-  {
-    id: 435,
-    category: "XL & Axis",
-    name: "Data BRONET 30 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 76000
-  },
-  {
-    id: 436,
-    category: "XL & Axis",
-    name: "Data BRONET 30 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 81000
-  },
-  {
-    id: 437,
-    category: "XL & Axis",
-    name: "Data BRONET 32 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 75000
-  },
-  {
-    id: 438,
-    category: "XL & Axis",
-    name: "Data BRONET 35 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 76000
-  },
-  {
-    id: 439,
-    category: "XL & Axis",
-    name: "Data BRONET 35 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 101000
-  },
-  {
-    id: 440,
-    category: "XL & Axis",
-    name: "Data BRONET 36 GB",
-    desc: "Masa Aktif 14 Hari",
-    price: 60000
-  },
-  {
-    id: 441,
-    category: "XL & Axis",
-    name: "Data BRONET 40 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 94000
-  },
-  {
-    id: 442,
-    category: "XL & Axis",
-    name: "Data BRONET 5G 40 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 104000
-  },
-  {
-    id: 443,
-    category: "XL & Axis",
-    name: "Data BRONET 48 GB",
-    desc: "Masa Aktif 14 Hari",
-    price: 70000
-  },
-  {
-    id: 444,
-    category: "XL & Axis",
-    name: "Data BRONET 60 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 98000
-  },
-  {
-    id: 445,
-    category: "XL & Axis",
-    name: "Data BRONET 65 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 98000
-  },
-  {
-    id: 446,
-    category: "XL & Axis",
-    name: "Xtra Combo 2+4 GB (6 GB)",
-    desc: "Masa Aktif 30 Hari",
-    price: 33000
-  },
-  {
-    id: 447,
-    category: "XL & Axis",
-    name: "Xtra Combo Special 14 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 50000
-  },
-  {
-    id: 448,
-    category: "XL & Axis",
-    name: "Xtra Combo 5+10 GB (15 GB)",
-    desc: "Masa Aktif 30 Hari",
-    price: 61000
-  },
-  {
-    id: 449,
-    category: "XL & Axis",
-    name: "Xtra Combo VIP 5+10 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 70000
-  },
-  {
-    id: 450,
-    category: "XL & Axis",
-    name: "Xtra Combo 10+20 GB (30 GB)",
-    desc: "Masa Aktif 28 Hari",
-    price: 90000
-  },
-  {
-    id: 451,
-    category: "XL & Axis",
-    name: "Xtra Combo VIP 10+20 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 99000
-  },
-  {
-    id: 452,
-    category: "XL & Axis",
-    name: "Xtra Combo 15+30 GB (45 GB)",
-    desc: "Masa Aktif 28 Hari",
-    price: 126000
-  },
-  {
-    id: 453,
-    category: "XL & Axis",
-    name: "Xtra Combo VIP 15+30 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 131000
-  },
-  {
-    id: 454,
-    category: "XL & Axis",
-    name: "Xtra Combo 20+40 GB (60 GB)",
-    desc: "Masa Aktif 30 Hari",
-    price: 175000
-  },
-  {
-    id: 455,
-    category: "XL & Axis",
-    name: "Xtra Combo VIP 20+40 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 176000
-  },
-  {
-    id: 456,
-    category: "XL & Axis",
-    name: "Xtra Combo 35+70 GB (105 GB)",
-    desc: "Masa Aktif 28 Hari",
-    price: 232000
-  },
-  {
-    id: 457,
-    category: "XL & Axis",
-    name: "Data Combo FLEX 7 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 34000
-  },
-  {
-    id: 458,
-    category: "XL & Axis",
-    name: "Data Combo FLEX 13 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 48000
-  },
-  {
-    id: 459,
-    category: "XL & Axis",
-    name: "Data Combo FLEX 19 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 57000
-  },
-  {
-    id: 460,
-    category: "XL & Axis",
-    name: "Data Combo FLEX 26 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 65000
-  },
-  {
-    id: 461,
-    category: "XL & Axis",
-    name: "Data Combo FLEX 34 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 76000
-  },
-  {
-    id: 462,
-    category: "XL & Axis",
-    name: "Combo FLEX S 4GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 14 Hari",
-    price: 27000
-  },
-  {
-    id: 463,
-    category: "XL & Axis",
-    name: "Combo FLEX S 3.5GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 21 Hari",
-    price: 31000
-  },
-  {
-    id: 464,
-    category: "XL & Axis",
-    name: "Combo FLEX S 3.5GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 28 Hari",
-    price: 36000
-  },
-  {
-    id: 465,
-    category: "XL & Axis",
-    name: "Combo FLEX S 7GB NAS",
-    desc: "Masa Aktif 28 Hari",
-    price: 36000
-  },
-  {
-    id: 466,
-    category: "XL & Axis",
-    name: "Combo FLEX S 7GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 28 Hari",
-    price: 37000
-  },
-  {
-    id: 467,
-    category: "XL & Axis",
-    name: "Combo FLEX M 10GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 28 Hari",
-    price: 53000
-  },
-  {
-    id: 468,
-    category: "XL & Axis",
-    name: "Combo FLEX M+ 14GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 28 Hari",
-    price: 63000
-  },
-  {
-    id: 469,
-    category: "XL & Axis",
-    name: "Combo FLEX L 18GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 28 Hari",
-    price: 71000
-  },
-  {
-    id: 470,
-    category: "XL & Axis",
-    name: "Combo FLEX L+ 26GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 28 Hari",
-    price: 87000
-  },
-  {
-    id: 471,
-    category: "XL & Axis",
-    name: "Combo FLEX XL 32GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 21 Hari",
-    price: 108000
-  },
-  {
-    id: 472,
-    category: "XL & Axis",
-    name: "Combo FLEX XL 32GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 28 Hari",
-    price: 108000
-  },
-  {
-    id: 473,
-    category: "XL & Axis",
-    name: "Combo FLEX Max 55GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 28 Hari",
-    price: 145000
-  },
-  {
-    id: 474,
-    category: "XL & Axis",
-    name: "Combo FLEX XXXL 120GB NAS + Local + 5Mnt Nelp All",
-    desc: "Masa Aktif 28 Hari",
-    price: 167000
-  },
-  {
-    id: 475,
-    category: "XL & Axis",
-    name: "Data FlexMax 7 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 36000
-  },
-  {
-    id: 476,
-    category: "XL & Axis",
-    name: "Data FlexMax 16 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 48500
-  },
-  {
-    id: 477,
-    category: "XL & Axis",
-    name: "Data FlexMax 23 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 58000
-  },
-  {
-    id: 478,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 33 GB",
-    desc: "Masa Aktif 14 Hari",
-    price: 64000
-  },
-  {
-    id: 479,
-    category: "XL & Axis",
-    name: "Data FlexMax 31 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 64000
-  },
-  {
-    id: 480,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 75 GB",
-    desc: "Masa Aktif 14 Hari",
-    price: 73500
-  },
-  {
-    id: 481,
-    category: "XL & Axis",
-    name: "Data FlexMax 40 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 74500
-  },
-  {
-    id: 482,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 50 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 85000
-  },
-  {
-    id: 483,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 65 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 93000
-  },
-  {
-    id: 484,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 60 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 95000
-  },
-  {
-    id: 485,
-    category: "XL & Axis",
-    name: "Data FlexMax 100 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 119000
-  },
-  {
-    id: 486,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 80 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 119000
-  },
-  {
-    id: 487,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 72 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 120500
-  },
-  {
-    id: 488,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 150 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 142000
-  },
-  {
-    id: 489,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 250 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 192000
-  },
-  {
-    id: 490,
-    category: "XL & Axis",
-    name: "XL Data FlexMax 500 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 289000
-  },
-  {
-    id: 491,
-    category: "XL & Axis",
-    name: "AKRAB Super Mini",
-    desc: "13 - 32 GB",
-    price: 51000
-  },
-  {
-    id: 492,
-    category: "XL & Axis",
-    name: "AKRAB Mini",
-    desc: "32 - 51 GB",
-    price: 65000
-  },
-  {
-    id: 493,
-    category: "XL & Axis",
-    name: "AKRAB Big",
-    desc: "38 - 57 GB",
-    price: 70000
-  },
-  {
-    id: 494,
-    category: "XL & Axis",
-    name: "AKRAB Jumbo V2",
-    desc: "50 - 69 GB",
-    price: 79000
-  },
-  {
-    id: 495,
-    category: "XL & Axis",
-    name: "AKRAB Jumbo New",
-    desc: "63 - 82 GB",
-    price: 88000
-  },
-  {
-    id: 496,
-    category: "XL & Axis",
-    name: "AKRAB Jumbo M",
-    desc: "69 - 88 GB",
-    price: 93000
-  },
-  {
-    id: 497,
-    category: "XL & Axis",
-    name: "AKRAB Megabig",
-    desc: "88 - 107 GB",
-    price: 107000
-  },
-  {
-    id: 501,
-    category: "Smartfren",
-    name: "Data 10 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 44000
-  },
-  {
-    id: 502,
-    category: "Smartfren",
-    name: "Data 14 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 44000
-  },
-  {
-    id: 503,
-    category: "Smartfren",
-    name: "Data 16 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 48000
-  },
-  {
-    id: 504,
-    category: "Smartfren",
-    name: "Data 19 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 96000
-  },
-  {
-    id: 505,
-    category: "Smartfren",
-    name: "Data 30 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 76000
-  },
-  {
-    id: 506,
-    category: "Smartfren",
-    name: "Data 32 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 77000
-  },
-  {
-    id: 507,
-    category: "Smartfren",
-    name: "Data 40 GB",
-    desc: "Masa Aktif 14 Hari",
-    price: 66000
-  },
-  {
-    id: 508,
-    category: "Smartfren",
-    name: "Data 50 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 102000
-  },
-  {
-    id: 509,
-    category: "Smartfren",
-    name: "Data 66 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 104000
-  },
-  {
-    id: 510,
-    category: "Smartfren",
-    name: "Data 100 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 124000
-  },
-  {
-    id: 511,
-    category: "Smartfren",
-    name: "Data Unlimited Harian 500 MB",
-    desc: "Masa Aktif 28 Hari",
-    price: 82000
-  },
-  {
-    id: 512,
-    category: "Smartfren",
-    name: "Data Unlimited Harian 1 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 83000
-  },
-  {
-    id: 513,
-    category: "Smartfren",
-    name: "Data Unlimited Harian 2 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 94000
-  },
-  {
-    id: 514,
-    category: "Smartfren",
-    name: "Data Unlimited Harian 2 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 94000
-  },
-  {
-    id: 515,
-    category: "Smartfren",
-    name: "Data Unlimited Harian 3 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 120000
-  },
-  {
-    id: 516,
-    category: "Smartfren",
-    name: "Data Unlimited Harian 3 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 125000
-  },
-  {
-    id: 517,
-    category: "Smartfren",
-    name: "Data Unlimited Harian 4 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 145000
-  },
-  {
-    id: 518,
-    category: "Smartfren",
-    name: "Data Unlimited Harian 4 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 174000
-  },
-  {
-    id: 519,
-    category: "Smartfren",
-    name: "Data Unlimited Harian 5 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 198000
-  },
-  {
-    id: 520,
-    category: "Smartfren",
-    name: "Data Nonton 4GB + Utama 6GB + Viu",
-    desc: "Masa Aktif 30 Hari",
-    price: 51000
-  },
-  {
-    id: 521,
-    category: "Smartfren",
-    name: "Data Kuota 7 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 35000
-  },
-  {
-    id: 522,
-    category: "Smartfren",
-    name: "Data Kuota 17 GB",
-    desc: "Masa Aktif 14 Hari",
-    price: 40000
-  },
-  {
-    id: 523,
-    category: "Smartfren",
-    name: "Data Kuota 18 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 41000
-  },
-  {
-    id: 524,
-    category: "Smartfren",
-    name: "Data Kuota 25 GB",
-    desc: "Masa Aktif 7 Hari",
-    price: 42000
-  },
-  {
-    id: 525,
-    category: "Smartfren",
-    name: "Data Kuota 40 GB",
-    desc: "Masa Aktif 14 Hari",
-    price: 66000
-  },
-  {
-    id: 526,
-    category: "Smartfren",
-    name: "Data Kuota 50 GB",
-    desc: "Masa Aktif 14 Hari",
-    price: 66000
-  },
-  {
-    id: 527,
-    category: "Smartfren",
-    name: "Data Kuota 50 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 100000
-  },
-  {
-    id: 528,
-    category: "Smartfren",
-    name: "Data Kuota 57 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 104000
-  },
-  {
-    id: 529,
-    category: "Smartfren",
-    name: "Data Kuota 66 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 102000
-  },
-  {
-    id: 530,
-    category: "Smartfren",
-    name: "Data Kuota 100 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 110000
-  },
-  {
-    id: 531,
-    category: "Smartfren",
-    name: "Data Kuota 150 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 143000
-  },
-  {
-    id: 532,
-    category: "Smartfren",
-    name: "Data Kuota 5G 175 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 177000
-  },
-  {
-    id: 533,
-    category: "Smartfren",
-    name: "Data Kuota 200 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 201000
-  },
-  {
-    id: 534,
-    category: "Smartfren",
-    name: "Data Kuota 200 GB",
-    desc: "Masa Aktif 30 Hari",
-    price: 196000
-  },
-  {
-    id: 535,
-    category: "Smartfren",
-    name: "Data Kuota 250 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 194000
-  },
-  {
-    id: 536,
-    category: "Smartfren",
-    name: "Data Kuota 5G 250 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 252000
-  },
-  {
-    id: 537,
-    category: "Smartfren",
-    name: "Data Kuota 300 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 261000
-  },
-  {
-    id: 538,
-    category: "Smartfren",
-    name: "Data Kuota 5G 350 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 351000
-  },
-  {
-    id: 539,
-    category: "Smartfren",
-    name: "Data Kuota 500 GB",
-    desc: "Masa Aktif 28 Hari",
-    price: 400000
-  },
-  {
-    id: 540,
-    category: "Smartfren",
-    name: "Data Kuota M (14 GB)",
-    desc: "Masa Aktif 30 Hari",
-    price: 46000
-  },
-  {
-    id: 541,
-    category: "Smartfren",
-    name: "Data Kuota L (24 GB)",
-    desc: "Masa Aktif 30 Hari",
-    price: 65000
-  },
-  {
-    id: 542,
-    category: "Smartfren",
-    name: "Data Kuota 2L (45 GB)",
-    desc: "Masa Aktif 30 Hari",
-    price: 86000
-  },
-  {
-    id: 543,
-    category: "Smartfren",
-    name: "Data Kuota 3L (85 GB)",
-    desc: "Masa Aktif 30 Hari",
-    price: 132000
-  },
-  {
-    id: 544,
-    category: "Smartfren",
-    name: "Data Kuota 4L (125 GB)",
-    desc: "Masa Aktif 30 Hari",
-    price: 141000
-  },
-  {
-    id: 601,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 15 Hari",
-    desc: "Telkomsel",
-    price: 8000
-  },
-  {
-    id: 602,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 30 Hari",
-    desc: "Telkomsel",
-    price: 15000
-  },
-  {
-    id: 603,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 90 Hari",
-    desc: "Telkomsel",
-    price: 40000
-  },
-  {
-    id: 604,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 180 Hari",
-    desc: "Telkomsel",
-    price: 65000
-  },
-  {
-    id: 605,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif Setahun",
-    desc: "Telkomsel",
-    price: 130000
-  },
-  {
-    id: 606,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 15 Hari",
-    desc: "Indosat",
-    price: 7000
-  },
-  {
-    id: 607,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 30 Hari",
-    desc: "Indosat",
-    price: 15000
-  },
-  {
-    id: 608,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 90 Hari",
-    desc: "Indosat",
-    price: 40000
-  },
-  {
-    id: 609,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 180 Hari",
-    desc: "Indosat",
-    price: 70000
-  },
-  {
-    id: 610,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif Setahun",
-    desc: "Indosat",
-    price: 130000
-  },
-  {
-    id: 611,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 4 Bulan",
-    desc: "Tri",
-    price: 30000
-  },
-  {
-    id: 612,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 12 Bulan",
-    desc: "Tri",
-    price: 130000
-  },
-  {
-    id: 613,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 30 Hari",
-    desc: "Axis",
-    price: 15000
-  },
-  {
-    id: 614,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 90 Hari",
-    desc: "Axis",
-    price: 40000
-  },
-  {
-    id: 615,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 180 Hari",
-    desc: "Axis",
-    price: 70000
-  },
-  {
-    id: 616,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif Setahun",
-    desc: "Axis",
-    price: 130000
-  },
-  {
-    id: 617,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 14 Hari",
-    desc: "XL",
-    price: 8000
-  },
-  {
-    id: 618,
-    category: "MasaAktif",
-    name: "Tambah Masa Aktif 30 Hari",
-    desc: "XL",
-    price: 15000
+interface RawProductPreset {
+  id: string;
+  code: string;
+  name: string;
+  operator: OperatorName;
+  packageCategory: PackageCategory;
+  category: string;
+  costPrice: number;
+  validity: string;
+  quota: string;
+  desc: string;
+  stock: number;
+  isAvailable?: boolean;
+  isPopular?: boolean;
+}
+
+// Data produk yang 100% TERSEDIA dan AKTIF di server pusat (service.ruang-kuota.my.id)
+// Seluruh produk dengan stok 0 telah dihapus.
+const rawPresets: RawProductPreset[] = [
+  {
+    "id": "V5-1",
+    "code": "V5",
+    "name": "V5",
+    "operator": "XL",
+    "packageCategory": "Combo",
+    "category": "AKRAB_V1",
+    "costPrice": 60000,
+    "validity": "28 - 30 Hari",
+    "quota": "Kuota Data",
+    "desc": "Kuota Data resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 2,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "V2-2",
+    "code": "V2",
+    "name": "V2",
+    "operator": "XL",
+    "packageCategory": "Combo",
+    "category": "AKRAB_V1",
+    "costPrice": 65000,
+    "validity": "28 - 30 Hari",
+    "quota": "Kuota Data",
+    "desc": "Kuota Data resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 7,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "V4-3",
+    "code": "V4",
+    "name": "V4",
+    "operator": "XL",
+    "packageCategory": "Combo",
+    "category": "AKRAB_V1",
+    "costPrice": 56000,
+    "validity": "28 - 30 Hari",
+    "quota": "Kuota Data",
+    "desc": "Kuota Data resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 9,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FMX7-4",
+    "code": "FMX7",
+    "name": "Flex Max 7GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 37000,
+    "validity": "28 Hari",
+    "quota": "7GB",
+    "desc": "7GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FMX10-5",
+    "code": "FMX10",
+    "name": "Flex Max 10GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 45000,
+    "validity": "28 Hari",
+    "quota": "10GB",
+    "desc": "10GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FMX15-6",
+    "code": "FMX15",
+    "name": "Flex Max 15GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 50000,
+    "validity": "28 Hari",
+    "quota": "15GB",
+    "desc": "15GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FMX22-7",
+    "code": "FMX22",
+    "name": "Flex Max 22GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 60000,
+    "validity": "28 Hari",
+    "quota": "22GB",
+    "desc": "22GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FMX28-8",
+    "code": "FMX28",
+    "name": "Flex Max 28GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 70000,
+    "validity": "28 Hari",
+    "quota": "28GB",
+    "desc": "28GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FMX36-9",
+    "code": "FMX36",
+    "name": "Flex Max 36GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 80000,
+    "validity": "28 Hari",
+    "quota": "36GB",
+    "desc": "36GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FMX46-10",
+    "code": "FMX46",
+    "name": "Flex Max 46GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 90000,
+    "validity": "28 Hari",
+    "quota": "46GB",
+    "desc": "46GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FMX65-11",
+    "code": "FMX65",
+    "name": "Flex Max 65GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 100000,
+    "validity": "28 Hari",
+    "quota": "65GB",
+    "desc": "65GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FMX100-12",
+    "code": "FMX100",
+    "name": "Flex Max 100GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 125000,
+    "validity": "28 Hari",
+    "quota": "100GB",
+    "desc": "100GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FMX150-13",
+    "code": "FMX150",
+    "name": "Flex Max 150GB, 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 150000,
+    "validity": "28 Hari",
+    "quota": "150GB",
+    "desc": "150GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FMX400-14",
+    "code": "FMX400",
+    "name": "Flex Max 400GB + 400GB (5G), 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 200000,
+    "validity": "28 Hari",
+    "quota": "400GB",
+    "desc": "400GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FMX600-15",
+    "code": "FMX600",
+    "name": "Flex Max 600GB + 600GB (5G), 28 Hari",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "FLEX",
+    "costPrice": 300000,
+    "validity": "28 Hari",
+    "quota": "600GB",
+    "desc": "600GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "AX1-16",
+    "code": "AX1",
+    "name": "AXIS 1GB, 5 Hari",
+    "operator": "Axis",
+    "packageCategory": "Harian",
+    "category": "AXIS",
+    "costPrice": 6000,
+    "validity": "5 Hari",
+    "quota": "1GB",
+    "desc": "1GB resmi server pusat. Masa aktif 5 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "AX2-17",
+    "code": "AX2",
+    "name": "AXIS 2GB, 5 Hari",
+    "operator": "Axis",
+    "packageCategory": "Harian",
+    "category": "AXIS",
+    "costPrice": 7000,
+    "validity": "5 Hari",
+    "quota": "2GB",
+    "desc": "2GB resmi server pusat. Masa aktif 5 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "AX3-18",
+    "code": "AX3",
+    "name": "AXIS 3GB, 5 Hari",
+    "operator": "Axis",
+    "packageCategory": "Harian",
+    "category": "AXIS",
+    "costPrice": 9000,
+    "validity": "5 Hari",
+    "quota": "3GB",
+    "desc": "3GB resmi server pusat. Masa aktif 5 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "MAX30-19",
+    "code": "MAX30",
+    "name": "Masa Aktif XL 30 Hari",
+    "operator": "XL",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_XL",
+    "costPrice": 7000,
+    "validity": "30 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "MAI30-20",
+    "code": "MAI30",
+    "name": "Masa Aktif Indosat 30 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 10000,
+    "validity": "30 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "8gbim3-21",
+    "code": "8gbim3",
+    "name": "Freedom Internet 8GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 35000,
+    "validity": "28 Hari",
+    "quota": "8GB",
+    "desc": "8GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "MAI90-22",
+    "code": "MAI90",
+    "name": "Masa Aktif Indosat 90 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 35000,
+    "validity": "90 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 90 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "16gbim3-23",
+    "code": "16gbim3",
+    "name": "Freedom Internet 16GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 49000,
+    "validity": "28 Hari",
+    "quota": "16GB",
+    "desc": "16GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "18gbim3-24",
+    "code": "18gbim3",
+    "name": "Freedom Internet 18GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 55000,
+    "validity": "28 Hari",
+    "quota": "18GB",
+    "desc": "18GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "22gbim3-25",
+    "code": "22gbim3",
+    "name": "Freedom Internet 22GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 58000,
+    "validity": "28 Hari",
+    "quota": "22GB",
+    "desc": "22GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "MAI180-26",
+    "code": "MAI180",
+    "name": "Masa Aktif Indosat 180 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 60000,
+    "validity": "180 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 180 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "28gbim3-27",
+    "code": "28gbim3",
+    "name": "Freedom Internet 28GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 67000,
+    "validity": "28 Hari",
+    "quota": "28GB",
+    "desc": "28GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "36gbim3-28",
+    "code": "36gbim3",
+    "name": "Freedom Internet 36GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 76000,
+    "validity": "28 Hari",
+    "quota": "36GB",
+    "desc": "36GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "50gbim3-29",
+    "code": "50gbim3",
+    "name": "Freedom Internet 50GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 90000,
+    "validity": "28 Hari",
+    "quota": "50GB",
+    "desc": "50GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "70gbim3-30",
+    "code": "70gbim3",
+    "name": "Freedom Internet 70GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 97000,
+    "validity": "28 Hari",
+    "quota": "70GB",
+    "desc": "70GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "MAI360-31",
+    "code": "MAI360",
+    "name": "Masa Aktif Indosat 360 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 107000,
+    "validity": "360 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 360 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "100gbim3-32",
+    "code": "100gbim3",
+    "name": "Freedom Internet 100GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 112000,
+    "validity": "28 Hari",
+    "quota": "100GB",
+    "desc": "100GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "150gbim3-33",
+    "code": "150gbim3",
+    "name": "Freedom Internet 150GB, 28 Hari",
+    "operator": "Indosat",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_INDOSAT",
+    "costPrice": 130000,
+    "validity": "28 Hari",
+    "quota": "150GB",
+    "desc": "150GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "MAT30-34",
+    "code": "MAT30",
+    "name": "Masa Aktif Telkomsel 30 Hari",
+    "operator": "Telkomsel",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_TELKOMSEL",
+    "costPrice": 15000,
+    "validity": "30 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "MAT90-35",
+    "code": "MAT90",
+    "name": "Masa Aktif Telkomsel 90 Hari",
+    "operator": "Telkomsel",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_TELKOMSEL",
+    "costPrice": 35000,
+    "validity": "90 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 90 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "MAT180-36",
+    "code": "MAT180",
+    "name": "Masa Aktif Telkomsel 180 Hari",
+    "operator": "Telkomsel",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_TELKOMSEL",
+    "costPrice": 60000,
+    "validity": "180 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 180 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "MAT360-37",
+    "code": "MAT360",
+    "name": "Masa Aktif Telkomsel 360 Hari",
+    "operator": "Telkomsel",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_TELKOMSEL",
+    "costPrice": 115000,
+    "validity": "360 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 360 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "MAR4B-38",
+    "code": "MAR4B",
+    "name": "Masa Aktif Tri 4 Bulan",
+    "operator": "Tri",
+    "packageCategory": "Masa Aktif",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 30000,
+    "validity": "120 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 120 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "7gbTri-39",
+    "code": "7gbTri",
+    "name": "Tri Data Happy 7GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 34000,
+    "validity": "28 Hari",
+    "quota": "7GB",
+    "desc": "7GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "10gbTri-40",
+    "code": "10gbTri",
+    "name": "Tri Data Happy 10GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 38000,
+    "validity": "28 Hari",
+    "quota": "10GB",
+    "desc": "10GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "15gbTri-41",
+    "code": "15gbTri",
+    "name": "Tri Data Happy 15GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 49000,
+    "validity": "28 Hari",
+    "quota": "15GB",
+    "desc": "15GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "22gbTri-42",
+    "code": "22gbTri",
+    "name": "Tri Data Happy 22GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 58000,
+    "validity": "28 Hari",
+    "quota": "22GB",
+    "desc": "22GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "28gbTri-43",
+    "code": "28gbTri",
+    "name": "Tri Data Happy 28GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 68000,
+    "validity": "28 Hari",
+    "quota": "28GB",
+    "desc": "28GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "36gbTri-44",
+    "code": "36gbTri",
+    "name": "Tri Data Happy 36GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 76000,
+    "validity": "28 Hari",
+    "quota": "36GB",
+    "desc": "36GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "45gbTri-45",
+    "code": "45gbTri",
+    "name": "Tri Data Happy 45GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 85000,
+    "validity": "28 Hari",
+    "quota": "45GB",
+    "desc": "45GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "50gbTri-46",
+    "code": "50gbTri",
+    "name": "Tri Data Happy 50GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 87000,
+    "validity": "28 Hari",
+    "quota": "50GB",
+    "desc": "50GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "65gbTri-47",
+    "code": "65gbTri",
+    "name": "Tri Data Happy 65GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 92000,
+    "validity": "28 Hari",
+    "quota": "65GB",
+    "desc": "65GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "100gbTri-48",
+    "code": "100gbTri",
+    "name": "Tri Data Happy 100GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 110000,
+    "validity": "28 Hari",
+    "quota": "100GB",
+    "desc": "100GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "150gbTri-49",
+    "code": "150gbTri",
+    "name": "Tri Data Happy 150GB, 28 Hari",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "MASA_AKTIF_TRI",
+    "costPrice": 125000,
+    "validity": "28 Hari",
+    "quota": "150GB",
+    "desc": "150GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "PLN5-50",
+    "code": "PLN5",
+    "name": "PLN 5.000",
+    "operator": "PLN",
+    "packageCategory": "Bulanan",
+    "category": "PLN",
+    "costPrice": 8000,
+    "validity": "28 - 30 Hari",
+    "quota": "Token Listrik",
+    "desc": "Token Listrik resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "Pln10-51",
+    "code": "Pln10",
+    "name": "PLN 10.000",
+    "operator": "PLN",
+    "packageCategory": "Bulanan",
+    "category": "PLN",
+    "costPrice": 12500,
+    "validity": "28 - 30 Hari",
+    "quota": "Token Listrik",
+    "desc": "Token Listrik resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "PLN15-52",
+    "code": "PLN15",
+    "name": "PLN 15.000",
+    "operator": "PLN",
+    "packageCategory": "Bulanan",
+    "category": "PLN",
+    "costPrice": 17500,
+    "validity": "28 - 30 Hari",
+    "quota": "Token Listrik",
+    "desc": "Token Listrik resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "PLN20-53",
+    "code": "PLN20",
+    "name": "PLN 20.000",
+    "operator": "PLN",
+    "packageCategory": "Bulanan",
+    "category": "PLN",
+    "costPrice": 23000,
+    "validity": "28 - 30 Hari",
+    "quota": "Token Listrik",
+    "desc": "Token Listrik resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "PLN25-54",
+    "code": "PLN25",
+    "name": "PLN 25.000",
+    "operator": "PLN",
+    "packageCategory": "Bulanan",
+    "category": "PLN",
+    "costPrice": 28000,
+    "validity": "28 - 30 Hari",
+    "quota": "Token Listrik",
+    "desc": "Token Listrik resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "PLN50-55",
+    "code": "PLN50",
+    "name": "PLN 50.000",
+    "operator": "PLN",
+    "packageCategory": "Bulanan",
+    "category": "PLN",
+    "costPrice": 53000,
+    "validity": "28 - 30 Hari",
+    "quota": "Token Listrik",
+    "desc": "Token Listrik resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "PLN100-56",
+    "code": "PLN100",
+    "name": "PLN 100.000",
+    "operator": "PLN",
+    "packageCategory": "Bulanan",
+    "category": "PLN",
+    "costPrice": 103000,
+    "validity": "28 - 30 Hari",
+    "quota": "Token Listrik",
+    "desc": "Token Listrik resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "PLN200-57",
+    "code": "PLN200",
+    "name": "PLN 200.000",
+    "operator": "PLN",
+    "packageCategory": "Bulanan",
+    "category": "PLN",
+    "costPrice": 203000,
+    "validity": "28 - 30 Hari",
+    "quota": "Token Listrik",
+    "desc": "Token Listrik resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "PLN500-58",
+    "code": "PLN500",
+    "name": "PLN 500.000",
+    "operator": "PLN",
+    "packageCategory": "Bulanan",
+    "category": "PLN",
+    "costPrice": 503000,
+    "validity": "28 - 30 Hari",
+    "quota": "Token Listrik",
+    "desc": "Token Listrik resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KI1-59",
+    "code": "KI1",
+    "name": "KUOTA INSTAGRAM 500mb 1 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 500,
+    "validity": "1 Hari",
+    "quota": "500MB",
+    "desc": "500MB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD0-60",
+    "code": "KD0",
+    "name": "100mb 1 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 700,
+    "validity": "1 Hari",
+    "quota": "100MB",
+    "desc": "100MB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD1-61",
+    "code": "KD1",
+    "name": "500mb 1 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 1000,
+    "validity": "1 Hari",
+    "quota": "500MB",
+    "desc": "500MB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KI2-62",
+    "code": "KI2",
+    "name": "KUOTA INSTAGRAM 1gb 1 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 1000,
+    "validity": "1 Hari",
+    "quota": "1GB",
+    "desc": "1GB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KI3-63",
+    "code": "KI3",
+    "name": "KUOTA INSTAGRAM 2gb 1 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 1300,
+    "validity": "1 Hari",
+    "quota": "2GB",
+    "desc": "2GB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD2-64",
+    "code": "KD2",
+    "name": "1gb 1 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 2000,
+    "validity": "1 Hari",
+    "quota": "1GB",
+    "desc": "1GB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD5-65",
+    "code": "KD5",
+    "name": "1.5gb 1 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 3000,
+    "validity": "1 Hari",
+    "quota": "1.5GB",
+    "desc": "1.5GB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD01-66",
+    "code": "KD01",
+    "name": "2gb 1 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 3800,
+    "validity": "1 Hari",
+    "quota": "2GB",
+    "desc": "2GB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD00-67",
+    "code": "KD00",
+    "name": "2gb (1gb/Hari selama 2 Hari)",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 3900,
+    "validity": "2 Hari",
+    "quota": "2GB",
+    "desc": "2GB resmi server pusat. Masa aktif 2 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KI4-68",
+    "code": "KI4",
+    "name": "KUOTA INSTAGRAM 6gb (2gb/Hari selama 3 Hari)",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 4000,
+    "validity": "3 Hari",
+    "quota": "6GB",
+    "desc": "6GB resmi server pusat. Masa aktif 3 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD6-69",
+    "code": "KD6",
+    "name": "4.5gb (1.5gb/Hari selama 3 Hari)",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 6000,
+    "validity": "3 Hari",
+    "quota": "4.5GB",
+    "desc": "4.5GB resmi server pusat. Masa aktif 3 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD9-70",
+    "code": "KD9",
+    "name": "6gb (2gb/Hari selama 3 Hari)",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 8000,
+    "validity": "3 Hari",
+    "quota": "6GB",
+    "desc": "6GB resmi server pusat. Masa aktif 3 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD7-71",
+    "code": "KD7",
+    "name": "7.5gb (1.5gb/Hari selama 5 Hari)",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 11000,
+    "validity": "5 Hari",
+    "quota": "7.5GB",
+    "desc": "7.5GB resmi server pusat. Masa aktif 5 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD10-72",
+    "code": "KD10",
+    "name": "10gb (2gb/Hari selama 5 Hari)",
+    "operator": "Lainnya",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 13500,
+    "validity": "5 Hari",
+    "quota": "10GB",
+    "desc": "10GB resmi server pusat. Masa aktif 5 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD8-73",
+    "code": "KD8",
+    "name": "10.5gb (1.5gb/Hari selama 7 Hari)",
+    "operator": "Lainnya",
+    "packageCategory": "Mingguan",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 15000,
+    "validity": "7 Hari",
+    "quota": "10.5GB",
+    "desc": "10.5GB resmi server pusat. Masa aktif 7 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "KD11-74",
+    "code": "KD11",
+    "name": "14gb (2gb/Hari selama 7 Hari)",
+    "operator": "Lainnya",
+    "packageCategory": "Mingguan",
+    "category": "LAINNYA_CAT_27",
+    "costPrice": 16500,
+    "validity": "7 Hari",
+    "quota": "14GB",
+    "desc": "14GB resmi server pusat. Masa aktif 7 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "50gbTri-75",
+    "code": "50gbTri",
+    "name": "50gbTri",
+    "operator": "Tri",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_26",
+    "costPrice": 87000,
+    "validity": "28 - 30 Hari",
+    "quota": "50GB",
+    "desc": "50GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FXMINI10GB1-76",
+    "code": "FXMINI10GB1",
+    "name": "FLEXMINI 10GB, 1 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 11500,
+    "validity": "1 Hari",
+    "quota": "10GB",
+    "desc": "10GB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI12GB1-77",
+    "code": "FXMINI12GB1",
+    "name": "FLEXMINI 12GB, 1 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 13500,
+    "validity": "1 Hari",
+    "quota": "12GB",
+    "desc": "12GB resmi server pusat. Masa aktif 1 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI6GB2-78",
+    "code": "FXMINI6GB2",
+    "name": "FLEXMINI 6.5GB, 2 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 14000,
+    "validity": "2 Hari",
+    "quota": "6.5GB",
+    "desc": "6.5GB resmi server pusat. Masa aktif 2 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI6GB3-79",
+    "code": "FXMINI6GB3",
+    "name": "FLEXMINI 6.5GB, 3 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 16000,
+    "validity": "3 Hari",
+    "quota": "6.5GB",
+    "desc": "6.5GB resmi server pusat. Masa aktif 3 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI15GB2-80",
+    "code": "FXMINI15GB2",
+    "name": "FLEXMINI 15GB, 2 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 17000,
+    "validity": "2 Hari",
+    "quota": "15GB",
+    "desc": "15GB resmi server pusat. Masa aktif 2 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI7GB5-81",
+    "code": "FXMINI7GB5",
+    "name": "FLEXMINI 7GB, 5 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 18500,
+    "validity": "5 Hari",
+    "quota": "7GB",
+    "desc": "7GB resmi server pusat. Masa aktif 5 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI10GB3-82",
+    "code": "FXMINI10GB3",
+    "name": "FLEXMINI 10GB, 3 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 18500,
+    "validity": "3 Hari",
+    "quota": "10GB",
+    "desc": "10GB resmi server pusat. Masa aktif 3 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI10GB5-83",
+    "code": "FXMINI10GB5",
+    "name": "FLEXMINI 10GB, 5 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 21500,
+    "validity": "5 Hari",
+    "quota": "10GB",
+    "desc": "10GB resmi server pusat. Masa aktif 5 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI7GB7-84",
+    "code": "FXMINI7GB7",
+    "name": "FLEXMINI 7.5GB, 7 H",
+    "operator": "XL",
+    "packageCategory": "Mingguan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 22500,
+    "validity": "7 Hari",
+    "quota": "7.5GB",
+    "desc": "7.5GB resmi server pusat. Masa aktif 7 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI20GB3-85",
+    "code": "FXMINI20GB3",
+    "name": "FLEXMINI 20GB, 3 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 24000,
+    "validity": "3 Hari",
+    "quota": "20GB",
+    "desc": "20GB resmi server pusat. Masa aktif 3 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI7GB10-86",
+    "code": "FXMINI7GB10",
+    "name": "FLEXMINI 7GB, 10 H",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 25000,
+    "validity": "28 - 30 Hari",
+    "quota": "7GB",
+    "desc": "7GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI6GB14-87",
+    "code": "FXMINI6GB14",
+    "name": "FLEXMINI 6.5GB, 14 H",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 27500,
+    "validity": "28 - 30 Hari",
+    "quota": "6.5GB",
+    "desc": "6.5GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI14GB7-88",
+    "code": "FXMINI14GB7",
+    "name": "FLEXMINI 14GB, 7 H",
+    "operator": "XL",
+    "packageCategory": "Mingguan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 28500,
+    "validity": "7 Hari",
+    "quota": "14GB",
+    "desc": "14GB resmi server pusat. Masa aktif 7 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI30GB3-89",
+    "code": "FXMINI30GB3",
+    "name": "FLEXMINI 30GB, 3 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 29000,
+    "validity": "3 Hari",
+    "quota": "30GB",
+    "desc": "30GB resmi server pusat. Masa aktif 3 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI9GB14-90",
+    "code": "FXMINI9GB14",
+    "name": "FLEXMINI 9GB, 14 H",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 31000,
+    "validity": "28 - 30 Hari",
+    "quota": "9GB",
+    "desc": "9GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI11GB10-91",
+    "code": "FXMINI11GB10",
+    "name": "FLEXMINI 11GB, 10 H",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 32500,
+    "validity": "28 - 30 Hari",
+    "quota": "11GB",
+    "desc": "11GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI21GB7-92",
+    "code": "FXMINI21GB7",
+    "name": "FLEXMINI 21GB, 7 H",
+    "operator": "XL",
+    "packageCategory": "Mingguan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 34500,
+    "validity": "7 Hari",
+    "quota": "21GB",
+    "desc": "21GB resmi server pusat. Masa aktif 7 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "FXMINI60GB5-93",
+    "code": "FXMINI60GB5",
+    "name": "FLEXMINI 60GB, 5 H",
+    "operator": "XL",
+    "packageCategory": "Harian",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 41000,
+    "validity": "5 Hari",
+    "quota": "60GB",
+    "desc": "60GB resmi server pusat. Masa aktif 5 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FXMINI15GB14-94",
+    "code": "FXMINI15GB14",
+    "name": "FLEXMINI 15GB, 14 H",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 41000,
+    "validity": "28 - 30 Hari",
+    "quota": "15GB",
+    "desc": "15GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FXMINI33GB7-95",
+    "code": "FXMINI33GB7",
+    "name": "FLEXMINI 33GB, 7 H",
+    "operator": "XL",
+    "packageCategory": "Mingguan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 41000,
+    "validity": "7 Hari",
+    "quota": "33GB",
+    "desc": "33GB resmi server pusat. Masa aktif 7 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FXMINI27GB14-96",
+    "code": "FXMINI27GB14",
+    "name": "FLEXMINI 27GB, 14 H",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 51500,
+    "validity": "28 - 30 Hari",
+    "quota": "27GB",
+    "desc": "27GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FXMINI80GB7-97",
+    "code": "FXMINI80GB7",
+    "name": "FLEXMINI 80GB, 7 H",
+    "operator": "XL",
+    "packageCategory": "Mingguan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 55000,
+    "validity": "7 Hari",
+    "quota": "80GB",
+    "desc": "80GB resmi server pusat. Masa aktif 7 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FXMINI60GB14-98",
+    "code": "FXMINI60GB14",
+    "name": "FLEXMINI 60GB, 14 H",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 77000,
+    "validity": "28 - 30 Hari",
+    "quota": "60GB",
+    "desc": "60GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FXMINI125GB10-99",
+    "code": "FXMINI125GB10",
+    "name": "FLEXMINI 125GB, 10 H",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 78000,
+    "validity": "28 - 30 Hari",
+    "quota": "125GB",
+    "desc": "125GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "FXMINI165GB14-100",
+    "code": "FXMINI165GB14",
+    "name": "FLEXMINI 165GB, 14 H",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_24",
+    "costPrice": 105000,
+    "validity": "28 - 30 Hari",
+    "quota": "165GB",
+    "desc": "165GB resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "MAA30-101",
+    "code": "MAA30",
+    "name": "Masa Aktif Axis 30 Hari",
+    "operator": "Axis",
+    "packageCategory": "Masa Aktif",
+    "category": "LAINNYA_CAT_23",
+    "costPrice": 7000,
+    "validity": "30 Hari",
+    "quota": "Perpanjangan Masa Aktif",
+    "desc": "Perpanjangan Masa Aktif resmi server pusat. Masa aktif 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "ADB1-102",
+    "code": "ADB1",
+    "name": "AIGO BRONET 7GB, 28 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_4",
+    "costPrice": 36000,
+    "validity": "28 Hari",
+    "quota": "7GB",
+    "desc": "7GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "ADB2-103",
+    "code": "ADB2",
+    "name": "AIGO BRONET 10GB, 28 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_4",
+    "costPrice": 45000,
+    "validity": "28 Hari",
+    "quota": "10GB",
+    "desc": "10GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "ADB3-104",
+    "code": "ADB3",
+    "name": "AIGO BRONET 16GB, 28 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_4",
+    "costPrice": 50000,
+    "validity": "28 Hari",
+    "quota": "16GB",
+    "desc": "16GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "ADB4-105",
+    "code": "ADB4",
+    "name": "AIGO BRONET 26GB, 28 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_4",
+    "costPrice": 65000,
+    "validity": "28 Hari",
+    "quota": "26GB",
+    "desc": "26GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "ADB5-106",
+    "code": "ADB5",
+    "name": "AIGO BRONET 40GB, 28 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_4",
+    "costPrice": 78000,
+    "validity": "28 Hari",
+    "quota": "40GB",
+    "desc": "40GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "ADB6-107",
+    "code": "ADB6",
+    "name": "AIGO BRONET 65GB, 28 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_4",
+    "costPrice": 98000,
+    "validity": "28 Hari",
+    "quota": "65GB",
+    "desc": "65GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "ADB7-108",
+    "code": "ADB7",
+    "name": "AIGO BRONET 100GB, 28 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_4",
+    "costPrice": 123000,
+    "validity": "28 Hari",
+    "quota": "100GB",
+    "desc": "100GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "ADB8-109",
+    "code": "ADB8",
+    "name": "AIGO BRONET 150GB, 28 Hari",
+    "operator": "Lainnya",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_4",
+    "costPrice": 148000,
+    "validity": "28 Hari",
+    "quota": "150GB",
+    "desc": "150GB resmi server pusat. Masa aktif 28 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC1-110",
+    "code": "DANC1",
+    "name": "DANA 1 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 1600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC2-111",
+    "code": "DANC2",
+    "name": "DANA 2 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 2600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC3-112",
+    "code": "DANC3",
+    "name": "DANA 3 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 3600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC4-113",
+    "code": "DANC4",
+    "name": "DANA 4 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 4600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC5-114",
+    "code": "DANC5",
+    "name": "DANA 5 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 5600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC6-115",
+    "code": "DANC6",
+    "name": "DANA 6 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 6600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC7-116",
+    "code": "DANC7",
+    "name": "DANA 7 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 7600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC8-117",
+    "code": "DANC8",
+    "name": "DANA 8 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 8600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC9-118",
+    "code": "DANC9",
+    "name": "DANA 9 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 9600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC10-119",
+    "code": "DANC10",
+    "name": "DANA 10 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 10600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC15-120",
+    "code": "DANC15",
+    "name": "DANA 15 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 15600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC20-121",
+    "code": "DANC20",
+    "name": "DANA 20 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 20600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC25-122",
+    "code": "DANC25",
+    "name": "DANA 25 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 25600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC30-123",
+    "code": "DANC30",
+    "name": "DANA 30 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 30600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC35-124",
+    "code": "DANC35",
+    "name": "DANA 35 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 35600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC40-125",
+    "code": "DANC40",
+    "name": "DANA 40 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 40600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC45-126",
+    "code": "DANC45",
+    "name": "DANA 45 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 45600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC50-127",
+    "code": "DANC50",
+    "name": "DANA 50 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 50600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC55-128",
+    "code": "DANC55",
+    "name": "DANA 55 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 55600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC60-129",
+    "code": "DANC60",
+    "name": "DANA 60 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 60600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC65-130",
+    "code": "DANC65",
+    "name": "DANA 65 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 65600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC70-131",
+    "code": "DANC70",
+    "name": "DANA 70 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 70600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC75-132",
+    "code": "DANC75",
+    "name": "DANA 75 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 75600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC80-133",
+    "code": "DANC80",
+    "name": "DANA 80 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 80600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC85-134",
+    "code": "DANC85",
+    "name": "DANA 85 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 85600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "DANC95-135",
+    "code": "DANC95",
+    "name": "DANA 95 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 95600,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC100-136",
+    "code": "DANC100",
+    "name": "DANA 100 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 101000,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC150-137",
+    "code": "DANC150",
+    "name": "DANA 150 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 151000,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC200-138",
+    "code": "DANC200",
+    "name": "DANA 200 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 201000,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC250-139",
+    "code": "DANC250",
+    "name": "DANA 250 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 251000,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC300-140",
+    "code": "DANC300",
+    "name": "DANA 300 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 301000,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC400-141",
+    "code": "DANC400",
+    "name": "DANA 400 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 401000,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "DANC500-142",
+    "code": "DANC500",
+    "name": "DANA 500 ribu",
+    "operator": "DANA",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_3",
+    "costPrice": 501000,
+    "validity": "28 - 30 Hari",
+    "quota": "Saldo DANA",
+    "desc": "Saldo DANA resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP5-143",
+    "code": "XLTP5",
+    "name": "Pulsa 5 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 6000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP10-144",
+    "code": "XLTP10",
+    "name": "Pulsa 10 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 11000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP15-145",
+    "code": "XLTP15",
+    "name": "Pulsa 15 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 16000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP20-146",
+    "code": "XLTP20",
+    "name": "Pulsa 20 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 21000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP24-147",
+    "code": "XLTP24",
+    "name": "Pulsa 24 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 25000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP25-148",
+    "code": "XLTP25",
+    "name": "Pulsa 25 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 26000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP26-149",
+    "code": "XLTP26",
+    "name": "Pulsa 26 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 27000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP30-150",
+    "code": "XLTP30",
+    "name": "Pulsa 30 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 31000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP35-151",
+    "code": "XLTP35",
+    "name": "Pulsa 35 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 36000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP40-152",
+    "code": "XLTP40",
+    "name": "Pulsa 40 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 41000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP45-153",
+    "code": "XLTP45",
+    "name": "Pulsa 45 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 46000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP50-154",
+    "code": "XLTP50",
+    "name": "Pulsa 50 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 51000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP55-155",
+    "code": "XLTP55",
+    "name": "Pulsa 55 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 56000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP60-156",
+    "code": "XLTP60",
+    "name": "Pulsa 60 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 61000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP65-157",
+    "code": "XLTP65",
+    "name": "Pulsa 65 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 66000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP70-158",
+    "code": "XLTP70",
+    "name": "Pulsa 70 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 71000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP75-159",
+    "code": "XLTP75",
+    "name": "Pulsa 75 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 76000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP80-160",
+    "code": "XLTP80",
+    "name": "Pulsa 80 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 80000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP85-161",
+    "code": "XLTP85",
+    "name": "Pulsa 85 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 85000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP90-162",
+    "code": "XLTP90",
+    "name": "Pulsa 90 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 90000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": true
+  },
+  {
+    "id": "XLTP95-163",
+    "code": "XLTP95",
+    "name": "Pulsa 95 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 95000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP100-164",
+    "code": "XLTP100",
+    "name": "Pulsa 100 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 101000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
+  },
+  {
+    "id": "XLTP150-165",
+    "code": "XLTP150",
+    "name": "Pulsa 150 ribu",
+    "operator": "XL",
+    "packageCategory": "Bulanan",
+    "category": "LAINNYA_CAT_1",
+    "costPrice": 149000,
+    "validity": "28 - 30 Hari",
+    "quota": "Pulsa Transfer",
+    "desc": "Pulsa Transfer resmi server pusat. Masa aktif 28 - 30 Hari.",
+    "stock": 999,
+    "isAvailable": true,
+    "isPopular": false
   }
 ];
+
+export const products: Product[] = rawPresets.map((item) => {
+  const sellingPrice = calculateSellingPrice(item.costPrice);
+  const markup = sellingPrice - item.costPrice;
+
+  return {
+    id: item.id,
+    code: item.code,
+    name: item.name,
+    operator: item.operator,
+    packageCategory: item.packageCategory,
+    category: item.category,
+    costPrice: item.costPrice,
+    price: sellingPrice,
+    markup,
+    validity: item.validity,
+    quota: item.quota,
+    desc: item.desc,
+    stock: item.stock,
+    isAvailable: true,
+    isPopular: item.isPopular ?? false,
+  };
+});
+
+export const getProductByCode = (code: string): Product | undefined => {
+  return products.find(
+    (p) => p.code.toLowerCase() === code.toLowerCase() || p.id.toLowerCase() === code.toLowerCase()
+  );
+};

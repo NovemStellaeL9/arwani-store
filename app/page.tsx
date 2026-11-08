@@ -1,91 +1,110 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import React, { useState, useEffect, useMemo } from "react";
 import Header from "@/components/Header";
-import { getProviderLogo } from "@/utils/helpers";
-import { Product } from "@/types/product";
+import PhoneOperatorInput from "@/components/PhoneOperatorInput";
+import CategoryTabs from "@/components/CategoryTabs";
 import ProductCard from "@/components/ProductCard";
 import CheckoutModal from "@/components/CheckoutModal";
-
-const operatorShortcuts = [
-  { name: "XL & Axis", category: "XL & Axis", logo: "/xl.png" },
-  { name: "Telkomsel", category: "Telkomsel", logo: "/telkomsel.png" },
-  { name: "Indosat", category: "Indosat", logo: "/indosat.png" },
-  { name: "Tri", category: "Tri", logo: "/tri.png" },
-  { name: "Token PLN", category: "PLN", isIcon: true, icon: "⚡" },
-  { name: "Saldo DANA", category: "E-Wallet", isIcon: true, icon: "💳" },
-  { name: "Pulsa Transfer", category: "Pulsa", isIcon: true, icon: "📱" },
-  { name: "Masa Aktif", category: "Masa Aktif", isIcon: true, icon: "⏳" },
-  { name: "Semua Paket", category: "Semua", isIcon: true, icon: "📦" },
-];
+import { Product, PackageCategory, OperatorName } from "@/types/product";
+import { detectOperator } from "@/utils/helpers";
+import { Search, Sparkles, AlertCircle } from "lucide-react";
 
 export default function Home() {
-  const router = useRouter();
-  const [popularProducts, setPopularProducts] = useState<Product[]>([]);
-  const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
-  const [favorites, setFavorites] = useState<(string | number)[]>([]);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [detectedOperator, setDetectedOperator] = useState<OperatorName | "">("");
+  const [activeCategory, setActiveCategory] = useState<PackageCategory>("Semua");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch products from serverless route handler /api/products
   useEffect(() => {
-    const loadData = async () => {
+    const loadProducts = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch("/api/products");
         const json = await res.json();
         if (json.success && Array.isArray(json.products)) {
-          const list: Product[] = json.products;
-          // Pick highlight packages (Akrab V4, Flex, Freedom, Tri Happy, PLN, DANA)
-          const picks = list.filter((p) => {
-            const n = p.name.toLowerCase();
-            return (
-              n.includes("v4") ||
-              n.includes("flex max 7gb") ||
-              n.includes("freedom internet 8gb") ||
-              n.includes("tri data happy 7gb") ||
-              n.includes("pln 20.000") ||
-              n.includes("dana 10 ribu")
-            );
-          }).slice(0, 6);
-
-          setPopularProducts(picks.length > 0 ? picks : list.slice(0, 6));
-
-          // Load favorites
-          if (typeof window !== "undefined") {
-            const stored = localStorage.getItem("favorites");
-            if (stored) {
-              const favIds: (string | number)[] = JSON.parse(stored);
-              setFavorites(favIds);
-              const matched = list.filter((p) => favIds.includes(p.id));
-              setFavoriteProducts(matched);
-            }
-          }
+          setAllProducts(json.products);
         }
       } catch (err) {
-        console.error("Gagal memuat produk beranda:", err);
+        console.error("Gagal memuat produk:", err);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadData();
+    loadProducts();
   }, []);
 
-  const handleCategoryClick = (category: string) => {
-    router.push(`/semua-produk?category=${encodeURIComponent(category)}`);
+  // Handler saat nomor telepon berubah -> Deteksi operator otomatis
+  const handlePhoneChange = (val: string) => {
+    setPhoneNumber(val);
+    const op = detectOperator(val) as OperatorName;
+    if (op) {
+      setDetectedOperator(op);
+    } else {
+      setDetectedOperator("");
+    }
   };
 
-  const handleToggleFavorite = (id: string | number) => {
-    setFavorites((prev) => {
-      const updated = prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id];
-      if (typeof window !== "undefined") {
-        localStorage.setItem("favorites", JSON.stringify(updated));
-      }
-      return updated;
-    });
+  const handleClearPhone = () => {
+    setPhoneNumber("");
+    setDetectedOperator("");
   };
+
+  const handleManualOperatorSelect = (op: OperatorName) => {
+    setDetectedOperator(op);
+  };
+
+  // Filter list produk berdasarkan:
+  // 1. Operator yang terdeteksi (atau dipilih)
+  // 2. Kategori durasi paket (Harian, Mingguan, Bulanan, Combo, Unlimited)
+  // 3. Kata kunci pencarian
+  const filteredProducts = useMemo(() => {
+    return allProducts.filter((p) => {
+      // Filter Operator
+      if (detectedOperator && detectedOperator !== "Semua") {
+        const matchOp =
+          p.operator.toLowerCase() === detectedOperator.toLowerCase() ||
+          p.name.toLowerCase().includes(detectedOperator.toLowerCase());
+        if (!matchOp) return false;
+      }
+
+      // Filter Kategori Paket
+      if (activeCategory !== "Semua") {
+        if (p.packageCategory !== activeCategory) return false;
+      }
+
+      // Filter Search Query
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchQuery =
+          p.name.toLowerCase().includes(q) ||
+          p.desc.toLowerCase().includes(q) ||
+          p.quota.toLowerCase().includes(q) ||
+          p.validity.toLowerCase().includes(q);
+        if (!matchQuery) return false;
+      }
+
+      return true;
+    });
+  }, [allProducts, detectedOperator, activeCategory, searchQuery]);
+
+  // Hitung jumlah paket per kategori untuk badge tab
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { Semua: 0 };
+    allProducts.forEach((p) => {
+      if (!detectedOperator || detectedOperator === "Semua" || p.operator === detectedOperator) {
+        counts.Semua = (counts.Semua || 0) + 1;
+        counts[p.packageCategory] = (counts[p.packageCategory] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [allProducts, detectedOperator]);
 
   const handleSelectProduct = (product: Product) => {
     setSelectedProduct(product);
@@ -94,146 +113,118 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#081225] pb-28 text-white">
-      {/* Header Bar */}
+      {/* Top Header */}
       <Header />
 
-      {/* Main Container */}
-      <div className="px-5 mt-5 space-y-6">
-        {/* PROMO HERO BANNER */}
-        <Link href="/semua-produk?category=XL+%26+Axis" className="block focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-3xl">
-          <div className="bg-gradient-to-r from-blue-700 to-indigo-800 border border-white/15 rounded-3xl p-5 shadow-xl relative overflow-hidden group hover:border-white/30 transition-all">
-            <span className="inline-block px-2.5 py-1 bg-amber-400 text-slate-950 text-[9px] font-black rounded-lg uppercase tracking-wider mb-2">
-              Paket Rekomendasi
-            </span>
-            <h2 className="text-base font-black leading-snug tracking-wide text-white">
-              Paket XL Akrab & Flex Kuota Besar
-            </h2>
-            <p className="text-xs text-blue-100 font-medium mt-1 max-w-[85%] leading-relaxed">
-              Mulai dari 10 GB hingga 600 GB, tersedia stok real-time langsung aktif 24 jam.
-            </p>
-            <div className="flex items-center gap-1.5 mt-3.5 text-xs font-bold text-amber-300">
-              <span>Buka Katalog XL & Axis</span>
-              <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </div>
-          </div>
-        </Link>
+      <div className="px-4 mt-4 space-y-5">
+        {/* FITUR UTAMA 1: Input Nomor HP dengan Deteksi Otomatis Logo Operator */}
+        <PhoneOperatorInput
+          phoneNumber={phoneNumber}
+          onPhoneChange={handlePhoneChange}
+          detectedOperator={detectedOperator}
+          onClear={handleClearPhone}
+          onOperatorSelectManual={handleManualOperatorSelect}
+        />
 
-        {/* TRANSAKSI QUICK SHORTCUT BANNER */}
-        <div className="bg-[#0e1a34] rounded-2xl p-4 border border-white/10 flex items-center justify-between gap-3 shadow-md">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg border border-blue-500/30">
-              🔍
-            </div>
-            <div>
-              <p className="text-xs font-bold text-white">Sudah Melakukan Pemesanan?</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">Periksa status transaksi Anda dengan ID Referensi</p>
-            </div>
-          </div>
-          <Link
-            href="/transaksi"
-            className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider flex-shrink-0 transition-colors"
-          >
-            Lacak
-          </Link>
-        </div>
+        {/* FITUR UTAMA 2: Kategori Paket Kuota (Harian, Mingguan, Bulanan, Combo, Unlimited) */}
+        <CategoryTabs
+          activeCategory={activeCategory}
+          onSelectCategory={setActiveCategory}
+          productCounts={categoryCounts}
+        />
 
-        {/* CHOOSE OPERATOR & SERVICE GRID */}
-        <div>
-          <div className="flex justify-between items-center mb-3">
-            <p className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-              Pilih Layanan & Operator
-            </p>
-            <Link href="/semua-produk" className="text-[11px] font-bold text-blue-400 hover:text-blue-300">
-              Lihat Semua
-            </Link>
-          </div>
-          <div className="grid grid-cols-3 gap-2.5">
-            {operatorShortcuts.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => handleCategoryClick(item.category)}
-                className="bg-[#0e1a34] hover:bg-[#132244] border border-white/10 hover:border-blue-500/30 rounded-2xl p-3 flex flex-col items-center justify-center text-center transition-all focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              >
-                <div className="h-11 w-11 rounded-xl bg-white/5 p-1.5 flex items-center justify-center mb-2 border border-white/10">
-                  {item.isIcon ? (
-                    <span className="text-xl">{item.icon}</span>
-                  ) : (
-                    <img src={item.logo} alt={item.name} className="max-h-full max-w-full object-contain" />
-                  )}
-                </div>
-                <span className="text-[10px] font-bold text-white leading-tight">
-                  {item.name}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* POPULAR PACKAGES (LIVE STOCK) */}
-        <div>
-          <div className="flex justify-between items-center mb-3">
-            <div>
-              <p className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                Paket Pilihan Terpopuler
-              </p>
-              <p className="text-[11px] text-slate-400">Langsung terhubung dengan stok server</p>
-            </div>
-            <Link href="/semua-produk" className="text-xs font-bold text-blue-400 hover:text-blue-300">
-              Semua Paket
-            </Link>
+        {/* Search Bar & Status */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari kuota (misal: 10 GB, Unlimited)..."
+              className="w-full bg-[#0e1a34] border border-white/10 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
           </div>
 
-          {isLoading ? (
-            <div className="grid grid-cols-2 gap-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-[#0e1a34] rounded-2xl p-4 border border-white/10 space-y-3 h-44 animate-pulse">
-                  <div className="h-4 bg-white/10 rounded w-1/3" />
-                  <div className="h-4 bg-white/10 rounded w-3/4" />
-                  <div className="h-6 bg-white/10 rounded-xl w-full mt-4" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {popularProducts.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  isFavorite={favorites.includes(p.id)}
-                  onToggleFavorite={handleToggleFavorite}
-                  onSelectProduct={handleSelectProduct}
-                />
-              ))}
-            </div>
+          {detectedOperator && (
+            <button
+              onClick={() => setDetectedOperator("")}
+              className="px-3 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[11px] font-bold text-slate-300 hover:text-white transition-colors flex-shrink-0"
+            >
+              Semua Operator
+            </button>
           )}
         </div>
 
-        {/* FAVORITES (IF ANY) */}
-        {favoriteProducts.length > 0 && (
+        {/* Section Heading & Result Info */}
+        <div className="flex items-center justify-between px-1">
           <div>
-            <p className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
-              Paket Tersimpan ({favoriteProducts.length})
+            <h2 className="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              {detectedOperator
+                ? `Katalog Kuota ${detectedOperator}`
+                : "Semua Paket Kuota"}
+            </h2>
+            <p className="text-[10px] text-slate-400">
+              Harga final tertera sudah termasuk markup transparan
             </p>
-            <div className="grid grid-cols-2 gap-3">
-              {favoriteProducts.slice(0, 4).map((p) => (
-                <ProductCard
-                  key={`fav-${p.id}`}
-                  product={p}
-                  isFavorite={true}
-                  onToggleFavorite={handleToggleFavorite}
-                  onSelectProduct={handleSelectProduct}
-                />
-              ))}
+          </div>
+          <span className="text-[10px] font-bold font-mono text-slate-400 bg-white/5 px-2 py-0.5 rounded-md">
+            {filteredProducts.length} Produk
+          </span>
+        </div>
+
+        {/* FITUR UTAMA 3: Product Grid Display */}
+        {isLoading ? (
+          <div className="grid grid-cols-2 gap-3 py-8 text-center">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="bg-[#0e1a34] border border-white/10 rounded-3xl p-4 h-52 animate-pulse space-y-3"
+              >
+                <div className="h-5 bg-white/10 rounded-lg w-1/2"></div>
+                <div className="h-4 bg-white/10 rounded-lg w-3/4"></div>
+                <div className="h-8 bg-white/10 rounded-xl w-full mt-6"></div>
+              </div>
+            ))}
+          </div>
+        ) : filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-2 gap-3">
+            {filteredProducts.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                onSelect={handleSelectProduct}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="bg-[#0e1a34] border border-white/10 rounded-3xl p-8 text-center space-y-3 my-4">
+            <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto text-slate-400">
+              <AlertCircle className="w-6 h-6" />
             </div>
+            <h3 className="text-sm font-bold text-white">Tidak Ada Paket yang Cocok</h3>
+            <p className="text-xs text-slate-400 max-w-xs mx-auto">
+              Coba ganti filter kategori, hapus kata kunci pencarian, atau pilih operator lain.
+            </p>
+            <button
+              onClick={() => {
+                setActiveCategory("Semua");
+                setSearchQuery("");
+                setDetectedOperator("");
+              }}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-colors"
+            >
+              Reset Semua Filter
+            </button>
           </div>
         )}
       </div>
 
-      {/* Checkout Modal */}
+      {/* FITUR UTAMA 4: Cart / Modal Checkout */}
       <CheckoutModal
         product={selectedProduct}
+        initialPhoneNumber={phoneNumber}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />

@@ -1,112 +1,60 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { findTransaction } from "@/lib/transactionStore";
 import { checkPurchaseStatus } from "@/lib/ruangkuota";
-import { findTransaction, saveTransaction } from "@/lib/transactionStore";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const refid = searchParams.get("refid");
 
-    if (!refid || refid.trim() === "") {
+    if (!refid) {
       return NextResponse.json(
         { success: false, message: "Parameter refid wajib disertakan." },
         { status: 400 }
       );
     }
 
-    const existing = findTransaction(refid);
-    const res = await checkPurchaseStatus({
-      refid,
-      productcode: existing?.productcode,
-      phonenumber: existing?.phonenumber,
-    });
+    const tx = findTransaction(refid);
 
-    let statusLabel = "Diproses";
-    if (res.status === "00") {
-      statusLabel = "Sukses";
-    } else if (res.status === "02" && !res.message.toLowerCase().includes("sedang diproses")) {
-      statusLabel = "Gagal";
-    }
-
-    if (existing) {
-      saveTransaction({
-        ...existing,
-        status: res.status,
-        statusLabel,
-        message: res.message || existing.message,
-        trxuuid: res.trxuuid || existing.trxuuid,
-        updatedAt: new Date().toISOString(),
-      });
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        ...res,
-        statusLabel,
-      },
-    });
-  } catch (error: any) {
-    console.error("API /api/check-status error:", error);
-    return NextResponse.json(
-      { success: false, message: error?.message || "Gagal memeriksa status pesanan." },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const refid = body.refid;
-
-    if (!refid || String(refid).trim() === "") {
+    if (!tx) {
       return NextResponse.json(
-        { success: false, message: "Parameter refid wajib disertakan." },
-        { status: 400 }
+        { success: false, message: `Transaksi ${refid} tidak ditemukan.` },
+        { status: 404 }
       );
     }
 
-    const existing = findTransaction(refid);
-    const res = await checkPurchaseStatus({
-      refid,
-      productcode: existing?.productcode,
-      phonenumber: existing?.phonenumber,
-    });
+    // Jika transaksi sudah PAID atau PROCESSING, coba periksa live status ke provider
+    if (tx.status === "PAID" || tx.status === "PROCESSING") {
+      try {
+        const liveStatus = await checkPurchaseStatus({
+          refid: tx.refid,
+          productcode: tx.productCode,
+          phonenumber: tx.phoneNumber,
+        });
 
-    let statusLabel = "Diproses";
-    if (res.status === "00") {
-      statusLabel = "Sukses";
-    } else if (res.status === "02" && !res.message.toLowerCase().includes("sedang diproses")) {
-      statusLabel = "Gagal";
-    }
-
-    if (existing) {
-      saveTransaction({
-        ...existing,
-        status: res.status,
-        statusLabel,
-        message: res.message || existing.message,
-        trxuuid: res.trxuuid || existing.trxuuid,
-        updatedAt: new Date().toISOString(),
-      });
+        if (liveStatus.status === "00") {
+          tx.status = "SUCCESS";
+          tx.statusLabel = "Kuota Berhasil Dikirim";
+          tx.sn = liveStatus.trxuuid || liveStatus.refid;
+          tx.message = liveStatus.message || "Paket data berhasil masuk.";
+        } else if (liveStatus.status === "01") {
+          tx.status = "FAILED";
+          tx.statusLabel = "Gagal";
+          tx.message = liveStatus.message || "Gagal diproses provider.";
+        }
+      } catch {
+        // Abaikan jika server provider lambat merespon
+      }
     }
 
     return NextResponse.json({
       success: true,
-      data: {
-        ...res,
-        statusLabel,
-      },
+      transaction: tx,
     });
-  } catch (error: any) {
-    console.error("API /api/check-status POST error:", error);
-    return NextResponse.json(
-      { success: false, message: error?.message || "Gagal memeriksa status pesanan." },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Terjadi kendala saat memeriksa status";
+    return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }
-
