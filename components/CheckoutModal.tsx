@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Product, PaymentMethod, TransactionRecord } from "@/types/product";
+import { Product, TransactionRecord } from "@/types/product";
 import {
   formatRupiah,
   detectOperator,
   getOperatorMeta,
-  getWaLink,
+  getWaPaymentConfirmationLink,
 } from "@/utils/helpers";
 import {
   X,
@@ -18,13 +18,12 @@ import {
   Copy,
   Check,
   QrCode,
-  CreditCard,
   Wallet,
   ArrowRight,
   Loader2,
-  ExternalLink,
   AlertCircle,
-  Sparkles,
+  Download,
+  MessageCircle,
 } from "lucide-react";
 
 interface CheckoutModalProps {
@@ -35,50 +34,6 @@ interface CheckoutModalProps {
   onSuccess?: (order: TransactionRecord) => void;
 }
 
-const PAYMENT_METHODS: {
-  id: PaymentMethod;
-  name: string;
-  category: "QRIS" | "VA" | "EWALLET";
-  icon: React.ElementType;
-  desc: string;
-}[] = [
-  {
-    id: "QRIS",
-    name: "QRIS Real-Time",
-    category: "QRIS",
-    icon: QrCode,
-    desc: "BCA, GoPay, OVO, DANA, ShopeePay & Semua M-Banking",
-  },
-  {
-    id: "BCA_VA",
-    name: "BCA Virtual Account",
-    category: "VA",
-    icon: CreditCard,
-    desc: "Verifikasi instan otomatis 24 Jam",
-  },
-  {
-    id: "BRI_VA",
-    name: "BRI Virtual Account (BRIVA)",
-    category: "VA",
-    icon: CreditCard,
-    desc: "Bayar via BRImo atau ATM BRI",
-  },
-  {
-    id: "MANDIRI_VA",
-    name: "Mandiri Virtual Account",
-    category: "VA",
-    icon: CreditCard,
-    desc: "Bayar via Livin by Mandiri",
-  },
-  {
-    id: "DANA",
-    name: "Saldo DANA",
-    category: "EWALLET",
-    icon: Wallet,
-    desc: "Transfer langsung atau QRIS DANA",
-  },
-];
-
 export default function CheckoutModal({
   product,
   initialPhoneNumber,
@@ -87,27 +42,21 @@ export default function CheckoutModal({
   onSuccess,
 }: CheckoutModalProps) {
   const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>("QRIS");
   const [step, setStep] = useState<"SUMMARY" | "PAYMENT" | "SUCCESS">("SUMMARY");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSimulatingPayment, setIsSimulatingPayment] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [currentOrder, setCurrentOrder] = useState<TransactionRecord | null>(null);
   const [copiedText, setCopiedText] = useState("");
-  const [timeLeft, setTimeLeft] = useState(900); // 15 Menit
 
-  // Sinkronisasi nomor awal saat modal dibuka
   useEffect(() => {
     if (isOpen) {
       setPhoneNumber(initialPhoneNumber);
       setStep("SUMMARY");
       setErrorMessage("");
       setCurrentOrder(null);
-      setTimeLeft(900);
     }
   }, [isOpen, initialPhoneNumber]);
 
-  // Keyboard shortcut ESC untuk tutup
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen && !isSubmitting) {
@@ -118,43 +67,6 @@ export default function CheckoutModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, isSubmitting, onClose]);
 
-  // Polling status transaksi saat menunggu pembayaran
-  const pollStatus = useCallback(async (refid: string) => {
-    try {
-      const res = await fetch(`/api/check-status?refid=${encodeURIComponent(refid)}`);
-      const data = await res.json();
-      if (data.success && data.transaction) {
-        const tx: TransactionRecord = data.transaction;
-        if (tx.status === "SUCCESS") {
-          setCurrentOrder(tx);
-          setStep("SUCCESS");
-          if (onSuccess) onSuccess(tx);
-        } else if (tx.status === "PAID" || tx.status === "PROCESSING") {
-          setCurrentOrder(tx);
-        }
-      }
-    } catch (err) {
-      console.warn("Polling error:", err);
-    }
-  }, [onSuccess]);
-
-  useEffect(() => {
-    if (step !== "PAYMENT" || !currentOrder) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-
-    const pollInterval = setInterval(() => {
-      pollStatus(currentOrder.refid);
-    }, 4000);
-
-    return () => {
-      clearInterval(timer);
-      clearInterval(pollInterval);
-    };
-  }, [step, currentOrder, pollStatus]);
-
   if (!isOpen || !product) return null;
 
   const currentOp = detectOperator(phoneNumber) || product.operator;
@@ -164,11 +76,10 @@ export default function CheckoutModal({
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setCopiedText(label);
-      setTimeout(() => setCopiedText(""), 2000);
+      setTimeout(() => setCopiedText(""), 2500);
     }
   };
 
-  // Submit Checkout -> Buat Pesanan
   const handleProceedToPayment = async () => {
     const cleanPhone = phoneNumber.replace(/[^0-9]/g, "");
     if (cleanPhone.length < 4) {
@@ -186,7 +97,8 @@ export default function CheckoutModal({
         body: JSON.stringify({
           productCode: product.code,
           phoneNumber: cleanPhone,
-          paymentMethod: selectedMethod,
+          // Kirim QRIS sebagai default karena pembayaran langsung (tidak ada pilihan)
+          paymentMethod: "QRIS",
         }),
       });
 
@@ -195,6 +107,7 @@ export default function CheckoutModal({
       if (data.success && data.order) {
         setCurrentOrder(data.order);
         setStep("PAYMENT");
+        if (onSuccess) onSuccess(data.order);
       } else {
         setErrorMessage(data.message || "Gagal membuat sesi pembayaran.");
       }
@@ -206,66 +119,31 @@ export default function CheckoutModal({
     }
   };
 
-  // Simulasi Pembayaran Langsung (Test Gateway / Demo Mode)
-  const handleSimulatePayment = async () => {
-    if (!currentOrder) return;
-    setIsSimulatingPayment(true);
-
-    try {
-      const res = await fetch("/api/webhook", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          refid: currentOrder.refid,
-          status: "PAID",
-          amount: currentOrder.totalAmount,
-        }),
-      });
-
-      const json = await res.json();
-      if (json.success) {
-        // Ambil status terbaru
-        await pollStatus(currentOrder.refid);
-        setStep("SUCCESS");
-      }
-    } catch (err: unknown) {
-      console.error("Simulation error:", err);
-    } finally {
-      setIsSimulatingPayment(false);
-    }
-  };
-
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
-  const timeFormatted = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm animate-fadeIn">
       <div
         role="dialog"
         aria-modal="true"
-        className="bg-[#0b1528] border border-white/10 rounded-3xl w-full max-w-md max-h-[92vh] overflow-y-auto shadow-2xl text-white flex flex-col justify-between"
+        className="bg-[#0b1528] border border-white/10 rounded-3xl w-full max-w-md max-h-[94vh] overflow-y-auto shadow-2xl text-white flex flex-col justify-between"
       >
         {/* Modal Header */}
         <div className="sticky top-0 bg-[#0b1528]/95 backdrop-blur-md px-5 py-4 border-b border-white/10 flex items-center justify-between z-10">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
               <h3 className="text-sm font-black tracking-wide">
                 {step === "SUMMARY"
-                  ? "Ringkasan Checkout"
+                  ? "Ringkasan Pembelian"
                   : step === "PAYMENT"
-                  ? "Menunggu Pembayaran"
-                  : "Transaksi Berhasil"}
+                  ? "Pembayaran & Konfirmasi WA"
+                  : "Transaksi Selesai"}
               </h3>
               <p className="text-[10px] text-slate-400">
                 {step === "SUMMARY"
-                  ? "Konfirmasi pesanan kuota Anda"
-                  : step === "PAYMENT"
-                  ? "Selesaikan pembayaran via QRIS/VA"
-                  : "Kuota segera terisi ke nomor tujuan"}
+                  ? "Periksa detail pesanan Anda"
+                  : "Bayar via QRIS / GoPay & wajib konfirmasi ke WA"}
               </p>
             </div>
           </div>
@@ -280,7 +158,7 @@ export default function CheckoutModal({
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 space-y-4">
+        <div className="p-4 sm:p-5 space-y-4">
           {/* ================= STEP 1: SUMMARY ================= */}
           {step === "SUMMARY" && (
             <>
@@ -295,12 +173,12 @@ export default function CheckoutModal({
                     <span className="text-emerald-400 font-extrabold">{currentOp}</span>
                   )}
                 </label>
-                <div className="relative">
+                <div>
                   <input
                     type="tel"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ""))}
-                    placeholder="Masukkan nomor HP"
+                    placeholder="Masukkan nomor HP tujuan"
                     className="w-full bg-black/40 border border-white/10 focus:border-blue-500 px-3.5 py-2.5 rounded-xl text-white font-mono text-sm tracking-wider outline-none"
                   />
                 </div>
@@ -347,69 +225,55 @@ export default function CheckoutModal({
                 </div>
               </div>
 
-              {/* Payment Methods Selector */}
-              <div>
-                <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block mb-2">
-                  Pilih Metode Pembayaran
-                </label>
-                <div className="space-y-2">
-                  {PAYMENT_METHODS.map((method) => {
-                    const isSelected = selectedMethod === method.id;
-                    const Icon = method.icon;
-                    return (
-                      <button
-                        key={method.id}
-                        type="button"
-                        onClick={() => setSelectedMethod(method.id)}
-                        className={`w-full flex items-center justify-between p-3 rounded-2xl border text-left transition-all ${
-                          isSelected
-                            ? "bg-blue-600/25 border-blue-500 text-white shadow-md shadow-blue-500/15"
-                            : "bg-[#101c38] border-white/5 hover:border-white/20 text-slate-300"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                              isSelected ? "bg-blue-600 text-white" : "bg-white/5 text-slate-400"
-                            }`}
-                          >
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <span className="text-xs font-bold block">{method.name}</span>
-                            <span className="text-[10px] text-slate-400 line-clamp-1">
-                              {method.desc}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div
-                          className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                            isSelected
-                              ? "border-blue-400 bg-blue-500 text-white"
-                              : "border-slate-600 bg-black/20"
-                          }`}
-                        >
-                          {isSelected && <Check className="w-2.5 h-2.5" />}
-                        </div>
-                      </button>
-                    );
-                  })}
+              {/* Info Pembayaran Langsung (QRIS + GoPay) */}
+              <div className="bg-[#101c38] p-4 rounded-2xl border border-white/10 space-y-3">
+                <p className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                  Metode Pembayaran Tersedia
+                </p>
+                {/* QRIS info */}
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="w-9 h-9 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center flex-shrink-0">
+                    <QrCode className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-white">QRIS (Scan QR)</p>
+                    <p className="text-[10px] text-slate-400">
+                      BCA, BRI, BNI, Mandiri, DANA, OVO, GoPay, ShopeePay & semua m-banking
+                    </p>
+                  </div>
+                </div>
+                {/* GoPay info */}
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="w-9 h-9 rounded-xl bg-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0">
+                    <Wallet className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-white">GoPay Transfer</p>
+                    <p className="text-[10px] text-slate-400">
+                      Transfer ke nomor GoPay: <span className="font-mono font-bold text-amber-300">085967096912</span> a/n Ilham Arwani
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                  <MessageCircle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-[10px] text-amber-200 leading-relaxed">
+                    Setelah transfer, <strong>wajib konfirmasi via WhatsApp</strong> dengan kirim bukti pembayaran agar pesanan segera diproses.
+                  </p>
                 </div>
               </div>
 
-              {/* Price Breakdown */}
+              {/* Rincian Harga */}
               <div className="bg-[#101c38] p-3.5 rounded-2xl border border-white/10 space-y-2">
                 <div className="flex justify-between text-xs text-slate-400">
                   <span>Harga Paket Kuota</span>
                   <span className="font-mono text-white">{formatRupiah(product.price)}</span>
                 </div>
                 <div className="flex justify-between text-xs text-slate-400">
-                  <span>Biaya Layanan</span>
+                  <span>Biaya Layanan Admin</span>
                   <span className="font-mono text-emerald-400 font-bold">Gratis (Rp 0)</span>
                 </div>
                 <div className="flex justify-between text-sm font-black pt-2 border-t border-white/10">
-                  <span className="text-white">Total Pembayaran</span>
+                  <span className="text-white">Total Transfer</span>
                   <span className="font-mono text-emerald-400 text-base">
                     {formatRupiah(product.price)}
                   </span>
@@ -425,117 +289,175 @@ export default function CheckoutModal({
             </>
           )}
 
-          {/* ================= STEP 2: PAYMENT WAITING ================= */}
+          {/* ================= STEP 2: PAYMENT & WA CONFIRMATION ================= */}
           {step === "PAYMENT" && currentOrder && (
-            <div className="space-y-4 text-center">
-              {/* Countdown Timer */}
-              <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 flex items-center justify-between text-amber-300">
-                <span className="text-xs font-bold flex items-center gap-1.5">
-                  <Clock className="w-4 h-4" />
-                  Selesaikan dalam:
-                </span>
-                <span className="font-mono text-base font-black tracking-widest">
-                  {timeFormatted}
-                </span>
-              </div>
-
-              {/* QRIS Display */}
-              {currentOrder.paymentMethod === "QRIS" && (
-                <div className="bg-white p-5 rounded-3xl shadow-xl flex flex-col items-center justify-center border-4 border-slate-200">
-                  <div className="flex items-center justify-between w-full mb-3 px-2">
-                    <span className="text-xs font-black tracking-widest text-slate-900 uppercase">
-                      QRIS NASIONAL
-                    </span>
-                    <span className="text-[10px] font-bold text-slate-500">
-                      GPN / ASPI
-                    </span>
-                  </div>
-
-                  {/* QR Code Frame */}
-                  <div className="w-56 h-56 bg-slate-100 rounded-2xl p-2 border border-slate-300 flex items-center justify-center relative">
-                    <Image
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
-                        currentOrder.qrisPayload || currentOrder.refid
-                      )}`}
-                      alt="QRIS Code"
-                      width={220}
-                      height={220}
-                      className="rounded-xl object-contain"
-                      unoptimized
-                    />
-                  </div>
-
-                  <p className="text-[11px] font-extrabold text-slate-700 mt-3">
-                    Scan dengan GoPay, OVO, DANA, ShopeePay, atau Mobile Banking
+            <div className="space-y-4">
+              {/* WAJIB KONFIRMASI ALERT BANNER */}
+              <div className="bg-amber-500/15 border-2 border-amber-500/40 rounded-2xl p-3.5 flex items-start gap-2.5 text-amber-200">
+                <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                <div className="text-xs space-y-1">
+                  <p className="font-black text-amber-300 uppercase tracking-wide">
+                    Wajib Konfirmasi ke WhatsApp
+                  </p>
+                  <p className="text-[11px] leading-relaxed text-amber-100">
+                    Setelah transfer via QRIS atau GoPay, <strong>wajib klik tombol hijau di bawah</strong> untuk mengirim bukti ke WhatsApp admin agar pesanan segera diproses!
                   </p>
                 </div>
-              )}
+              </div>
 
-              {/* Virtual Account Display */}
-              {currentOrder.vaNumber && (
-                <div className="bg-[#101c38] p-4 rounded-2xl border border-white/10 text-left space-y-2">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Nomor Virtual Account ({currentOrder.paymentMethod.replace("_VA", "")})
+              {/* Total Nominal Transfer Box */}
+              <div className="bg-[#101c38] p-4 rounded-2xl border border-white/10 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-bold">
+                    Nominal Wajib Ditransfer
                   </span>
-                  <div className="flex items-center justify-between bg-black/40 p-3 rounded-xl border border-white/10">
-                    <span className="font-mono text-lg font-black text-amber-300 tracking-wider">
-                      {currentOrder.vaNumber}
+                  <span className="font-mono text-xl font-black text-emerald-400">
+                    {formatRupiah(currentOrder.totalAmount)}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopy(currentOrder.totalAmount.toString(), "amount")}
+                  className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-1 transition-colors"
+                >
+                  {copiedText === "amount" ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                  <span>{copiedText === "amount" ? "Tersalin" : "Salin Nominal"}</span>
+                </button>
+              </div>
+
+              {/* OPSI 1: QRIS */}
+              <div className="bg-white p-4 rounded-3xl shadow-2xl border-4 border-slate-300 text-slate-900 flex flex-col items-center">
+                <div className="w-full flex items-center justify-between mb-2 pb-2 border-b border-slate-200">
+                  <div>
+                    <span className="text-xs font-black tracking-wider uppercase block text-slate-900">
+                      ILHAM ARWANI, EDUKASI
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-600 block">
+                      NMID: ID1026484484955 • A01
+                    </span>
+                  </div>
+                  <span className="px-2 py-0.5 bg-red-600 text-white text-[9px] font-black rounded uppercase">
+                    QRIS GPN
+                  </span>
+                </div>
+
+                <div className="w-full max-w-[280px] bg-white rounded-2xl p-1.5 border border-slate-200 shadow-inner flex items-center justify-center">
+                  <Image
+                    src="/qris.jpg"
+                    alt="QRIS Pembayaran ILHAM ARWANI"
+                    width={280}
+                    height={380}
+                    className="rounded-xl object-contain w-full h-auto"
+                    priority
+                  />
+                </div>
+
+                <div className="w-full mt-3 pt-2 border-t border-slate-200 flex items-center justify-between">
+                  <a
+                    href="/qris.jpg"
+                    download="QRIS-ILHAM-ARWANI.jpg"
+                    className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Simpan QRIS ke Galeri</span>
+                  </a>
+                  <span className="text-[10px] font-bold text-slate-500">
+                    Bisa di-scan dari Galeri
+                  </span>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-white/10" />
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  atau
+                </span>
+                <div className="flex-1 h-px bg-white/10" />
+              </div>
+
+              {/* OPSI 2: GOPAY */}
+              <div className="bg-[#101c38] p-5 rounded-3xl border border-green-500/30 text-white space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-xl bg-green-500/20 text-green-400 flex items-center justify-center">
+                    <Wallet className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black text-white">Transfer Saldo GoPay</h4>
+                    <p className="text-[11px] text-slate-400">Atas Nama: Ilham Arwani</p>
+                  </div>
+                </div>
+
+                <div className="bg-black/50 p-4 rounded-2xl border border-white/10 space-y-2">
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-bold">
+                    Nomor Tujuan GoPay:
+                  </span>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xl font-black text-amber-300 tracking-wider">
+                      085967096912
                     </span>
                     <button
                       type="button"
-                      onClick={() => handleCopy(currentOrder.vaNumber!, "va")}
-                      className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                      onClick={() => handleCopy("085967096912", "gopay")}
+                      className="px-3 py-1.5 bg-green-600 hover:bg-green-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 transition-colors"
                     >
-                      {copiedText === "va" ? (
+                      {copiedText === "gopay" ? (
                         <Check className="w-3.5 h-3.5" />
                       ) : (
                         <Copy className="w-3.5 h-3.5" />
                       )}
-                      <span>{copiedText === "va" ? "Tersalin" : "Salin"}</span>
+                      <span>{copiedText === "gopay" ? "Tersalin" : "Salin Nomor"}</span>
                     </button>
                   </div>
+                  <p className="text-[10px] text-slate-400">
+                    Pastikan nama penerima di aplikasi GoPay muncul <strong>Ilham Arwani</strong>.
+                  </p>
                 </div>
-              )}
+              </div>
 
-              {/* Total Amount & RefID */}
-              <div className="bg-[#101c38] p-3.5 rounded-2xl border border-white/10 flex items-center justify-between text-left">
-                <div>
-                  <span className="text-[10px] text-slate-400 block">ID Referensi</span>
-                  <span className="font-mono text-xs text-slate-200 font-bold">
-                    {currentOrder.refid}
-                  </span>
+              {/* Detail Pesanan Ringkas */}
+              <div className="bg-[#101c38] p-3.5 rounded-2xl border border-white/10 text-xs space-y-1.5 text-slate-300">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">ID Pesanan:</span>
+                  <span className="font-mono font-bold text-white">{currentOrder.refid}</span>
                 </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block">Total Transfer</span>
-                  <span className="font-mono text-base font-black text-emerald-400">
-                    {formatRupiah(currentOrder.totalAmount)}
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Nomor Tujuan:</span>
+                  <span className="font-mono font-bold text-white">{currentOrder.phoneNumber}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Paket:</span>
+                  <span className="font-bold text-white text-right max-w-[65%] truncate">
+                    {currentOrder.productName}
                   </span>
                 </div>
               </div>
 
-              {/* Live Polling Status Indicator */}
-              <div className="flex items-center justify-center gap-2 text-xs text-blue-300 py-1">
-                <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
-                <span>Menunggu konfirmasi pembayaran otomatis...</span>
-              </div>
-
-              {/* Test Mode Simulation Button */}
+              {/* TOMBOL UTAMA: KONFIRMASI WAJIB KE WHATSAPP */}
               <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={handleSimulatePayment}
-                  disabled={isSimulatingPayment}
-                  className="w-full py-2.5 px-4 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all"
+                <a
+                  href={getWaPaymentConfirmationLink({
+                    productName: currentOrder.productName,
+                    totalAmount: currentOrder.totalAmount,
+                    phoneNumber: currentOrder.phoneNumber,
+                    refid: currentOrder.refid,
+                    paymentMethod: currentOrder.paymentMethod,
+                  })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-4 bg-[#25D366] hover:bg-[#20ba5a] active:scale-[0.99] text-white font-black rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-xl shadow-green-500/25 transition-all"
                 >
-                  {isSimulatingPayment ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Sparkles className="w-4 h-4" />
-                  )}
-                  <span>Simulasi Bayar Sekarang (Uji Gateway / Webhook)</span>
-                </button>
-                <p className="text-[10px] text-slate-500 mt-1">
-                  Tombol ini mensimulasikan callback webhook pelunasan dan langsung menginjeksi paket.
+                  <svg className="w-5 h-5 fill-white flex-shrink-0" viewBox="0 0 24 24">
+                    <path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.115.548 4.184 1.59 6.002L.004 24l6.104-1.601A11.96 11.96 0 0012.031 24c6.646 0 12.031-5.385 12.031-12.031C24.062 5.385 18.677 0 12.031 0zM18.16 16.924c-.26.735-1.503 1.4-2.074 1.458-.528.054-1.203.11-3.486-.838-2.738-1.134-4.516-3.923-4.654-4.108-.138-.184-1.11-1.478-1.11-2.822s.7-1.996.953-2.285c.253-.29.548-.363.733-.363.184 0 .368.006.533.013.178.008.416-.073.654.492.247.585.83 2.03.904 2.179.073.15.123.324.03.508-.091.184-.138.301-.276.467-.138.167-.291.353-.414.491-.133.15-.276.315-.12.565.156.248.694 1.133 1.493 1.894 1.033.985 1.9 1.288 2.146 1.402.247.114.39.096.536-.07.146-.167.632-.735.802-.988.17-.253.34-.212.565-.125.225.086 1.428.673 1.674.795.247.123.411.184.473.288.062.103.062.605-.198 1.34z" />
+                  </svg>
+                  <span>Kirim Bukti Transfer ke WhatsApp (Wajib)</span>
+                </a>
+                <p className="text-[10px] text-center text-slate-400 mt-2">
+                  Format pesan & detail pesanan otomatis terisi saat WhatsApp terbuka.
                 </p>
               </div>
             </div>
@@ -549,56 +471,10 @@ export default function CheckoutModal({
               </div>
 
               <div>
-                <h4 className="text-lg font-black text-white">Pembelian Berhasil!</h4>
+                <h4 className="text-lg font-black text-white">Pesanan Tercatat!</h4>
                 <p className="text-xs text-slate-300 mt-1">
-                  Paket data sedang/telah aktif di nomor tujuan.
+                  Admin sedang memverifikasi bukti transfer dan kuota akan segera terisi.
                 </p>
-              </div>
-
-              {/* Transaction details card */}
-              <div className="bg-[#101c38] p-4 rounded-2xl border border-white/10 text-left space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">ID Transaksi:</span>
-                  <span className="font-mono font-bold text-white">{currentOrder.refid}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Nomor Tujuan:</span>
-                  <span className="font-mono font-bold text-white">{currentOrder.phoneNumber}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Paket Kuota:</span>
-                  <span className="font-bold text-white">{currentOrder.productName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Total Harga:</span>
-                  <span className="font-mono font-black text-emerald-400">
-                    {formatRupiah(currentOrder.totalAmount)}
-                  </span>
-                </div>
-                {currentOrder.sn && (
-                  <div className="flex justify-between pt-2 border-t border-white/10">
-                    <span className="text-slate-400">Serial Number (SN):</span>
-                    <span className="font-mono text-amber-300 font-bold">{currentOrder.sn}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2">
-                <a
-                  href={getWaLink(
-                    currentOrder.productName,
-                    currentOrder.totalAmount,
-                    currentOrder.phoneNumber,
-                    currentOrder.refid
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  <span>Konfirmasi Bukti ke WhatsApp Admin</span>
-                </a>
               </div>
             </div>
           )}
@@ -628,7 +504,7 @@ export default function CheckoutModal({
               onClick={() => setStep("SUMMARY")}
               className="w-full py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-xs font-bold transition-colors"
             >
-              Ubah Metode Pembayaran
+              ← Kembali ke Ringkasan Pesanan
             </button>
           )}
 
