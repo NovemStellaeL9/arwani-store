@@ -15,39 +15,39 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://arwani-store.vercel.app"),
-  title: "Arwani D'Gabriel Store - Jual Paket Data & Masa Aktif Murah",
-  description: "Solusi kebutuhan paket internet (Telkomsel, by.U, Indosat, XL, Axis, Tri, Smartfren) dan perpanjang masa aktif murah, cepat, terpercaya.",
+  title: "Arwani Store – Paket Data & Kuota Internet Murah",
+  description:
+    "Jual paket internet Telkomsel, Indosat, XL, Axis, Tri. Harga murah, proses cepat, konfirmasi via WhatsApp.",
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Arwani Store",
+  },
   icons: {
     icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    apple: "/telkomsel.png",
   },
   openGraph: {
     type: "website",
-    title: "Arwani D'Gabriel Store - Jual Paket Data & Masa Aktif Murah",
-    description: "Solusi kebutuhan paket internet dan perpanjang masa aktif murah, cepat, terpercaya.",
-    siteName: "Arwani D'Gabriel Store",
-    images: [
-      {
-        url: "/telkomsel.png", // fallback beautiful OG image using pre-existing asset
-        width: 512,
-        height: 512,
-        alt: "Arwani Store Logo",
-      },
-    ],
+    title: "Arwani Store – Paket Data Murah",
+    description: "Paket internet murah, cepat, terpercaya. Konfirmasi via WhatsApp.",
+    siteName: "Arwani Store",
+    images: [{ url: "/telkomsel.png", width: 512, height: 512, alt: "Arwani Store" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Arwani D'Gabriel Store",
-    description: "Paket Data & Masa Aktif Terlengkap & Murah",
+    title: "Arwani Store",
+    description: "Paket Data & Masa Aktif Murah",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f172a",
+  themeColor: "#0a1628",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export default function RootLayout({
@@ -60,7 +60,14 @@ export default function RootLayout({
       lang="id"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-slate-100 dark:bg-slate-950 transition-colors duration-500">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Arwani Store" />
+      </head>
+      <body className="min-h-full bg-[#060e1c]">
         <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
     </html>

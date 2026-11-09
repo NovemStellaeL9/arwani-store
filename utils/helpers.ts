@@ -11,23 +11,30 @@ export const formatRupiah = (price: number): string => {
 };
 
 /**
- * LOGIKA PRICING & MARKUP HARGA:
- * - Jika harga modal/costPrice > Rp 85.000: Markup Rp 10.000 (Harga Jual = costPrice + 10.000).
- * - Jika harga modal/costPrice <= Rp 85.000: Markup dinamis/fleksibel antara Rp 4.000 - Rp 5.000
- *   (default pembulatan ke kelipatan Rp 500 terdekat atau fix +Rp 5.000).
+ * =========================================================================
+ * TEMPAT MENGATUR & MENGEDIT HARGA / MARKUP KEUNTUNGAN:
+ * =========================================================================
+ * Jika Anda ingin mengubah harga jual, ubah angka pada fungsi di bawah ini:
+ *
+ * 1. BATAS MODAL (Threshold): Saat ini Rp 85.000 (costPrice > 85000).
+ * 2. MARKUP TIER TINGGI: Saat ini +10000 (costPrice + 10000).
+ *    -> Contoh jika ingin untung Rp 15.000, ganti 10000 menjadi 15000.
+ * 3. MARKUP TIER RENDAH: Saat ini +5000 (markup = 5000).
+ *    -> Contoh jika ingin untung Rp 4.000, ganti 5000 menjadi 4000.
  */
 export const calculateSellingPrice = (costPrice: number): number => {
   if (costPrice <= 0) return 0;
 
+  // Jika harga modal > Rp 85.000: Tambah untung Rp 10.000
   if (costPrice > 85000) {
     return costPrice + 10000;
   }
 
-  // Markup dinamis fleksibel untuk costPrice <= 85.000
+  // Jika harga modal <= Rp 85.000: Tambah untung Rp 5.000
   const markup = 5000;
   const rawPrice = costPrice + markup;
 
-  // Dibulatkan ke kelipatan 500 terdekat untuk kenyamanan pelanggan
+  // Dibulatkan ke kelipatan 500 terdekat untuk kemudahan transfer
   return Math.ceil(rawPrice / 500) * 500;
 };
 
@@ -38,12 +45,6 @@ export const getMarkupAmount = (costPrice: number): number => {
 
 /**
  * Deteksi otomatis operator berdasarkan 4 digit prefix nomor telepon Indonesia:
- * - Telkomsel: 0811, 0812, 0813, 0821, 0822, 0823, 0851, 0852, 0853
- * - Indosat: 0814, 0815, 0816, 0855, 0856, 0857, 0858
- * - XL: 0817, 0818, 0819, 0859, 0877, 0878
- * - Axis: 0831, 0832, 0833, 0838
- * - Tri: 0895, 0896, 0897, 0898, 0899
- * - Smartfren: 0881, 0882, 0883, 0884, 0885, 0886, 0887, 0888, 0889
  */
 export const detectOperator = (num: string): string => {
   if (!num) return "";
@@ -85,7 +86,7 @@ export const detectOperator = (num: string): string => {
   return "";
 };
 
-// Operator Brand Data (Warna & Aksen Identitas)
+// Operator Brand Data
 export const OPERATOR_META: Record<
   string,
   {
@@ -145,6 +146,30 @@ export const OPERATOR_META: Record<
     badgeText: "text-rose-400",
     borderColor: "border-rose-500/30",
   },
+  PLN: {
+    name: "Token Listrik PLN",
+    logo: "/globe.svg",
+    color: "#EAB308",
+    badgeBg: "bg-amber-500/10",
+    badgeText: "text-amber-400",
+    borderColor: "border-amber-500/30",
+  },
+  DANA: {
+    name: "Saldo DANA",
+    logo: "/globe.svg",
+    color: "#3B82F6",
+    badgeBg: "bg-blue-500/10",
+    badgeText: "text-blue-400",
+    borderColor: "border-blue-500/30",
+  },
+  Lainnya: {
+    name: "Lainnya",
+    logo: "/globe.svg",
+    color: "#64748B",
+    badgeBg: "bg-slate-500/10",
+    badgeText: "text-slate-300",
+    borderColor: "border-slate-500/30",
+  },
 };
 
 export const getOperatorMeta = (op: string) => {
@@ -179,7 +204,7 @@ export const getTypeColor = (): { bg: string; text: string; border: string } => 
   return { bg: "#EFF6FF", text: "#1D4ED8", border: "#60A5FA" };
 };
 
-// WhatsApp Link Generator untuk konfirmasi CS bila diperlukan
+// WhatsApp Link Generator Umum
 export const getWaLink = (
   productName: string,
   price: number | string,
@@ -191,6 +216,35 @@ export const getWaLink = (
   const priceText = formattedPrice ? ` seharga ${formattedPrice}` : "";
   const phoneText = targetNumber ? ` untuk nomor tujuan ${targetNumber}` : "";
   const refText = refid ? ` (ID Transaksi: ${refid})` : "";
-  const msg = `Halo Admin, saya ingin konfirmasi pesanan ${productName}${priceText}${phoneText}${refText}. Terima kasih.`;
+  const msg = `Halo Admin Ilham Arwani, saya ingin konfirmasi pesanan ${productName}${priceText}${phoneText}${refText}. Terima kasih.`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+};
+
+/**
+ * Format Pesan WhatsApp Konfirmasi Pembayaran Wajib
+ */
+export const getWaPaymentConfirmationLink = (params: {
+  productName: string;
+  totalAmount: number;
+  phoneNumber: string;
+  refid: string;
+  paymentMethod: string;
+}): string => {
+  const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_CS_WHATSAPP || "6285967096912";
+  const methodLabel =
+    params.paymentMethod === "GOPAY"
+      ? "GoPay (085967096912 a/n Ilham Arwani)"
+      : "QRIS Resmi (ILHAM ARWANI, EDUKASI)";
+
+  const msg = `Halo Admin Ilham Arwani, saya sudah transfer untuk pesanan paket kuota:
+
+📦 *Paket*: ${params.productName}
+📱 *Nomor Tujuan*: ${params.phoneNumber}
+💰 *Total Bayar*: ${formatRupiah(params.totalAmount)}
+💳 *Metode Transfer*: ${methodLabel}
+🆔 *ID Pesanan*: ${params.refid}
+
+Berikut saya lampirkan bukti transfernya di chat ini. Mohon segera diproses ya Kak. Terima kasih!`;
+
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 };
